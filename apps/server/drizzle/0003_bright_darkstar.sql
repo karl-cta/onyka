@@ -1,0 +1,1 @@
+ALTER TABLE `users` ADD `tracking_enabled` integer DEFAULT true NOT NULL;

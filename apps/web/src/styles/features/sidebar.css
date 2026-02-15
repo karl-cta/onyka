@@ -1,0 +1,80 @@
+.logo-glow {
+  filter: none;
+  transition: filter 300ms ease, transform 300ms ease;
+}
+
+.logo-glow:hover {
+  filter: drop-shadow(0 0 8px var(--color-accent-glow)) drop-shadow(0 0 12px var(--color-accent-glow));
+  transform: scale(1.05);
+}
+
+.collapsed-expand-icon {
+  transition: transform 200ms ease;
+}
+
+.collapsed-icon-btn:hover .collapsed-expand-icon {
+  transform: translateX(2px);
+}
+
+.collapsed-plus-icon {
+  transition: transform 250ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.collapsed-icon-btn:hover .collapsed-plus-icon {
+  transform: rotate(90deg);
+}
+
+.collapsed-spark-icon {
+  display: flex;
+  transition: filter 250ms ease, transform 250ms ease;
+}
+
+.collapsed-icon-btn:hover .collapsed-spark-icon {
+  filter: brightness(1.2) drop-shadow(0 0 6px var(--color-accent)) drop-shadow(0 0 10px var(--color-accent-glow));
+  transform: scale(1.1);
+}
+
+.collapsed-settings-icon {
+  transition: transform 300ms ease;
+}
+
+.collapsed-icon-btn:hover .collapsed-settings-icon {
+  transform: rotate(45deg);
+}
+
+.collapsed-icon-btn.rounded-full:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 16px -4px var(--color-accent);
+}
+
+@media (max-width: 767px) {
+  .logo-glow {
+    transition: transform 300ms ease;
+  }
+
+  .logo-glow:hover {
+    filter: none;
+  }
+
+  .collapsed-spark-icon {
+    transition: transform 250ms ease;
+  }
+
+  .collapsed-icon-btn:hover .collapsed-spark-icon {
+    filter: none;
+  }
+
+  .collapsed-icon-btn.rounded-full:hover {
+    box-shadow: none;
+  }
+}
+
+body.resize-col,
+body.resize-col * {
+  cursor: col-resize !important;
+}
+
+body.resize-ns,
+body.resize-ns * {
+  cursor: ns-resize !important;
+}

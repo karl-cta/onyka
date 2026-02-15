@@ -1,0 +1,179 @@
+/* Dark */
+
+/* Dracula - Popular purple-tinted dark theme */
+.theme-dracula.dark {
+  --color-bg-primary: #282a36;
+  --color-bg-secondary: #21222c;
+  --color-bg-tertiary: #343746;
+  --color-bg-elevated: #2d2f3d;
+  --color-bg-glass: rgba(40, 42, 54, 0.92);
+  --color-bg-glass-subtle: rgba(40, 42, 54, 0.75);
+  --color-text-primary: #f8f8f2;
+  --color-text-secondary: #9fa4b6;
+  --color-text-tertiary: #6272a4;
+  --color-text-muted: #6272a4;
+  --color-text-inverse: #282a36;
+  --color-border: rgba(98, 114, 164, 0.4);
+  --color-border-subtle: rgba(98, 114, 164, 0.2);
+  --color-border-strong: rgba(98, 114, 164, 0.6);
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.35), 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4), 0 2px 4px rgba(0, 0, 0, 0.35);
+  --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.5), 0 4px 12px rgba(0, 0, 0, 0.35);
+}
+
+/* Nord - Arctic, bluish palette */
+.theme-nord.dark {
+  --color-bg-primary: #2e3440;
+  --color-bg-secondary: #272c36;
+  --color-bg-tertiary: #3b4252;
+  --color-bg-elevated: #353c4a;
+  --color-bg-glass: rgba(46, 52, 64, 0.92);
+  --color-bg-glass-subtle: rgba(46, 52, 64, 0.75);
+  --color-text-primary: #eceff4;
+  --color-text-secondary: #9aa5b8;
+  --color-text-tertiary: #5e6a82;
+  --color-text-muted: #616e88;
+  --color-text-inverse: #2e3440;
+  --color-border: rgba(76, 86, 106, 0.5);
+  --color-border-subtle: rgba(76, 86, 106, 0.25);
+  --color-border-strong: rgba(76, 86, 106, 0.7);
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.25);
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.35);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.35), 0 2px 4px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.45), 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Tokyo Night - Neon-inspired dark theme */
+.theme-tokyo-night.dark {
+  --color-bg-primary: #1a1b26;
+  --color-bg-secondary: #13141c;
+  --color-bg-tertiary: #24253a;
+  --color-bg-elevated: #1e1f2e;
+  --color-bg-glass: rgba(26, 27, 38, 0.92);
+  --color-bg-glass-subtle: rgba(26, 27, 38, 0.75);
+  --color-text-primary: #c0caf5;
+  --color-text-secondary: #8b92b3;
+  --color-text-tertiary: #545c7e;
+  --color-text-muted: #565f89;
+  --color-text-inverse: #1a1b26;
+  --color-border: rgba(84, 92, 126, 0.4);
+  --color-border-subtle: rgba(84, 92, 126, 0.2);
+  --color-border-strong: rgba(84, 92, 126, 0.6);
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.45), 0 1px 2px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.5), 0 2px 4px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.6), 0 4px 12px rgba(0, 0, 0, 0.45);
+}
+
+/* One Dark - Atom editor inspired */
+.theme-one-dark.dark {
+  --color-bg-primary: #282c34;
+  --color-bg-secondary: #21252b;
+  --color-bg-tertiary: #323842;
+  --color-bg-elevated: #2c313a;
+  --color-bg-glass: rgba(40, 44, 52, 0.92);
+  --color-bg-glass-subtle: rgba(40, 44, 52, 0.75);
+  --color-text-primary: #abb2bf;
+  --color-text-secondary: #8b919e;
+  --color-text-tertiary: #5c6370;
+  --color-text-muted: #636d83;
+  --color-text-inverse: #282c34;
+  --color-border: rgba(92, 99, 112, 0.4);
+  --color-border-subtle: rgba(92, 99, 112, 0.2);
+  --color-border-strong: rgba(92, 99, 112, 0.6);
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4), 0 1px 2px rgba(0, 0, 0, 0.45);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.45), 0 2px 4px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.55), 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* Light */
+
+/* GitHub Light - Clean, professional */
+.theme-github:not(.dark) {
+  --color-bg-primary: #ffffff;
+  --color-bg-secondary: #f6f8fa;
+  --color-bg-tertiary: #eaeef2;
+  --color-bg-elevated: #ffffff;
+  --color-bg-glass: rgba(255, 255, 255, 0.92);
+  --color-bg-glass-subtle: rgba(246, 248, 250, 0.85);
+  --color-text-primary: #1f2328;
+  --color-text-secondary: #59636e;
+  --color-text-tertiary: #8b949e;
+  --color-text-muted: #8b949e;
+  --color-text-inverse: #ffffff;
+  --color-border: #d1d9e0;
+  --color-border-subtle: rgba(209, 217, 224, 0.6);
+  --color-border-strong: #b8c1cc;
+  --shadow-xs: 0 1px 2px rgba(31, 35, 40, 0.04);
+  --shadow-sm: 0 2px 8px rgba(31, 35, 40, 0.06), 0 1px 2px rgba(31, 35, 40, 0.04);
+  --shadow-md: 0 4px 16px rgba(31, 35, 40, 0.08), 0 2px 4px rgba(31, 35, 40, 0.04);
+  --shadow-lg: 0 12px 40px rgba(31, 35, 40, 0.12), 0 4px 12px rgba(31, 35, 40, 0.06);
+}
+
+/* Catppuccin Latte - Warm, creamy light theme */
+.theme-catppuccin-latte:not(.dark) {
+  --color-bg-primary: #eff1f5;
+  --color-bg-secondary: #e6e9ef;
+  --color-bg-tertiary: #dce0e8;
+  --color-bg-elevated: #eff1f5;
+  --color-bg-glass: rgba(239, 241, 245, 0.92);
+  --color-bg-glass-subtle: rgba(230, 233, 239, 0.85);
+  --color-text-primary: #4c4f69;
+  --color-text-secondary: #6c6f85;
+  --color-text-tertiary: #9ca0b0;
+  --color-text-muted: #9ca0b0;
+  --color-text-inverse: #eff1f5;
+  --color-border: #ccd0da;
+  --color-border-subtle: rgba(204, 208, 218, 0.6);
+  --color-border-strong: #bcc0cc;
+  --shadow-xs: 0 1px 2px rgba(76, 79, 105, 0.04);
+  --shadow-sm: 0 2px 8px rgba(76, 79, 105, 0.06), 0 1px 2px rgba(76, 79, 105, 0.04);
+  --shadow-md: 0 4px 16px rgba(76, 79, 105, 0.08), 0 2px 4px rgba(76, 79, 105, 0.04);
+  --shadow-lg: 0 12px 40px rgba(76, 79, 105, 0.1), 0 4px 12px rgba(76, 79, 105, 0.06);
+}
+
+/* Rosé Pine Dawn - Soft pinkish warm theme */
+.theme-rose-pine-dawn:not(.dark) {
+  --color-bg-primary: #faf4ed;
+  --color-bg-secondary: #f4ede8;
+  --color-bg-tertiary: #f2e9e1;
+  --color-bg-elevated: #fffaf3;
+  --color-bg-glass: rgba(250, 244, 237, 0.92);
+  --color-bg-glass-subtle: rgba(244, 237, 232, 0.85);
+  --color-text-primary: #575279;
+  --color-text-secondary: #797593;
+  --color-text-tertiary: #9893a5;
+  --color-text-muted: #9893a5;
+  --color-text-inverse: #faf4ed;
+  --color-border: #dfdad9;
+  --color-border-subtle: rgba(223, 218, 217, 0.6);
+  --color-border-strong: #cecacd;
+  --shadow-xs: 0 1px 2px rgba(87, 82, 121, 0.04);
+  --shadow-sm: 0 2px 8px rgba(87, 82, 121, 0.06), 0 1px 2px rgba(87, 82, 121, 0.04);
+  --shadow-md: 0 4px 16px rgba(87, 82, 121, 0.08), 0 2px 4px rgba(87, 82, 121, 0.04);
+  --shadow-lg: 0 12px 40px rgba(87, 82, 121, 0.1), 0 4px 12px rgba(87, 82, 121, 0.06);
+}
+
+/* Paper - Ultra minimal, newspaper-like */
+.theme-paper:not(.dark) {
+  --color-bg-primary: #f5f5f0;
+  --color-bg-secondary: #eaeae5;
+  --color-bg-tertiary: #e0e0db;
+  --color-bg-elevated: #fafaf5;
+  --color-bg-glass: rgba(245, 245, 240, 0.92);
+  --color-bg-glass-subtle: rgba(234, 234, 229, 0.85);
+  --color-text-primary: #2c2c2c;
+  --color-text-secondary: #525252;
+  --color-text-tertiary: #8a8a8a;
+  --color-text-muted: #8a8a8a;
+  --color-text-inverse: #f5f5f0;
+  --color-border: #d4d4cf;
+  --color-border-subtle: rgba(212, 212, 207, 0.6);
+  --color-border-strong: #c4c4bf;
+  --shadow-xs: 0 1px 2px rgba(44, 44, 44, 0.04);
+  --shadow-sm: 0 2px 8px rgba(44, 44, 44, 0.05), 0 1px 2px rgba(44, 44, 44, 0.03);
+  --shadow-md: 0 4px 16px rgba(44, 44, 44, 0.06), 0 2px 4px rgba(44, 44, 44, 0.03);
+  --shadow-lg: 0 12px 40px rgba(44, 44, 44, 0.08), 0 4px 12px rgba(44, 44, 44, 0.04);
+}

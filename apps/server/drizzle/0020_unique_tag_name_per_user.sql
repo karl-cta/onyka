@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX IF NOT EXISTS `tags_owner_name_idx` ON `tags` (`owner_id`,`name`);

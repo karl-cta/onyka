@@ -1,0 +1,80 @@
+:root {
+  /* Background */
+  --color-bg-primary: #FFFFFF;
+  --color-bg-secondary: #F8FAFC;
+  --color-bg-tertiary: #F1F5F9;
+  --color-bg-elevated: #FFFFFF;
+  --color-bg-glass: rgba(255, 255, 255, 0.9);
+  --color-bg-glass-subtle: rgba(248, 250, 252, 0.8);
+
+  /* Accent */
+  --color-accent: #F59E0B;
+  --color-accent-hover: #FBBF24;
+  --color-accent-muted: rgba(245, 158, 11, 0.15);
+  --color-accent-glow: rgba(245, 158, 11, 0.2);
+  --color-accent-subtle: rgba(245, 158, 11, 0.08);
+
+  /* Text */
+  --color-text-primary: #0F172A;
+  --color-text-secondary: #475569;
+  --color-text-tertiary: #94A3B8;
+  --color-text-muted: #94A3B8;
+  --color-text-inverse: #FFFFFF;
+
+  /* Borders */
+  --color-border: #E2E8F0;
+  --color-border-subtle: rgba(226, 232, 240, 0.6);
+  --color-border-strong: #CBD5E1;
+
+  /* Shadows */
+  --shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow-sm: 0 2px 8px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow-md: 0 4px 16px rgba(15, 23, 42, 0.08), 0 2px 4px rgba(15, 23, 42, 0.04);
+  --shadow-lg: 0 12px 40px rgba(15, 23, 42, 0.1), 0 4px 12px rgba(15, 23, 42, 0.06);
+  --shadow-glow: 0 0 20px var(--color-accent-glow);
+
+  /* Semantic */
+  --color-success: #16A34A;
+  --color-warning: #D97706;
+  --color-error: #DC2626;
+
+  /* Timing */
+  --transition-fast: 100ms;
+  --transition-base: 180ms;
+  --transition-slow: 300ms;
+}
+
+.dark {
+  /* Background */
+  --color-bg-primary: #0A0A0F;
+  --color-bg-secondary: #12121A;
+  --color-bg-tertiary: #1E1E28;
+  --color-bg-elevated: #1A1A24;
+  --color-bg-glass: rgba(18, 18, 26, 0.9);
+  --color-bg-glass-subtle: rgba(18, 18, 26, 0.7);
+
+  /* Accent */
+  --color-accent: #D97706;
+  --color-accent-hover: #F59E0B;
+  --color-accent-muted: rgba(217, 119, 6, 0.2);
+  --color-accent-glow: rgba(217, 119, 6, 0.3);
+  --color-accent-subtle: rgba(217, 119, 6, 0.12);
+
+  /* Text */
+  --color-text-primary: #F5F5F5;
+  --color-text-secondary: #A1A1AA;
+  --color-text-tertiary: #52525B;
+  --color-text-muted: #71717A;
+  --color-text-inverse: #0A0A0F;
+
+  /* Borders */
+  --color-border: rgba(255, 255, 255, 0.1);
+  --color-border-subtle: rgba(255, 255, 255, 0.05);
+  --color-border-strong: rgba(255, 255, 255, 0.15);
+
+  /* Shadows */
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4), 0 1px 2px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.5), 0 2px 4px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.6), 0 4px 12px rgba(0, 0, 0, 0.4);
+}

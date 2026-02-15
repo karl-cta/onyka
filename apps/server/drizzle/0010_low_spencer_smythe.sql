@@ -1,0 +1,1 @@
+ALTER TABLE `folders` ADD `icon` text DEFAULT 'Folder' NOT NULL;

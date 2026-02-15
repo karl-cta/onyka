@@ -1,0 +1,78 @@
+{
+  "name": "onyka",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A modern, lightweight, self-hostable note-taking application",
+  "keywords": [
+    "notes",
+    "markdown",
+    "todo",
+    "self-hosted"
+  ],
+  "license": "AGPL-3.0-only",
+  "author": "Karl",
+  "type": "module",
+  "scripts": {
+    "dev": "node scripts/dev.js",
+    "dev:verbose": "pnpm run --parallel dev",
+    "dev:web": "pnpm --filter @onyka/web dev",
+    "dev:server": "pnpm --filter @onyka/server dev",
+    "build": "pnpm --filter @onyka/shared build && pnpm --filter '!@onyka/shared' run --parallel build",
+    "build:web": "pnpm --filter @onyka/web build",
+    "build:server": "pnpm --filter @onyka/server build",
+    "start": "pnpm --filter @onyka/server start",
+    "start:prod": "node scripts/start-prod.js",
+    "lint": "pnpm run --parallel lint",
+    "format": "prettier --write \"**/*.{ts,tsx,js,json,md}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,json,md}\"",
+    "typecheck": "pnpm run --parallel typecheck",
+    "test": "pnpm run --parallel test",
+    "clean": "rm -rf apps/*/dist apps/*/.turbo packages/*/dist node_modules/.cache",
+    "db:generate": "pnpm --filter @onyka/server db:generate",
+    "db:migrate": "pnpm --filter @onyka/server db:migrate",
+    "db:backup": "node scripts/backup.js",
+    "db:studio": "pnpm --filter @onyka/server db:studio",
+    "setup": "node scripts/setup.js",
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.2",
+    "@types/cookie": "^1.0.0",
+    "@types/node": "^22.10.2",
+    "@typescript-eslint/eslint-plugin": "^8.53.1",
+    "@typescript-eslint/parser": "^8.53.1",
+    "eslint": "^9.39.2",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "globals": "^17.1.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.2.11",
+    "prettier": "^3.4.2",
+    "typescript": "^5.7.2"
+  },
+  "packageManager": "pnpm@10.28.1",
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=9.0.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "argon2",
+      "better-sqlite3",
+      "esbuild",
+      "sharp"
+    ]
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{js,json,md}": [
+      "prettier --write"
+    ]
+  },
+  "dependencies": {
+    "cookie": "^1.1.1"
+  }
+}

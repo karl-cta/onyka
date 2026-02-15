@@ -1,0 +1,45 @@
+# Dependencies
+node_modules
+**/node_modules
+
+# Build outputs
+dist
+**/dist
+.turbo
+**/.turbo
+
+# Development
+.git
+.gitignore
+.github
+.vscode
+.idea
+*.log
+*.md
+!README.md
+
+# Environment files (will be created in container)
+.env
+.env.*
+!.env.example
+
+# Test files
+**/__tests__
+**/*.test.ts
+**/*.spec.ts
+coverage
+.nyc_output
+
+# Docker
+docker
+Dockerfile
+docker-compose*.yml
+
+# Misc
+.DS_Store
+*.swp
+*.swo
+.cache
+**/.cache
+tmp
+temp

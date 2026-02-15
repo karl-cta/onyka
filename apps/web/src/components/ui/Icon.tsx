@@ -1,0 +1,551 @@
+import { memo, type CSSProperties } from 'react'
+import type { IconType } from 'react-icons'
+
+// Import Ionicons 5 from react-icons
+import {
+  IoSearch,
+  IoSearchOutline,
+  IoFolderOutline,
+  IoFolderOpenOutline,
+  IoSettingsOutline,
+  IoLogOutOutline,
+  IoChevronForward,
+  IoChevronBack,
+  IoChevronDown,
+  IoDocumentTextOutline,
+  IoDocumentOutline,
+  IoDocumentsOutline,
+  IoPricetagOutline,
+  IoCloseOutline,
+  IoClose,
+  IoAddOutline,
+  IoAdd,
+  IoTrashOutline,
+  IoEllipsisHorizontal,
+  IoCreateOutline,
+  IoShieldCheckmarkOutline,
+  IoMenuOutline,
+  IoSyncOutline,
+  IoCheckmarkOutline,
+  IoCheckmark,
+  IoWarningOutline,
+  IoEyeOutline,
+  IoEyeOffOutline,
+  IoLockClosedOutline,
+  IoLockOpenOutline,
+  IoTimeOutline,
+  IoInformationCircleOutline,
+  IoDownloadOutline,
+  IoCodeOutline,
+  IoMoonOutline,
+  IoSunnyOutline,
+  IoStarOutline,
+  IoStarHalfOutline,
+  IoHeartOutline,
+  IoRibbonOutline,
+  IoTrophyOutline,
+  IoFlameOutline,
+  IoCalendarOutline,
+  IoPersonOutline,
+  IoPeopleOutline,
+  IoPlayOutline,
+  IoPauseOutline,
+  IoRefreshOutline,
+  IoArrowUndoOutline,
+  IoReorderThreeOutline,
+  IoColorPaletteOutline,
+  IoGlobeOutline,
+  IoTextOutline,
+  IoPinOutline,
+  IoBarChartOutline,
+  IoTrendingUpOutline,
+  IoContractOutline,
+  IoExpandOutline,
+  IoHomeOutline,
+  IoCopyOutline,
+  IoLinkOutline,
+  IoShareOutline,
+  IoHappyOutline,
+  IoBookOutline,
+  IoBookmarkOutline,
+  IoBulbOutline,
+  IoFlashOutline,
+  IoRocketOutline,
+  IoFlagOutline,
+  IoAlarmOutline,
+  IoHourglassOutline,
+  IoCheckboxOutline,
+  IoListOutline,
+  IoGridOutline,
+  IoLayersOutline,
+  IoArchiveOutline,
+  IoTerminalOutline,
+  IoServerOutline,
+  IoBugOutline,
+  IoBrushOutline,
+  IoMusicalNotesOutline,
+  IoHeadsetOutline,
+  IoCameraOutline,
+  IoImageOutline,
+  IoFilmOutline,
+  IoMicOutline,
+  IoLocationOutline,
+  IoCompassOutline,
+  IoMapOutline,
+  IoAirplaneOutline,
+  IoCarOutline,
+  IoBicycleOutline,
+  IoBusinessOutline,
+  IoStorefrontOutline,
+  IoBriefcaseOutline,
+  IoSchoolOutline,
+  IoCafeOutline,
+  IoRestaurantOutline,
+  IoCartOutline,
+  IoGiftOutline,
+  IoCloudOutline,
+  IoUmbrellaOutline,
+  IoLeafOutline,
+  IoFitnessOutline,
+  IoMailOutline,
+  IoChatbubbleOutline,
+  IoCallOutline,
+  IoSendOutline,
+  IoAtOutline,
+  IoWalletOutline,
+  IoCardOutline,
+  IoReceiptOutline,
+  IoCalculatorOutline,
+  IoKeyOutline,
+  IoConstructOutline,
+  IoCubeOutline,
+  IoNotificationsOutline,
+  IoAttachOutline,
+  IoCutOutline,
+  IoNewspaperOutline,
+  IoShapesOutline,
+  IoMedalOutline,
+  IoCheckmarkCircleOutline,
+  IoPulseOutline,
+  IoBarbellOutline,
+  IoMedkitOutline,
+  IoNavigateOutline,
+  IoSparklesOutline,
+  IoDiamondOutline,
+  IoExtensionPuzzleOutline,
+  IoClipboardOutline,
+  IoEnterOutline,
+  IoExitOutline,
+  IoHelpCircleOutline,
+  IoAlertCircleOutline,
+  IoThumbsUpOutline,
+  IoThumbsDownOutline,
+  IoChatbubblesOutline,
+  IoNotificationsOffOutline,
+  IoVolumeHighOutline,
+  IoVolumeMuteOutline,
+  IoWifiOutline,
+  IoBatteryFullOutline,
+  IoCloudUploadOutline,
+  IoCloudDownloadOutline,
+  IoSaveOutline,
+  IoPrintOutline,
+  IoQrCodeOutline,
+  IoFingerPrintOutline,
+  IoShieldOutline,
+  IoLockClosed,
+  IoPersonAddOutline,
+  IoPersonRemoveOutline,
+  IoAnalyticsOutline,
+  IoPieChartOutline,
+  IoStatsChartOutline,
+  IoSwapHorizontalOutline,
+  IoSwapVerticalOutline,
+  IoRepeatOutline,
+  IoShuffleOutline,
+  IoPlaySkipBackOutline,
+  IoPlaySkipForwardOutline,
+  IoRadioOutline,
+  IoTvOutline,
+  IoDesktopOutline,
+  IoPhonePortraitOutline,
+  IoTabletPortraitOutline,
+  IoWatchOutline,
+  IoGameControllerOutline,
+  IoPlanetOutline,
+  IoEarthOutline,
+  IoSnowOutline,
+  IoRainyOutline,
+  IoThunderstormOutline,
+  IoPartlySunnyOutline,
+  IoWineOutline,
+  IoPizzaOutline,
+  IoFastFoodOutline,
+  IoIceCreamOutline,
+  IoBeerOutline,
+  IoNutritionOutline,
+  IoBasketOutline,
+  IoPawOutline,
+  IoFishOutline,
+  IoHammerOutline,
+  IoColorFilterOutline,
+  IoOptionsOutline,
+  IoFilterOutline,
+  IoFunnelOutline,
+} from 'react-icons/io5'
+
+// Mapping Lucide icon names to Ionicons 5 components
+const ioniconsMap: Record<string, IconType> = {
+  // Search
+  Search: IoSearchOutline,
+  SearchFilled: IoSearch,
+  // Folder
+  FolderPlus: IoFolderOpenOutline,
+  Folder: IoFolderOutline,
+  FolderOpen: IoFolderOpenOutline,
+  // Settings & UI
+  Settings: IoSettingsOutline,
+  LogOut: IoLogOutOutline,
+  // Navigation
+  ChevronRight: IoChevronForward,
+  ChevronLeft: IoChevronBack,
+  ChevronDown: IoChevronDown,
+  // Documents
+  FileText: IoDocumentTextOutline,
+  File: IoDocumentOutline,
+  Files: IoDocumentsOutline,
+  Notebook: IoBookOutline,
+  BookOpen: IoBookOutline,
+  Book: IoBookOutline,
+  Bookmark: IoBookmarkOutline,
+  BookMarked: IoBookmarkOutline,
+  ScrollText: IoDocumentTextOutline,
+  Newspaper: IoNewspaperOutline,
+  StickyNote: IoDocumentTextOutline,
+  FileEdit: IoCreateOutline,
+  FilePlus: IoDocumentOutline,
+  FileCheck: IoDocumentTextOutline,
+  // Tags
+  Hash: IoPricetagOutline,
+  // Actions
+  X: IoCloseOutline,
+  XFilled: IoClose,
+  Plus: IoAddOutline,
+  PlusFilled: IoAdd,
+  Trash2: IoTrashOutline,
+  Trash: IoTrashOutline,
+  MoreHorizontal: IoEllipsisHorizontal,
+  Pencil: IoCreateOutline,
+  Edit3: IoCreateOutline,
+  Highlighter: IoCreateOutline,
+  Eraser: IoCreateOutline,
+  // Security
+  Shield: IoShieldCheckmarkOutline,
+  ShieldOutline: IoShieldOutline,
+  // Mobile
+  Menu: IoMenuOutline,
+  // Status
+  Loader2: IoSyncOutline,
+  Check: IoCheckmarkOutline,
+  CheckFilled: IoCheckmark,
+  AlertTriangle: IoWarningOutline,
+  Warning: IoWarningOutline,
+  AlertCircle: IoAlertCircleOutline,
+  HelpCircle: IoHelpCircleOutline,
+  // Visibility
+  Eye: IoEyeOutline,
+  EyeOff: IoEyeOffOutline,
+  // Lock
+  Lock: IoLockClosedOutline,
+  LockFilled: IoLockClosed,
+  Unlock: IoLockOpenOutline,
+  // Time
+  Clock: IoTimeOutline,
+  History: IoTimeOutline,
+  Timer: IoTimeOutline,
+  AlarmClock: IoAlarmOutline,
+  Hourglass: IoHourglassOutline,
+  // Info
+  Info: IoInformationCircleOutline,
+  // Download/Upload
+  Download: IoDownloadOutline,
+  Upload: IoCloudUploadOutline,
+  CloudDownload: IoCloudDownloadOutline,
+  CloudUpload: IoCloudUploadOutline,
+  // Code
+  Code: IoCodeOutline,
+  Terminal: IoTerminalOutline,
+  Braces: IoCodeOutline,
+  Database: IoServerOutline,
+  Server: IoServerOutline,
+  Cpu: IoServerOutline,
+  Binary: IoCodeOutline,
+  Bug: IoBugOutline,
+  // Theme
+  Moon: IoMoonOutline,
+  Sun: IoSunnyOutline,
+  // Sparks
+  Sparkles: IoSparklesOutline,
+  // Stars & Favorites
+  Star: IoStarOutline,
+  StarHalf: IoStarHalfOutline,
+  Heart: IoHeartOutline,
+  Gem: IoDiamondOutline,
+  Crown: IoRibbonOutline,
+  Diamond: IoDiamondOutline,
+  // Ideas & Creativity
+  Lightbulb: IoBulbOutline,
+  Zap: IoFlashOutline,
+  Flame: IoFlameOutline,
+  Rocket: IoRocketOutline,
+  Wand2: IoSparklesOutline,
+  Brain: IoBulbOutline,
+  Puzzle: IoExtensionPuzzleOutline,
+  // Goals & Achievement
+  Target: IoFlagOutline,
+  Flag: IoFlagOutline,
+  Award: IoRibbonOutline,
+  Trophy: IoTrophyOutline,
+  Medal: IoMedalOutline,
+  BadgeCheck: IoCheckmarkCircleOutline,
+  CircleCheck: IoCheckmarkCircleOutline,
+  // Calendar
+  Calendar: IoCalendarOutline,
+  CalendarDays: IoCalendarOutline,
+  // Users
+  User: IoPersonOutline,
+  UserCircle: IoPersonOutline,
+  Users: IoPeopleOutline,
+  Contact: IoPersonOutline,
+  UserPlus: IoPersonAddOutline,
+  UserMinus: IoPersonRemoveOutline,
+  // Controls
+  Play: IoPlayOutline,
+  Pause: IoPauseOutline,
+  SkipBack: IoPlaySkipBackOutline,
+  SkipForward: IoPlaySkipForwardOutline,
+  Repeat: IoRepeatOutline,
+  Shuffle: IoShuffleOutline,
+  // Refresh
+  RefreshCw: IoRefreshOutline,
+  Refresh: IoRefreshOutline,
+  RotateCcw: IoArrowUndoOutline,
+  // Drag
+  GripVertical: IoReorderThreeOutline,
+  // Design
+  Palette: IoColorPaletteOutline,
+  Brush: IoBrushOutline,
+  PenTool: IoCreateOutline,
+  ColorFilter: IoColorFilterOutline,
+  // Global
+  Globe: IoGlobeOutline,
+  Earth: IoEarthOutline,
+  Planet: IoPlanetOutline,
+  // Text
+  Type: IoTextOutline,
+  // Pin
+  Pin: IoPinOutline,
+  // Charts
+  BarChart2: IoBarChartOutline,
+  BarChart: IoBarChartOutline,
+  TrendingUp: IoTrendingUpOutline,
+  Activity: IoPulseOutline,
+  PieChart: IoPieChartOutline,
+  Analytics: IoAnalyticsOutline,
+  StatsChart: IoStatsChartOutline,
+  // Panel
+  PanelLeft: IoContractOutline,
+  PanelLeftClose: IoContractOutline,
+  Expand: IoExpandOutline,
+  Contract: IoContractOutline,
+  Enter: IoEnterOutline,
+  Exit: IoExitOutline,
+  // Home
+  Home: IoHomeOutline,
+  Building: IoBusinessOutline,
+  Building2: IoBusinessOutline,
+  Store: IoStorefrontOutline,
+  Warehouse: IoBusinessOutline,
+  Church: IoBusinessOutline,
+  School: IoSchoolOutline,
+  // Tasks & Lists
+  CheckSquare: IoCheckboxOutline,
+  ListTodo: IoListOutline,
+  List: IoListOutline,
+  ListChecks: IoListOutline,
+  ClipboardList: IoClipboardOutline,
+  ClipboardCheck: IoCheckboxOutline,
+  Clipboard: IoClipboardOutline,
+  // Layout & Organization
+  Columns: IoGridOutline,
+  LayoutGrid: IoGridOutline,
+  Grid3X3: IoGridOutline,
+  Grid: IoGridOutline,
+  Kanban: IoGridOutline,
+  Layers: IoLayersOutline,
+  Archive: IoArchiveOutline,
+  // Media
+  Music: IoMusicalNotesOutline,
+  Headphones: IoHeadsetOutline,
+  Camera: IoCameraOutline,
+  Image: IoImageOutline,
+  Film: IoFilmOutline,
+  Video: IoFilmOutline,
+  Mic: IoMicOutline,
+  Radio: IoRadioOutline,
+  Tv: IoTvOutline,
+  Volume: IoVolumeHighOutline,
+  VolumeOff: IoVolumeMuteOutline,
+  // Location & Travel
+  MapPin: IoLocationOutline,
+  Compass: IoCompassOutline,
+  Navigation: IoNavigateOutline,
+  Map: IoMapOutline,
+  Plane: IoAirplaneOutline,
+  Car: IoCarOutline,
+  Bike: IoBicycleOutline,
+  // Work & Business
+  Briefcase: IoBriefcaseOutline,
+  GraduationCap: IoSchoolOutline,
+  // Food & Lifestyle
+  Coffee: IoCafeOutline,
+  UtensilsCrossed: IoRestaurantOutline,
+  ShoppingCart: IoCartOutline,
+  Gift: IoGiftOutline,
+  Cake: IoGiftOutline,
+  Wine: IoWineOutline,
+  Pizza: IoPizzaOutline,
+  FastFood: IoFastFoodOutline,
+  IceCream: IoIceCreamOutline,
+  Beer: IoBeerOutline,
+  Nutrition: IoNutritionOutline,
+  Basket: IoBasketOutline,
+  // Nature & Weather
+  Cloud: IoCloudOutline,
+  Umbrella: IoUmbrellaOutline,
+  Leaf: IoLeafOutline,
+  Flower: IoLeafOutline,
+  TreePine: IoLeafOutline,
+  Mountain: IoGlobeOutline,
+  Snow: IoSnowOutline,
+  Rain: IoRainyOutline,
+  Thunder: IoThunderstormOutline,
+  PartlySunny: IoPartlySunnyOutline,
+  // Health & Fitness
+  Dumbbell: IoBarbellOutline,
+  HeartPulse: IoFitnessOutline,
+  Fitness: IoFitnessOutline,
+  Pill: IoMedkitOutline,
+  Stethoscope: IoMedkitOutline,
+  Medkit: IoMedkitOutline,
+  // Communication
+  Mail: IoMailOutline,
+  MessageSquare: IoChatbubbleOutline,
+  Messages: IoChatbubblesOutline,
+  Phone: IoCallOutline,
+  Send: IoSendOutline,
+  AtSign: IoAtOutline,
+  Link: IoLinkOutline,
+  // Finance
+  Wallet: IoWalletOutline,
+  CreditCard: IoCardOutline,
+  DollarSign: IoWalletOutline,
+  PiggyBank: IoWalletOutline,
+  Receipt: IoReceiptOutline,
+  Calculator: IoCalculatorOutline,
+  // Misc
+  Key: IoKeyOutline,
+  Tool: IoConstructOutline,
+  Wrench: IoConstructOutline,
+  Hammer: IoHammerOutline,
+  Package: IoCubeOutline,
+  Box: IoCubeOutline,
+  Cube: IoCubeOutline,
+  Truck: IoCarOutline,
+  Bell: IoNotificationsOutline,
+  BellOff: IoNotificationsOffOutline,
+  Paperclip: IoAttachOutline,
+  Attach: IoAttachOutline,
+  Scissors: IoCutOutline,
+  // Copy & Share
+  Copy: IoCopyOutline,
+  Share: IoShareOutline,
+  Share2: IoShareOutline,
+  // Smile/Emoji
+  Smile: IoHappyOutline,
+  Happy: IoHappyOutline,
+  ThumbsUp: IoThumbsUpOutline,
+  ThumbsDown: IoThumbsDownOutline,
+  // Animals
+  Paw: IoPawOutline,
+  Fish: IoFishOutline,
+  // Devices
+  Desktop: IoDesktopOutline,
+  Phone2: IoPhonePortraitOutline,
+  Tablet: IoTabletPortraitOutline,
+  Watch: IoWatchOutline,
+  GameController: IoGameControllerOutline,
+  // Save/Print
+  Save: IoSaveOutline,
+  Print: IoPrintOutline,
+  QrCode: IoQrCodeOutline,
+  Fingerprint: IoFingerPrintOutline,
+  // Swap
+  SwapHorizontal: IoSwapHorizontalOutline,
+  SwapVertical: IoSwapVerticalOutline,
+  // Network
+  Wifi: IoWifiOutline,
+  Battery: IoBatteryFullOutline,
+  // Shapes
+  Shapes: IoShapesOutline,
+  // Options/Filter
+  Options: IoOptionsOutline,
+  Filter: IoFilterOutline,
+  Funnel: IoFunnelOutline,
+}
+
+export interface IconProps {
+  name: string
+  size?: string | number
+  color?: string
+  className?: string
+  style?: CSSProperties
+  onClick?: () => void
+}
+
+export const Icon = memo(function Icon({ name, size = '1em', color, className = '', style, onClick }: IconProps) {
+  const IconComponent = ioniconsMap[name]
+
+  if (!IconComponent) {
+    // Fallback to document icon for unknown names
+    const FallbackIcon = IoDocumentTextOutline
+    return (
+      <FallbackIcon
+        size={typeof size === 'number' ? size : undefined}
+        color={color}
+        className={className}
+        style={{ fontSize: typeof size === 'string' ? size : undefined, ...style }}
+        onClick={onClick}
+      />
+    )
+  }
+
+  return (
+    <IconComponent
+      size={typeof size === 'number' ? size : undefined}
+      color={color}
+      className={className}
+      style={{ fontSize: typeof size === 'string' ? size : undefined, ...style }}
+      onClick={onClick}
+    />
+  )
+})
+
+export { ioniconsMap }
+
+export function getIonIconByName(name: string): IconType {
+  return ioniconsMap[name] || IoDocumentTextOutline
+}
+
+// List of all available icon names for pickers
+export const AVAILABLE_ICONS = Object.keys(ioniconsMap)

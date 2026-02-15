@@ -1,0 +1,225 @@
+/* Ambient background */
+
+.login-ambient-bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.login-ambient-glow-top {
+  position: absolute;
+  width: 700px;
+  height: 500px;
+  left: 50%;
+  transform: translateX(-50%);
+  top: -200px;
+  border-radius: 9999px;
+  opacity: 0.12;
+  background: radial-gradient(ellipse 80% 60% at 50% 0%, var(--color-accent) 0%, transparent 60%);
+  filter: blur(80px);
+}
+
+.login-ambient-glow-left {
+  position: absolute;
+  width: 400px;
+  height: 300px;
+  left: -100px;
+  bottom: 10%;
+  border-radius: 9999px;
+  opacity: 0.06;
+  background: radial-gradient(ellipse 60% 50% at 20% 100%, var(--color-accent) 0%, transparent 50%);
+  filter: blur(80px);
+}
+
+.login-ambient-glow-right {
+  position: absolute;
+  width: 300px;
+  height: 250px;
+  right: 5%;
+  bottom: 20%;
+  border-radius: 9999px;
+  opacity: 0.04;
+  background: radial-gradient(ellipse 40% 40% at 80% 80%, var(--color-accent-hover) 0%, transparent 50%);
+  filter: blur(60px);
+}
+
+.dark .login-ambient-glow-top { opacity: 0.15; }
+.dark .login-ambient-glow-left { opacity: 0.08; }
+.dark .login-ambient-glow-right { opacity: 0.05; }
+
+/* Glass card */
+
+.login-glass-card {
+  position: relative;
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(226, 232, 240, 0.6);
+  box-shadow:
+    0 12px 40px rgba(15, 23, 42, 0.08),
+    0 4px 12px rgba(15, 23, 42, 0.04);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+}
+
+.dark .login-glass-card {
+  background: rgba(18, 18, 26, 0.65);
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.4),
+    0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Gradient accent line */
+
+.login-gradient-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  border-radius: 16px 16px 0 0;
+  overflow: hidden;
+  background: linear-gradient(90deg, transparent 0%, var(--color-accent) 50%, transparent 100%);
+  opacity: 0.5;
+}
+
+.login-input {
+  @apply w-full h-11 px-4 text-sm text-center rounded-xl;
+  @apply text-[var(--color-text-primary)];
+  @apply placeholder:text-[var(--color-text-tertiary)];
+  background: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border);
+  outline: none;
+  transition: border-color 0.2s, background-color 0.2s, box-shadow 0.2s;
+}
+
+.login-input:hover {
+  border-color: var(--color-border-strong);
+}
+
+.login-input:focus {
+  background: var(--color-bg-secondary);
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px var(--color-accent-muted);
+  animation: login-input-pulse 2s ease-in-out infinite;
+}
+
+@keyframes login-input-pulse {
+  0%, 100% { box-shadow: 0 0 0 3px var(--color-accent-muted); }
+  50% { box-shadow: 0 0 0 4px var(--color-accent-muted), 0 0 12px var(--color-accent-glow); }
+}
+
+.animate-error-shake {
+  animation: error-shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97);
+}
+
+@keyframes error-shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-6px); }
+  20%, 40%, 60%, 80% { transform: translateX(6px); }
+}
+
+.animate-success-check {
+  animation: success-check 0.4s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+@keyframes success-check {
+  0% { transform: scale(0) rotate(-45deg); opacity: 0; }
+  50% { transform: scale(1.2) rotate(10deg); }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+.animate-rate-limit-pulse {
+  animation: rate-limit-pulse 1s ease-in-out infinite;
+}
+
+@keyframes rate-limit-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.02); }
+}
+
+.login-logo-success {
+  animation: login-logo-glow 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes login-logo-glow {
+  0% { box-shadow: 0 8px 32px -8px rgba(0,0,0,0.4); filter: brightness(1); }
+  30% { box-shadow: 0 8px 32px -8px rgba(0,0,0,0.4), 0 0 30px var(--color-accent-glow), 0 0 50px var(--color-accent-subtle); filter: brightness(1.15); }
+  60% { box-shadow: 0 8px 32px -8px rgba(0,0,0,0.4), 0 0 20px var(--color-accent-glow); filter: brightness(1.1); }
+  100% { box-shadow: 0 8px 32px -8px rgba(0,0,0,0.4), 0 0 10px rgba(34, 197, 94, 0.4); filter: brightness(1); }
+}
+
+.login-success-particles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.login-particle {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  left: 50%;
+  top: 50%;
+}
+
+.login-particle-1 { background: var(--color-accent); animation: login-particle-1 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; }
+.login-particle-2 { background: #22c55e; animation: login-particle-2 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; animation-delay: 0.02s; }
+.login-particle-3 { background: var(--color-accent-hover); animation: login-particle-3 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; animation-delay: 0.04s; }
+.login-particle-4 { background: #4ade80; animation: login-particle-4 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; animation-delay: 0.02s; }
+.login-particle-5 { background: var(--color-accent); animation: login-particle-5 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; animation-delay: 0.03s; }
+.login-particle-6 { background: #22c55e; animation: login-particle-6 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; animation-delay: 0.01s; }
+.login-particle-7 { background: var(--color-accent-hover); animation: login-particle-7 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; animation-delay: 0.05s; }
+.login-particle-8 { background: #4ade80; animation: login-particle-8 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; animation-delay: 0.03s; }
+
+@keyframes login-particle-1 { 0% { opacity: 1; transform: translate(-50%, -50%) scale(1); } 100% { opacity: 0; transform: translate(calc(-50% - 40px), calc(-50% - 50px)) scale(0); } }
+@keyframes login-particle-2 { 0% { opacity: 1; transform: translate(-50%, -50%) scale(1); } 100% { opacity: 0; transform: translate(calc(-50% + 45px), calc(-50% - 40px)) scale(0); } }
+@keyframes login-particle-3 { 0% { opacity: 1; transform: translate(-50%, -50%) scale(1); } 100% { opacity: 0; transform: translate(calc(-50% + 55px), calc(-50% + 15px)) scale(0); } }
+@keyframes login-particle-4 { 0% { opacity: 1; transform: translate(-50%, -50%) scale(1); } 100% { opacity: 0; transform: translate(calc(-50% + 35px), calc(-50% + 50px)) scale(0); } }
+@keyframes login-particle-5 { 0% { opacity: 1; transform: translate(-50%, -50%) scale(1); } 100% { opacity: 0; transform: translate(calc(-50% - 35px), calc(-50% + 45px)) scale(0); } }
+@keyframes login-particle-6 { 0% { opacity: 1; transform: translate(-50%, -50%) scale(1); } 100% { opacity: 0; transform: translate(calc(-50% - 50px), calc(-50% + 10px)) scale(0); } }
+@keyframes login-particle-7 { 0% { opacity: 1; transform: translate(-50%, -50%) scale(1); } 100% { opacity: 0; transform: translate(calc(-50% - 45px), calc(-50% - 35px)) scale(0); } }
+@keyframes login-particle-8 { 0% { opacity: 1; transform: translate(-50%, -50%) scale(1); } 100% { opacity: 0; transform: translate(calc(-50% + 10px), calc(-50% - 55px)) scale(0); } }
+
+@media (max-width: 767px) {
+  .login-ambient-glow-top,
+  .login-ambient-glow-left,
+  .login-ambient-glow-right {
+    filter: none;
+    opacity: 0.06;
+  }
+
+  .login-glass-card {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: rgba(255, 255, 255, 0.92);
+  }
+
+  .dark .login-glass-card {
+    background: rgba(18, 18, 26, 0.92);
+  }
+
+  .login-input:focus {
+    animation: none;
+  }
+
+  .login-logo-success {
+    animation: none;
+  }
+}
+
+.login-input-smooth-caret {
+  caret-color: var(--color-accent);
+}
+
+.login-skeleton {
+  background: linear-gradient(90deg, var(--color-bg-tertiary) 0%, var(--color-bg-secondary) 50%, var(--color-bg-tertiary) 100%);
+  background-size: 200% 100%;
+  animation: login-skeleton-shimmer 1.5s ease-in-out infinite;
+}
+
+@keyframes login-skeleton-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}

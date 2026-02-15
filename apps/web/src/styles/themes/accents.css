@@ -1,0 +1,243 @@
+/* Light */
+
+.accent-blue {
+  --color-accent: #3B82F6;
+  --color-accent-hover: #60A5FA;
+  --color-accent-muted: rgba(59, 130, 246, 0.15);
+  --color-accent-glow: rgba(59, 130, 246, 0.2);
+  --color-accent-subtle: rgba(59, 130, 246, 0.08);
+}
+
+.accent-indigo {
+  --color-accent: #6366F1;
+  --color-accent-hover: #818CF8;
+  --color-accent-muted: rgba(99, 102, 241, 0.15);
+  --color-accent-glow: rgba(99, 102, 241, 0.2);
+  --color-accent-subtle: rgba(99, 102, 241, 0.08);
+}
+
+.accent-violet {
+  --color-accent: #8B5CF6;
+  --color-accent-hover: #A78BFA;
+  --color-accent-muted: rgba(139, 92, 246, 0.15);
+  --color-accent-glow: rgba(139, 92, 246, 0.2);
+  --color-accent-subtle: rgba(139, 92, 246, 0.08);
+}
+
+.accent-fuchsia {
+  --color-accent: #D946EF;
+  --color-accent-hover: #E879F9;
+  --color-accent-muted: rgba(217, 70, 239, 0.15);
+  --color-accent-glow: rgba(217, 70, 239, 0.2);
+  --color-accent-subtle: rgba(217, 70, 239, 0.08);
+}
+
+.accent-pink {
+  --color-accent: #EC4899;
+  --color-accent-hover: #F472B6;
+  --color-accent-muted: rgba(236, 72, 153, 0.15);
+  --color-accent-glow: rgba(236, 72, 153, 0.2);
+  --color-accent-subtle: rgba(236, 72, 153, 0.08);
+}
+
+.accent-red {
+  --color-accent: #EF4444;
+  --color-accent-hover: #F87171;
+  --color-accent-muted: rgba(239, 68, 68, 0.15);
+  --color-accent-glow: rgba(239, 68, 68, 0.2);
+  --color-accent-subtle: rgba(239, 68, 68, 0.08);
+}
+
+.accent-orange {
+  --color-accent: #F97316;
+  --color-accent-hover: #FB923C;
+  --color-accent-muted: rgba(249, 115, 22, 0.15);
+  --color-accent-glow: rgba(249, 115, 22, 0.2);
+  --color-accent-subtle: rgba(249, 115, 22, 0.08);
+}
+
+.accent-amber {
+  --color-accent: #F59E0B;
+  --color-accent-hover: #FBBF24;
+  --color-accent-muted: rgba(245, 158, 11, 0.15);
+  --color-accent-glow: rgba(245, 158, 11, 0.2);
+  --color-accent-subtle: rgba(245, 158, 11, 0.08);
+}
+
+.accent-lime {
+  --color-accent: #84CC16;
+  --color-accent-hover: #A3E635;
+  --color-accent-muted: rgba(132, 204, 22, 0.15);
+  --color-accent-glow: rgba(132, 204, 22, 0.2);
+  --color-accent-subtle: rgba(132, 204, 22, 0.08);
+}
+
+.accent-green {
+  --color-accent: #22C55E;
+  --color-accent-hover: #4ADE80;
+  --color-accent-muted: rgba(34, 197, 94, 0.15);
+  --color-accent-glow: rgba(34, 197, 94, 0.2);
+  --color-accent-subtle: rgba(34, 197, 94, 0.08);
+}
+
+.accent-teal {
+  --color-accent: #14B8A6;
+  --color-accent-hover: #2DD4BF;
+  --color-accent-muted: rgba(20, 184, 166, 0.15);
+  --color-accent-glow: rgba(20, 184, 166, 0.2);
+  --color-accent-subtle: rgba(20, 184, 166, 0.08);
+}
+
+.accent-cyan {
+  --color-accent: #06B6D4;
+  --color-accent-hover: #22D3EE;
+  --color-accent-muted: rgba(6, 182, 212, 0.15);
+  --color-accent-glow: rgba(6, 182, 212, 0.2);
+  --color-accent-subtle: rgba(6, 182, 212, 0.08);
+}
+
+.accent-sky {
+  --color-accent: #0EA5E9;
+  --color-accent-hover: #38BDF8;
+  --color-accent-muted: rgba(14, 165, 233, 0.15);
+  --color-accent-glow: rgba(14, 165, 233, 0.2);
+  --color-accent-subtle: rgba(14, 165, 233, 0.08);
+}
+
+.accent-slate {
+  --color-accent: #64748B;
+  --color-accent-hover: #94A3B8;
+  --color-accent-muted: rgba(100, 116, 139, 0.15);
+  --color-accent-glow: rgba(100, 116, 139, 0.2);
+  --color-accent-subtle: rgba(100, 116, 139, 0.08);
+}
+
+.accent-zinc {
+  --color-accent: #71717A;
+  --color-accent-hover: #A1A1AA;
+  --color-accent-muted: rgba(113, 113, 122, 0.15);
+  --color-accent-glow: rgba(113, 113, 122, 0.2);
+  --color-accent-subtle: rgba(113, 113, 122, 0.08);
+}
+
+/* Dark */
+
+:root.dark.accent-blue {
+  --color-accent: #2563EB;
+  --color-accent-hover: #3B82F6;
+  --color-accent-muted: rgba(37, 99, 235, 0.2);
+  --color-accent-glow: rgba(37, 99, 235, 0.3);
+  --color-accent-subtle: rgba(37, 99, 235, 0.12);
+}
+
+:root.dark.accent-indigo {
+  --color-accent: #4F46E5;
+  --color-accent-hover: #6366F1;
+  --color-accent-muted: rgba(79, 70, 229, 0.2);
+  --color-accent-glow: rgba(79, 70, 229, 0.3);
+  --color-accent-subtle: rgba(79, 70, 229, 0.12);
+}
+
+:root.dark.accent-violet {
+  --color-accent: #7C3AED;
+  --color-accent-hover: #8B5CF6;
+  --color-accent-muted: rgba(124, 58, 237, 0.2);
+  --color-accent-glow: rgba(124, 58, 237, 0.3);
+  --color-accent-subtle: rgba(124, 58, 237, 0.12);
+}
+
+:root.dark.accent-fuchsia {
+  --color-accent: #C026D3;
+  --color-accent-hover: #D946EF;
+  --color-accent-muted: rgba(192, 38, 211, 0.2);
+  --color-accent-glow: rgba(192, 38, 211, 0.3);
+  --color-accent-subtle: rgba(192, 38, 211, 0.12);
+}
+
+:root.dark.accent-pink {
+  --color-accent: #DB2777;
+  --color-accent-hover: #EC4899;
+  --color-accent-muted: rgba(219, 39, 119, 0.2);
+  --color-accent-glow: rgba(219, 39, 119, 0.3);
+  --color-accent-subtle: rgba(219, 39, 119, 0.12);
+}
+
+:root.dark.accent-red {
+  --color-accent: #DC2626;
+  --color-accent-hover: #EF4444;
+  --color-accent-muted: rgba(220, 38, 38, 0.2);
+  --color-accent-glow: rgba(220, 38, 38, 0.3);
+  --color-accent-subtle: rgba(220, 38, 38, 0.12);
+}
+
+:root.dark.accent-orange {
+  --color-accent: #EA580C;
+  --color-accent-hover: #F97316;
+  --color-accent-muted: rgba(234, 88, 12, 0.2);
+  --color-accent-glow: rgba(234, 88, 12, 0.3);
+  --color-accent-subtle: rgba(234, 88, 12, 0.12);
+}
+
+:root.dark.accent-amber {
+  --color-accent: #D97706;
+  --color-accent-hover: #F59E0B;
+  --color-accent-muted: rgba(217, 119, 6, 0.2);
+  --color-accent-glow: rgba(217, 119, 6, 0.3);
+  --color-accent-subtle: rgba(217, 119, 6, 0.12);
+}
+
+:root.dark.accent-lime {
+  --color-accent: #65A30D;
+  --color-accent-hover: #84CC16;
+  --color-accent-muted: rgba(101, 163, 13, 0.2);
+  --color-accent-glow: rgba(101, 163, 13, 0.3);
+  --color-accent-subtle: rgba(101, 163, 13, 0.12);
+}
+
+:root.dark.accent-green {
+  --color-accent: #16A34A;
+  --color-accent-hover: #22C55E;
+  --color-accent-muted: rgba(22, 163, 74, 0.2);
+  --color-accent-glow: rgba(22, 163, 74, 0.3);
+  --color-accent-subtle: rgba(22, 163, 74, 0.12);
+}
+
+:root.dark.accent-teal {
+  --color-accent: #0D9488;
+  --color-accent-hover: #14B8A6;
+  --color-accent-muted: rgba(13, 148, 136, 0.2);
+  --color-accent-glow: rgba(13, 148, 136, 0.3);
+  --color-accent-subtle: rgba(13, 148, 136, 0.12);
+}
+
+:root.dark.accent-cyan {
+  --color-accent: #0891B2;
+  --color-accent-hover: #06B6D4;
+  --color-accent-muted: rgba(8, 145, 178, 0.2);
+  --color-accent-glow: rgba(8, 145, 178, 0.3);
+  --color-accent-subtle: rgba(8, 145, 178, 0.12);
+}
+
+:root.dark.accent-sky {
+  --color-accent: #0284C7;
+  --color-accent-hover: #0EA5E9;
+  --color-accent-muted: rgba(2, 132, 199, 0.2);
+  --color-accent-glow: rgba(2, 132, 199, 0.3);
+  --color-accent-subtle: rgba(2, 132, 199, 0.12);
+}
+
+:root.dark.accent-slate {
+  --color-accent: #475569;
+  --color-accent-hover: #64748B;
+  --color-accent-muted: rgba(71, 85, 105, 0.2);
+  --color-accent-glow: rgba(71, 85, 105, 0.3);
+  --color-accent-subtle: rgba(71, 85, 105, 0.12);
+}
+
+:root.dark.accent-zinc {
+  --color-accent: #52525B;
+  --color-accent-hover: #71717A;
+  --color-accent-muted: rgba(82, 82, 91, 0.2);
+  --color-accent-glow: rgba(82, 82, 91, 0.3);
+  --color-accent-subtle: rgba(82, 82, 91, 0.12);
+}

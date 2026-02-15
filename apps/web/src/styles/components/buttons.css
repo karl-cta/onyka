@@ -1,0 +1,202 @@
+.fold-button {
+  --round: 0.5rem;
+  cursor: pointer;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  background: radial-gradient(
+      65.28% 65.28% at 50% 100%,
+      color-mix(in srgb, var(--color-accent) 80%, #fff) 0%,
+      transparent 100%
+    ),
+    linear-gradient(0deg, var(--color-accent), var(--color-accent));
+  border-radius: var(--round);
+  border: none;
+  outline: none;
+  padding: 8px 14px;
+}
+
+.fold-button::before,
+.fold-button::after {
+  content: "";
+  position: absolute;
+  inset: var(--space);
+  transition: opacity 0.5s ease-in-out;
+  border-radius: calc(var(--round) - var(--space));
+  z-index: 0;
+}
+
+.fold-button::before {
+  --space: 1px;
+  background: linear-gradient(177.95deg, rgba(255, 255, 255, 0.19) 0%, rgba(255, 255, 255, 0) 100%);
+}
+
+.fold-button::after {
+  --space: 2px;
+  background: radial-gradient(
+      65.28% 65.28% at 50% 100%,
+      color-mix(in srgb, var(--color-accent) 80%, #fff) 0%,
+      transparent 100%
+    ),
+    linear-gradient(0deg, var(--color-accent), var(--color-accent));
+}
+
+.fold-button:active {
+  transform: scale(0.95);
+}
+
+.fold-corner {
+  z-index: 3;
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 1rem;
+  width: 1rem;
+  display: inline-block;
+  transition: margin 0.5s ease-in-out;
+  background: radial-gradient(100% 75% at 55%, color-mix(in srgb, var(--color-accent) 80%, #fff) 0%, transparent 100%);
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+  border-bottom-left-radius: 0.5rem;
+  border-top-right-radius: var(--round);
+}
+
+.fold-corner::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 150%;
+  height: 150%;
+  transform: rotate(45deg) translateX(0%) translateY(-18px);
+  background-color: var(--color-bg-primary);
+  pointer-events: none;
+}
+
+.fold-button:hover .fold-corner {
+  margin-top: -1rem;
+  margin-right: -1rem;
+}
+
+.fold-button-inner {
+  z-index: 2;
+  gap: 8px;
+  position: relative;
+  width: 100%;
+  color: white;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.5;
+  transition: color 0.2s ease-in-out;
+}
+
+.skew-button {
+  outline: none;
+  cursor: pointer;
+  border: none;
+  padding: 0.5rem 1rem;
+  margin: 0;
+  font-family: inherit;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: 0.02rem;
+  font-weight: 600;
+  font-size: 13px;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  background: var(--color-accent);
+  color: white;
+  width: auto;
+  min-width: 120px;
+  height: 36px;
+  transition: transform 0.15s ease;
+}
+
+.skew-button:active {
+  transform: scale(0.98);
+}
+
+.skew-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.skew-button span {
+  position: relative;
+  z-index: 10;
+  transition: color 0.4s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.skew-button:hover:not(:disabled) span {
+  color: var(--color-accent);
+}
+
+.skew-button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 120%;
+  height: 100%;
+  z-index: 0;
+  background: white;
+  left: -10%;
+  transform: skew(30deg) translateX(-100%);
+  transition: transform 0.4s cubic-bezier(0.3, 1, 0.8, 1);
+}
+
+.skew-button:hover:not(:disabled)::before {
+  transform: skew(30deg) translateX(0%);
+}
+
+.skew-button.success {
+  background: #22c55e;
+}
+
+.skew-button.success:hover span {
+  color: white;
+}
+
+.skew-button.success::before {
+  display: none;
+}
+
+.skew-button.loading {
+  pointer-events: none;
+}
+
+.skew-button.loading::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 5;
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.3) 50%, transparent 100%);
+  animation: skew-button-shimmer 1.2s ease-in-out infinite;
+}
+
+@keyframes skew-button-shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.skew-button.loading::before {
+  transform: skew(30deg) translateX(-100%) !important;
+}
+
+.skew-button.loading span {
+  color: white !important;
+}

@@ -1,0 +1,24 @@
+/* Onyka Design System */
+
+/* Base */
+@import './base/fonts.css';
+@import './base/variables.css';
+@import './base/reset.css';
+
+/* Components */
+@import './components/buttons.css';
+
+/* Themes */
+@import './themes/accents.css';
+@import './themes/bases.css';
+
+/* Features */
+@import './features/sparks.css';
+@import './features/drag-drop.css';
+@import './features/login.css';
+@import './features/sidebar.css';
+@import './features/editor.css';
+@import './features/pages.css';
+
+/* Utilities */
+@import './utilities/animations.css';

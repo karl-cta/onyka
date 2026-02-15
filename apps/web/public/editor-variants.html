@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Onyka — Editor Layout Variants</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg-page: #08080c;
+    --bg-primary: #0A0A0F;
+    --bg-secondary: #12121A;
+    --bg-tertiary: #1E1E28;
+    --bg-elevated: #1A1A24;
+    --text-primary: #F5F5F5;
+    --text-secondary: #A1A1AA;
+    --text-tertiary: #52525B;
+    --text-muted: #71717A;
+    --border: rgba(255,255,255,0.1);
+    --border-subtle: rgba(255,255,255,0.05);
+    --accent: #f97316;
+    --accent-muted: rgba(249,115,22,0.15);
+    --success: #22c55e;
+  }
+
+  body {
+    background: var(--bg-page);
+    color: var(--text-primary);
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    line-height: 1.6;
+    padding: 40px 24px 80px;
+  }
+
+  .page-header {
+    max-width: 1100px;
+    margin: 0 auto 48px;
+  }
+  .page-header h1 {
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    margin-bottom: 8px;
+  }
+  .page-header p {
+    color: var(--text-secondary);
+    font-size: 14px;
+    max-width: 600px;
+  }
+  .page-header .tag {
+    display: inline-block;
+    margin-top: 12px;
+    padding: 4px 10px;
+    background: var(--accent-muted);
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 600;
+    border-radius: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .variants-grid {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+  }
+
+  .variant-card {
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    background: var(--bg-primary);
+  }
+
+  .variant-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-subtle);
+  }
+  .variant-label h2 {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-secondary);
+  }
+  .variant-label span {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    font-weight: 500;
+  }
+
+  .editor-mock {
+    min-height: 380px;
+    position: relative;
+  }
+
+  /* ==========================================
+     Shared elements
+     ========================================== */
+  .toolbar-icons {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+  }
+  .toolbar-icons .sep {
+    width: 1px;
+    height: 16px;
+    background: var(--border);
+    margin: 0 6px;
+  }
+  .tbtn {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    height: 30px;
+    padding: 0 8px;
+    border-radius: 8px;
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    font-size: 12px;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .tbtn:hover { background: var(--bg-tertiary); color: var(--text-primary); }
+  .tbtn svg { width: 15px; height: 15px; flex-shrink: 0; }
+  .status-saved {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--success);
+    opacity: 0.8;
+  }
+  .status-saved svg { width: 13px; height: 13px; }
+  .page-link {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: color 0.15s;
+  }
+  .page-link:hover { color: var(--text-secondary); }
+
+  .content-placeholder {
+    color: var(--text-tertiary);
+    opacity: 0.5;
+  }
+  .content-lines p {
+    color: var(--text-secondary);
+    line-height: 1.75;
+    margin-bottom: 0.75em;
+  }
+  .content-lines p:first-child { color: var(--text-primary); }
+
+  /* SVG icons inline */
+  .icon { display: inline-flex; }
+
+
+  /* ==========================================
+     VARIANT A — Flush Compact
+     Title and content on the same visual plane
+     ========================================== */
+  .variant-a .editor-mock {
+    display: flex;
+    flex-direction: column;
+  }
+  .variant-a .editor-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 28px;
+  }
+  .variant-a .title-input {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--text-primary);
+    background: none;
+    border: none;
+    outline: none;
+    font-family: inherit;
+    flex: 1;
+    min-width: 0;
+  }
+  .variant-a .editor-body {
+    flex: 1;
+    padding: 0 28px 28px;
+    font-size: 15px;
+  }
+
+
+  /* ==========================================
+     VARIANT B — Floating Header Bar
+     Toolbar detached as a floating bar
+     ========================================== */
+  .variant-b .editor-mock {
+    display: flex;
+    flex-direction: column;
+    padding: 20px 32px 32px;
+  }
+  .variant-b .floating-bar {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 2px;
+    padding: 6px 10px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-subtle);
+    border-radius: 12px;
+    margin-bottom: 24px;
+    width: fit-content;
+    margin-left: auto;
+  }
+  .variant-b .title-input {
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: var(--text-primary);
+    background: none;
+    border: none;
+    outline: none;
+    font-family: inherit;
+    width: 100%;
+    margin-bottom: 4px;
+  }
+  .variant-b .editor-body {
+    flex: 1;
+    font-size: 15px;
+    padding-top: 0;
+  }
+  .variant-b .page-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+
+  /* ==========================================
+     VARIANT C — Notion-style Ultra Minimal
+     Huge title, toolbar only on hover/selection
+     ========================================== */
+  .variant-c .editor-mock {
+    display: flex;
+    flex-direction: column;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 40px 32px 32px;
+  }
+  .variant-c .top-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 6px;
+  }
+  .variant-c .title-input {
+    font-size: 36px;
+    font-weight: 800;
+    letter-spacing: -0.035em;
+    color: var(--text-primary);
+    background: none;
+    border: none;
+    outline: none;
+    font-family: inherit;
+    width: 100%;
+    line-height: 1.2;
+    margin-bottom: 16px;
+  }
+  .variant-c .subtle-divider {
+    height: 1px;
+    background: linear-gradient(to right, var(--border), transparent 70%);
+    margin-bottom: 20px;
+  }
+  .variant-c .editor-body {
+    flex: 1;
+    font-size: 16px;
+    line-height: 1.8;
+  }
+
+
+  /* ==========================================
+     VARIANT D — Breadcrumb Header
+     Structured top with breadcrumb + inline tools
+     ========================================== */
+  .variant-d .editor-mock {
+    display: flex;
+    flex-direction: column;
+  }
+  .variant-d .editor-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 28px;
+    border-bottom: 1px solid var(--border-subtle);
+    background: var(--bg-secondary);
+  }
+  .variant-d .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--text-tertiary);
+    font-weight: 500;
+  }
+  .variant-d .breadcrumb .crumb-active {
+    color: var(--text-secondary);
+  }
+  .variant-d .breadcrumb svg { width: 12px; height: 12px; opacity: 0.4; }
+  .variant-d .editor-content {
+    padding: 28px 32px 32px;
+    max-width: 760px;
+  }
+  .variant-d .title-input {
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    color: var(--text-primary);
+    background: none;
+    border: none;
+    outline: none;
+    font-family: inherit;
+    width: 100%;
+    margin-bottom: 6px;
+  }
+  .variant-d .meta-line {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 11px;
+    color: var(--text-tertiary);
+    margin-bottom: 20px;
+    font-weight: 500;
+  }
+  .variant-d .meta-line .dot {
+    width: 3px; height: 3px; border-radius: 50%;
+    background: var(--text-tertiary); opacity: 0.5;
+  }
+  .variant-d .editor-body {
+    font-size: 15px;
+  }
+
+
+  /* ==========================================
+     VARIANT E — Centered Elegant
+     Centered content with generous whitespace
+     ========================================== */
+  .variant-e .editor-mock {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 32px 32px;
+  }
+  .variant-e .editor-header {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    width: 100%;
+    max-width: 680px;
+    margin-bottom: 28px;
+    gap: 2px;
+  }
+  .variant-e .writing-area {
+    width: 100%;
+    max-width: 680px;
+  }
+  .variant-e .title-input {
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: var(--text-primary);
+    background: none;
+    border: none;
+    outline: none;
+    font-family: inherit;
+    width: 100%;
+    text-align: left;
+    margin-bottom: 8px;
+    line-height: 1.25;
+  }
+  .variant-e .title-underline {
+    width: 40px;
+    height: 3px;
+    border-radius: 2px;
+    background: var(--accent);
+    margin-bottom: 24px;
+    opacity: 0.7;
+  }
+  .variant-e .editor-body {
+    font-size: 16px;
+    line-height: 1.8;
+  }
+
+
+  /* ==========================================
+     VARIANT F — Split Panel
+     Left title zone, right tools, unified content below
+     ========================================== */
+  .variant-f .editor-mock {
+    display: flex;
+    flex-direction: column;
+  }
+  .variant-f .editor-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding: 24px 32px 16px;
+    gap: 16px;
+  }
+  .variant-f .title-zone {
+    flex: 1;
+    min-width: 0;
+  }
+  .variant-f .title-input {
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--text-primary);
+    background: none;
+    border: none;
+    outline: none;
+    font-family: inherit;
+    width: 100%;
+  }
+  .variant-f .title-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 6px;
+    font-size: 11px;
+    color: var(--text-tertiary);
+    font-weight: 500;
+  }
+  .variant-f .title-meta .dot { opacity: 0.4; }
+  .variant-f .tools-zone {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    flex-shrink: 0;
+  }
+  .variant-f .content-sep {
+    margin: 0 32px;
+    height: 1px;
+    background: linear-gradient(to right, var(--border), transparent 80%);
+  }
+  .variant-f .editor-body {
+    padding: 20px 32px 32px;
+    font-size: 15px;
+    max-width: 740px;
+  }
+
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>Editor Layout — Comparatif</h1>
+  <p>6 variantes pour le header et la disposition titre/contenu de l'éditeur Onyka. Compare le feeling de chaque approche.</p>
+  <span class="tag">Dark · Plus Jakarta Sans · Accent Orange</span>
+</div>
+
+<div class="variants-grid">
+
+  <!-- ======== VARIANT A — Flush Compact ======== -->
+  <div class="variant-card variant-a">
+    <div class="variant-label">
+      <h2>A — Flush Compact</h2>
+      <span>Titre et contenu sur le même plan vertical. Toolbar alignée à droite du titre, tout est au même niveau.</span>
+    </div>
+    <div class="editor-mock">
+      <div class="editor-header">
+        <input class="title-input" value="Mon carnet de bord" readonly>
+        <div class="toolbar-icons">
+          <span class="status-saved">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Enregistré
+          </span>
+          <span class="sep"></span>
+          <button class="tbtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7V4h16v3M9 20h6M12 4v16"/></svg>
+            Aa
+          </button>
+          <button class="tbtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+          </button>
+          <button class="tbtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4-4v-2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+            Collaborer
+          </button>
+          <button class="tbtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="editor-body">
+        <span class="page-link">+ Ajouter une page</span>
+        <div class="content-lines" style="margin-top: 16px;">
+          <p>Aujourd'hui j'ai travaillé sur la refonte du header de l'éditeur. L'objectif est de rapprocher le titre du contenu pour créer une connexion visuelle plus forte.</p>
+          <p>Le layout flush supprime tout espace superflu entre le titre et le premier paragraphe. Le résultat est une lecture plus naturelle.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======== VARIANT B — Floating Toolbar ======== -->
+  <div class="variant-card variant-b">
+    <div class="variant-label">
+      <h2>B — Floating Toolbar</h2>
+      <span>Toolbar détachée en pill flottante en haut à droite. Le titre prend toute la largeur, gros et ancré.</span>
+    </div>
+    <div class="editor-mock">
+      <div class="floating-bar">
+        <span class="status-saved">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        </span>
+        <span class="sep"></span>
+        <button class="tbtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7V4h16v3M9 20h6M12 4v16"/></svg>
+        </button>
+        <button class="tbtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+        </button>
+        <button class="tbtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4-4v-2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+          </button>
+        <button class="tbtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+        </button>
+      </div>
+      <input class="title-input" value="Mon carnet de bord" readonly>
+      <div class="page-row">
+        <span class="page-link">+ Ajouter une page</span>
+      </div>
+      <div class="editor-body">
+        <div class="content-lines">
+          <p>Aujourd'hui j'ai travaillé sur la refonte du header de l'éditeur. L'objectif est de rapprocher le titre du contenu pour créer une connexion visuelle plus forte.</p>
+          <p>Avec le titre en gros et la toolbar en pill flottante, le contenu est visuellement ancré au titre. La toolbar ne distrait plus la lecture.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======== VARIANT C — Notion Ultra Minimal ======== -->
+  <div class="variant-card variant-c">
+    <div class="variant-label">
+      <h2>C — Ultra Minimal (Notion-like)</h2>
+      <span>Gros titre centré, contenu contraint à 720px. Toolbar masquée, seuls le status et le menu ... visibles.</span>
+    </div>
+    <div class="editor-mock">
+      <div class="top-meta">
+        <span class="status-saved">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          Enregistré
+        </span>
+        <div class="toolbar-icons">
+          <button class="tbtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4-4v-2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+          </button>
+          <button class="tbtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+          </button>
+        </div>
+      </div>
+      <input class="title-input" value="Mon carnet de bord" readonly>
+      <div class="subtle-divider"></div>
+      <div class="editor-body">
+        <div class="content-lines">
+          <p>Aujourd'hui j'ai travaillé sur la refonte du header de l'éditeur. L'objectif est de rapprocher le titre du contenu pour créer une connexion visuelle plus forte.</p>
+          <p>L'approche ultra minimale retire tout le bruit visuel. Le titre parle de lui-même. Les outils apparaissent au besoin — le reste du temps, seul le texte compte.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======== VARIANT D — Breadcrumb Header ======== -->
+  <div class="variant-card variant-d">
+    <div class="variant-label">
+      <h2>D — Breadcrumb Topbar</h2>
+      <span>Barre de navigation structurée en haut (dossier > note), contenu en dessous avec méta-données visibles.</span>
+    </div>
+    <div class="editor-mock">
+      <div class="editor-topbar">
+        <div class="breadcrumb">
+          <span>hitler</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          <span class="crumb-active">Mon carnet de bord</span>
+        </div>
+        <div class="toolbar-icons">
+          <span class="status-saved">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Enregistré
+          </span>
+          <span class="sep"></span>
+          <button class="tbtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7V4h16v3M9 20h6M12 4v16"/></svg>
+          </button>
+          <button class="tbtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+          </button>
+          <button class="tbtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4-4v-2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+          </button>
+          <button class="tbtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="editor-content">
+        <input class="title-input" value="Mon carnet de bord" readonly>
+        <div class="meta-line">
+          <span>29 janv. 2026</span>
+          <span class="dot"></span>
+          <span>342 mots</span>
+          <span class="dot"></span>
+          <span>1 page</span>
+          <span class="dot"></span>
+          <span class="page-link" style="text-transform: none; letter-spacing: 0;">+ Ajouter une page</span>
+        </div>
+        <div class="editor-body">
+          <div class="content-lines">
+            <p>Aujourd'hui j'ai travaillé sur la refonte du header de l'éditeur. L'objectif est de rapprocher le titre du contenu pour créer une connexion visuelle plus forte.</p>
+            <p>Le breadcrumb en topbar situe l'utilisateur dans l'arborescence. Le titre est grand et les métadonnées donnent du contexte sans encombrer.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======== VARIANT E — Centered Elegant ======== -->
+  <div class="variant-card variant-e">
+    <div class="variant-label">
+      <h2>E — Centered Elegant</h2>
+      <span>Contenu centré à 680px max, accent sous le titre, beaucoup de whitespace. Feeling éditorial/blog.</span>
+    </div>
+    <div class="editor-mock">
+      <div class="editor-header">
+        <span class="status-saved">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          Enregistré
+        </span>
+        <span class="sep"></span>
+        <button class="tbtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7V4h16v3M9 20h6M12 4v16"/></svg>
+          Aa
+        </button>
+        <button class="tbtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+        </button>
+        <button class="tbtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4-4v-2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+        </button>
+        <button class="tbtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+        </button>
+      </div>
+      <div class="writing-area">
+        <input class="title-input" value="Mon carnet de bord" readonly>
+        <div class="title-underline"></div>
+        <div class="editor-body">
+          <div class="content-lines">
+            <p>Aujourd'hui j'ai travaillé sur la refonte du header de l'éditeur. L'objectif est de rapprocher le titre du contenu pour créer une connexion visuelle plus forte.</p>
+            <p>Le layout centré avec un max-width contraint crée une colonne de lecture optimale. La ligne d'accent sous le titre ancre visuellement le début du contenu.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======== VARIANT F — Split Title/Tools ======== -->
+  <div class="variant-card variant-f">
+    <div class="variant-label">
+      <h2>F — Split Title + Meta</h2>
+      <span>Titre à gauche avec meta en dessous (date, mots), outils à droite. Séparateur subtil, contenu contraint.</span>
+    </div>
+    <div class="editor-mock">
+      <div class="editor-header">
+        <div class="title-zone">
+          <input class="title-input" value="Mon carnet de bord" readonly>
+          <div class="title-meta">
+            <span>29 janv. 2026</span>
+            <span class="dot">·</span>
+            <span>342 mots</span>
+            <span class="dot">·</span>
+            <span class="page-link" style="text-transform: none; letter-spacing: 0; font-size: 11px;">+ Ajouter une page</span>
+          </div>
+        </div>
+        <div class="tools-zone">
+          <span class="status-saved">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          </span>
+          <span class="sep"></span>
+          <button class="tbtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7V4h16v3M9 20h6M12 4v16"/></svg>
+          </button>
+          <button class="tbtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+          </button>
+          <button class="tbtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4-4v-2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+          </button>
+          <button class="tbtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="content-sep"></div>
+      <div class="editor-body">
+        <div class="content-lines">
+          <p>Aujourd'hui j'ai travaillé sur la refonte du header de l'éditeur. L'objectif est de rapprocher le titre du contenu pour créer une connexion visuelle plus forte.</p>
+          <p>Le split layout donne au titre son propre espace avec les métadonnées juste en dessous. Les outils restent accessibles sans interférer avec la zone d'écriture.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

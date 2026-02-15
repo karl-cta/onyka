@@ -1,0 +1,44 @@
+# Onyka — Docker Compose
+#
+# Quick start:
+#   docker compose up -d
+#   Open http://localhost:3000
+#
+# Everything is auto-configured. The first user to register becomes admin.
+# All data (database, uploads, encryption keys) is stored in the onyka-data volume.
+
+services:
+  onyka:
+    image: ghcr.io/karl-cta/onyka:latest
+    # To build locally instead of pulling from GHCR:
+    # build:
+    #   context: ..
+    #   dockerfile: docker/Dockerfile
+    container_name: onyka
+    ports:
+      - "${HOST_PORT:-3000}:3000"
+    volumes:
+      - onyka-data:/app/data
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      # Optional overrides (all have sane defaults):
+      # - CORS_ORIGIN=https://notes.example.com
+      # - FRONTEND_URL=https://notes.example.com
+      # - TRUST_PROXY=1
+      # - SMTP_HOST=smtp.example.com
+      # - SMTP_PORT=587
+      # - SMTP_USER=you@example.com
+      # - SMTP_PASS=your-password
+      # - SMTP_FROM=Onyka <noreply@example.com>
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    security_opt:
+      - no-new-privileges:true
+
+volumes:
+  onyka-data:
