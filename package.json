@@ -32,7 +32,7 @@
     "db:migrate": "pnpm --filter @onyka/server db:migrate",
     "db:backup": "node scripts/backup.js",
     "db:studio": "pnpm --filter @onyka/server db:studio",
-    "setup": "node scripts/setup.js",
+    "configure": "node scripts/configure.js",
     "prepare": "husky"
   },
   "devDependencies": {

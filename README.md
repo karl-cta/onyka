@@ -71,8 +71,17 @@ Requires Node.js 20+ and pnpm 10+.
 ```bash
 git clone https://github.com/karl-cta/onyka.git && cd onyka
 pnpm install
-pnpm setup       # interactive wizard: generates secrets, builds, runs migrations
+pnpm build
 pnpm start:prod  # → http://localhost:3001
+```
+
+Secrets are auto-generated on first start. No `.env` required.
+
+To customize (SMTP, CORS, etc.):
+
+```bash
+cp apps/server/.env.example apps/server/.env
+# Edit apps/server/.env with your settings
 ```
 
 ### What happens on first start?

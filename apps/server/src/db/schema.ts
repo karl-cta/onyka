@@ -23,7 +23,7 @@ export const users = sqliteTable('users', {
   theme: text('theme', { enum: ['light', 'dark'] }).notNull().default('dark'),
   darkThemeBase: text('dark_theme_base').notNull().default('default'),
   lightThemeBase: text('light_theme_base').notNull().default('default'),
-  accentColor: text('accent_color').notNull().default('blue'),
+  accentColor: text('accent_color').notNull().default('amber'),
   editorFontSize: text('editor_font_size').notNull().default('S'),
   editorFontFamily: text('editor_font_family').notNull().default('plus-jakarta-sans'),
   sidebarCollapsed: integer('sidebar_collapsed', { mode: 'boolean' }).notNull().default(false),
