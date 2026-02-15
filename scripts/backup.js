@@ -31,29 +31,43 @@ function log(msg = '') {
 }
 
 /**
- * Resolve the data directory from .env or default
+ * Resolve the data directory.
+ * Priority: DATABASE_URL env var → .env file → auto-detect (root/data or apps/server/data)
  */
 async function getDataDir() {
-  const envPath = resolve(root, 'apps/server/.env')
-  let dbUrl = './data/onyka.db'
+  // 1. Env var (Docker sets DATABASE_URL directly)
+  if (process.env.DATABASE_URL) {
+    const dbUrl = process.env.DATABASE_URL
+    if (dbUrl.startsWith('./') || dbUrl.startsWith('../')) {
+      return resolve(process.cwd(), dirname(dbUrl))
+    }
+    return dirname(dbUrl)
+  }
 
+  // 2. .env file (dev mode)
+  const envPath = resolve(root, 'apps/server/.env')
   if (existsSync(envPath)) {
     const { readFileSync } = await import('fs')
     const content = readFileSync(envPath, 'utf-8')
     const match = content.match(/^DATABASE_URL=(.+)$/m)
-    if (match) dbUrl = match[1].trim()
+    if (match) {
+      const dbUrl = match[1].trim()
+      if (dbUrl.startsWith('./') || dbUrl.startsWith('../')) {
+        return resolve(root, 'apps/server', dirname(dbUrl))
+      }
+      return dirname(dbUrl)
+    }
   }
 
-  // Also check env var (Docker sets DATABASE_URL directly)
-  if (process.env.DATABASE_URL) {
-    dbUrl = process.env.DATABASE_URL
-  }
+  // 3. Auto-detect: check root/data first (prod), then apps/server/data (dev)
+  const rootData = resolve(root, 'data')
+  if (existsSync(join(rootData, 'onyka.db'))) return rootData
 
-  // Resolve relative paths from apps/server/
-  if (dbUrl.startsWith('./') || dbUrl.startsWith('../')) {
-    return resolve(root, 'apps/server', dirname(dbUrl))
-  }
-  return dirname(dbUrl)
+  const serverData = resolve(root, 'apps/server/data')
+  if (existsSync(join(serverData, 'onyka.db'))) return serverData
+
+  // Fallback to root/data (will show "not found" error)
+  return rootData
 }
 
 async function main() {
