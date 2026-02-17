@@ -23,6 +23,7 @@
   <img src="https://img.shields.io/badge/version-1.0.0-green" alt="Version" />
   <img src="https://img.shields.io/badge/docker-ready-2496ED" alt="Docker" />
   <img src="https://img.shields.io/badge/TypeScript-100%25-3178C6" alt="TypeScript" />
+  <a href="https://deepwiki.com/karl-cta/onyka"><img src="https://deepwiki.com/badge.svg" alt="Ask DeepWiki" /></a>
 </p>
 
 ---
@@ -109,7 +110,7 @@ Type → Enter → Captured. No title, no folder. Expiration: 1h–30d or perman
 
 ### Rich Editor
 
-TipTap 3.19. Code blocks, tables, columns, images, slash menu. Auto-save. Version history (100/note, 30d). Markdown paste. Note pages (tabs inside a single note).
+TipTap 3.19. Code blocks, tables, columns, images, slash menu. Auto-save. Markdown paste. Note pages (tabs inside a single note).
 
 ### Real-Time Collab
 
@@ -221,6 +222,25 @@ server {
     ssl_certificate /etc/letsencrypt/live/notes.example.com/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/notes.example.com/privkey.pem;
 
+    # Compression — strongly recommended, reduces bundle size by ~70%
+    gzip on;
+    gzip_vary on;
+    gzip_proxied any;
+    gzip_comp_level 6;
+    gzip_min_length 1000;
+    gzip_types text/plain text/css application/json application/javascript
+               text/xml application/xml application/xml+rss text/javascript
+               image/svg+xml;
+
+    # Cache static assets (JS/CSS have hashed filenames, safe to cache long)
+    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$ {
+        proxy_pass http://localhost:3000;
+        proxy_set_header Host $host;
+        expires 30d;
+        add_header Cache-Control "public, immutable";
+    }
+
+    # API, pages & WebSocket
     location / {
         proxy_pass http://localhost:3000;
         proxy_http_version 1.1;
@@ -234,7 +254,7 @@ server {
 }
 ```
 
-The `Upgrade` and `Connection` headers are required for WebSocket (real-time collaboration).
+> **Important:** The `gzip` and caching directives make a significant difference — without them, the full uncompressed JS bundle is re-downloaded on every page load. The `Upgrade` and `Connection` headers are required for WebSocket (real-time collaboration).
 
 ### Cloudflare Tunnel
 

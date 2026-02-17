@@ -333,6 +333,39 @@ export const FluidEditor = memo(function FluidEditor({ content, onChange, placeh
         })
         return texts.join('').replace(/\n{3,}/g, '\n\n').trimEnd()
       },
+      // Mobile/tablet: virtual keyboards fire handleTextInput, not handleKeyDown for '/'
+      handleTextInput: (view, from, _to, text) => {
+        if (text === '/' && !showSlashMenu) {
+          const textBefore = view.state.doc.textBetween(Math.max(0, from - 1), from, '')
+          const isAfterColon = textBefore === ':'
+          const isAfterSlash = textBefore === '/'
+          const isInWord = textBefore && /[a-zA-Z0-9]/.test(textBefore)
+          const isValidContext = from === 1 || textBefore === '' || /\s/.test(textBefore)
+
+          if (isAfterColon || isAfterSlash || isInWord || !isValidContext) {
+            return false
+          }
+
+          const coords = view.coordsAtPos(from)
+          const editorRect = view.dom.getBoundingClientRect()
+          setSlashMenuPosition({
+            top: coords.bottom - editorRect.top + 8,
+            left: coords.left - editorRect.left,
+          })
+          setShowSlashMenu(true)
+          setSlashFilter('')
+          setSelectedSlashIndex(0)
+          return false
+        }
+
+        // While slash menu is open, capture typed characters as filter
+        if (showSlashMenu && text.length === 1 && text !== '/') {
+          setSlashFilter((f) => f + text)
+          setSelectedSlashIndex(0)
+        }
+
+        return false
+      },
       handleKeyDown: (view, event) => {
         if (event.key === '/' && !showSlashMenu) {
           const { from } = view.state.selection
@@ -725,15 +758,19 @@ export const FluidEditor = memo(function FluidEditor({ content, onChange, placeh
   }, [content, editor])
 
   useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
+    const handleClickOutside = (e: MouseEvent | TouchEvent) => {
       if (slashMenuRef.current && !slashMenuRef.current.contains(e.target as Node)) {
         setShowSlashMenu(false)
       }
     }
     if (showSlashMenu) {
       document.addEventListener('mousedown', handleClickOutside)
+      document.addEventListener('touchstart', handleClickOutside)
     }
-    return () => document.removeEventListener('mousedown', handleClickOutside)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+      document.removeEventListener('touchstart', handleClickOutside)
+    }
   }, [showSlashMenu])
 
   const { containerRef } = useSmoothCaret(editor, true)
