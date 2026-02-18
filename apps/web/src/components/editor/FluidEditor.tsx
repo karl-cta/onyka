@@ -153,20 +153,16 @@ function looksLikeMarkdown(text: string): boolean {
   return mdScore >= 2
 }
 
-/** Clean up marked HTML output for TipTap compatibility */
+/** Clean marked HTML for TipTap */
 function cleanMarkdownHtml(html: string): string {
   let cleaned = html
-    // Strip <thead>/<tbody> wrappers — TipTap Table expects flat <table><tr> structure
-    .replace(/<\/?thead>/g, '')
-    .replace(/<\/?tbody>/g, '')
-    // Strip heading IDs that marked adds
+    .replace(/\s*<\/?thead>\s*/g, '')
+    .replace(/\s*<\/?tbody>\s*/g, '')
     .replace(/<h([1-6])\s+id="[^"]*">/g, '<h$1>')
-    // Remove empty paragraphs
     .replace(/<p>\s*<\/p>/g, '')
-    // Strip language class from code blocks
-    .replace(/<code\s+class="language-(\w+)">/g, '<code>')
+    .replace(/<code([^>]*)>([\s\S]*?)\n<\/code>/g, '<code$1>$2</code>')
 
-  // Wrap bare table cell content in <p> — TipTap requires block nodes inside cells
+  // Wrap bare cell content in <p> (TipTap needs block nodes)
   cleaned = cleaned.replace(/<(td|th)>((?:(?!<\/?(?:p|h[1-6]|ul|ol|blockquote|pre)[ >])[\s\S])*?)<\/\1>/g,
     '<$1><p>$2</p></$1>')
 
