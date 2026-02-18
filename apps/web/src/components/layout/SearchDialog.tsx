@@ -127,9 +127,10 @@ export function SearchDialog({ isOpen, onClose, onSelectNote }: SearchDialogProp
                     <div className="text-[var(--color-text-primary)] font-medium">
                       {result.title || t('editor.untitled')}
                     </div>
-                    <div className="text-sm text-[var(--color-text-secondary)] line-clamp-2">
-                      {result.preview}
-                    </div>
+                    <div
+                      className="text-sm text-[var(--color-text-secondary)] line-clamp-2 [&_mark]:bg-amber-300/50 dark:[&_mark]:bg-amber-500/30 [&_mark]:text-inherit dark:[&_mark]:text-amber-200 [&_mark]:font-medium [&_mark]:rounded-sm [&_mark]:px-0.5"
+                      dangerouslySetInnerHTML={{ __html: result.preview.replace(/<(?!\/?mark>)[^>]+>/g, '') }}
+                    />
                   </div>
                 </button>
               ))}

@@ -697,9 +697,6 @@ export function Sidebar({ onOpenSearch, onSelectNote, selectedNoteId }: SidebarP
         >
           <IoSearchOutline className="w-4 h-4" />
           <span className="flex-1 text-left text-sm">{t('sidebar.search_placeholder')}</span>
-          <kbd className="text-xs px-1.5 py-0.5 rounded bg-[var(--color-bg-primary)] text-[var(--color-text-tertiary)]">
-            ⌘K
-          </kbd>
         </button>
       </div>
 
