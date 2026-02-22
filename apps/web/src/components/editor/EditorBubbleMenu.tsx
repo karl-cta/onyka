@@ -31,7 +31,6 @@ export function EditorBubbleMenu({ editor }: EditorBubbleMenuProps) {
   const setMenuRef = useCallback((el: HTMLDivElement | null) => {
     if (el) {
       ;(bubbleMenuRef as React.MutableRefObject<HTMLDivElement | null>).current = el
-      // Smooth repositioning when alignment/format changes move the selection
       el.style.transition = 'left 150ms cubic-bezier(0.16, 1, 0.3, 1), top 150ms cubic-bezier(0.16, 1, 0.3, 1)'
     }
   }, [])
@@ -52,7 +51,6 @@ export function EditorBubbleMenu({ editor }: EditorBubbleMenuProps) {
     setShowLinkInput(true)
   }, [editor])
 
-  // Reset sub-menus when selection changes (prevents stale picker state on re-select)
   useEffect(() => {
     const handleSelectionUpdate = () => {
       setShowColorPicker(false)
@@ -62,7 +60,6 @@ export function EditorBubbleMenu({ editor }: EditorBubbleMenuProps) {
     return () => { editor.off('selectionUpdate', handleSelectionUpdate) }
   }, [editor])
 
-  // Hide smooth caret when a picker is open (caret is in a separate stacking context)
   useEffect(() => {
     if (!editor.isEditable || editor.isDestroyed) return
     const container = editor.view.dom.closest('.smooth-caret') as HTMLElement | null
@@ -81,17 +78,17 @@ export function EditorBubbleMenu({ editor }: EditorBubbleMenuProps) {
         const { selection } = editor.state
         if (selection.empty) return false
 
+        const docSize = editor.state.doc.content.size
+        if (selection.from <= 1 && selection.to >= docSize - 1) return false
+
         const node = editor.state.doc.nodeAt(selection.from)
         if (node?.type.name === 'image') return false
 
-        // Hide bubble menu inside code blocks (they have their own editing)
         if (editor.isActive('codeBlock')) return false
 
-        // Hide bubble menu when inside a table (TableToolbar handles it)
         const { $from } = selection
         for (let depth = $from.depth; depth > 0; depth--) {
-          const nodeName = $from.node(depth).type.name
-          if (nodeName === 'table') return false
+          if ($from.node(depth).type.name === 'table') return false
         }
 
         return true
