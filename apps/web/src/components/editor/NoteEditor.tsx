@@ -473,7 +473,7 @@ export function NoteEditor({ note, onUpdate, onDelete }: NoteEditorProps) {
 
   return (
     <div className="flex flex-col h-full relative z-10">
-      <header className="px-4 md:px-8 pt-4 pb-2">
+      <header className="relative z-20 px-4 md:px-8 pt-4 pb-2 bg-[var(--color-bg-secondary)]">
         <div className={`flex items-end justify-between ${isCompact ? 'gap-2' : 'gap-4'}`}>
           <div className="flex-1 min-w-0">
             <input

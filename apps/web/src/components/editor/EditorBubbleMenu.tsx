@@ -78,28 +78,21 @@ export function EditorBubbleMenu({ editor }: EditorBubbleMenuProps) {
         const { selection } = editor.state
         if (selection.empty) return false
 
-        const docSize = editor.state.doc.content.size
-        if (selection.from <= 1 && selection.to >= docSize - 1) return false
-
         const node = editor.state.doc.nodeAt(selection.from)
         if (node?.type.name === 'image') return false
 
         if (editor.isActive('codeBlock')) return false
-
-        const { $from } = selection
-        for (let depth = $from.depth; depth > 0; depth--) {
-          if ($from.node(depth).type.name === 'table') return false
-        }
 
         return true
       }}
       updateDelay={100}
       options={{
         placement: 'top',
-        flip: { fallbackPlacements: ['bottom'] },
+        flip: { fallbackPlacements: ['bottom'], padding: 8 },
+        shift: { padding: 8 },
         offset: 8,
       }}
-      className={`flex items-center gap-0.5 px-2 py-1.5 bg-[var(--color-bg-elevated)] border border-[var(--color-border)] rounded-xl shadow-lg backdrop-blur-sm animate-scale-in${isMobile ? ' bubble-menu-mobile' : ''}`}
+      className={`flex items-center gap-0.5 px-2 py-1.5 bg-[var(--color-bg-elevated)] border border-[var(--color-border)] rounded-xl shadow-lg backdrop-blur-sm animate-scale-in z-50${isMobile ? ' bubble-menu-mobile' : ''}`}
     >
       {showLinkInput ? (
         <div className="flex items-center gap-2">
