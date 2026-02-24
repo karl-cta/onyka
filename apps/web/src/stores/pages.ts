@@ -17,6 +17,7 @@ interface PagesState {
   getActivePage: (noteId: string) => NotePage | null
   clearNotePages: (noteId: string) => void
   clearError: () => void
+  patchPageContent: (pageId: string, content: string) => void
 }
 
 export const usePagesStore = create<PagesState>((set, get) => ({
@@ -157,6 +158,19 @@ export const usePagesStore = create<PagesState>((set, get) => ({
   },
 
   clearError: () => set({ error: null }),
+
+  patchPageContent: (pageId: string, content: string) => {
+    const noteId = findNoteIdForPage(get().pagesByNote, pageId)
+    if (!noteId) return
+    set((state) => ({
+      pagesByNote: {
+        ...state.pagesByNote,
+        [noteId]: state.pagesByNote[noteId].map((p) =>
+          p.id === pageId ? { ...p, content } : p
+        ),
+      },
+    }))
+  },
 }))
 
 function findNoteIdForPage(

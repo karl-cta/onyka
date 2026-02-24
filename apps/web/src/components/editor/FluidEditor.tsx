@@ -222,6 +222,14 @@ export const FluidEditor = memo(function FluidEditor({ content, onChange, placeh
     }, 150)
   }, [onChange])
 
+  useEffect(() => {
+    return () => {
+      if (debounceTimeoutRef.current) {
+        clearTimeout(debounceTimeoutRef.current)
+      }
+    }
+  }, [])
+
   const handleImageUpload = useCallback(async (file: File, editorInstance: ReturnType<typeof useEditor>) => {
     if (!editorInstance) return
 

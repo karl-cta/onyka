@@ -47,6 +47,7 @@ interface NotesState {
   toggleNoteSelection: (id: string) => void
   clearNoteSelection: () => void
   selectNote: (id: string) => void
+  patchCache: (noteId: string, patch: Partial<NoteWithTags>) => void
 }
 
 export const useNotesStore = create<NotesState>((set) => ({
@@ -117,6 +118,7 @@ export const useNotesStore = create<NotesState>((set) => ({
   updateNote: async (id, input) => {
     try {
       const { note } = await notesApi.update(id, input)
+      const contentPatch = input.content !== undefined ? { content: note.content } : {}
       set((state) => ({
         notes: state.notes.map((n) => (n.id === id ? note : n)),
         currentNote:
@@ -125,13 +127,13 @@ export const useNotesStore = create<NotesState>((set) => ({
                 ...state.currentNote,
                 title: note.title,
                 updatedAt: note.updatedAt,
+                ...contentPatch,
               }
             : state.currentNote,
       }))
-      // Keep cache in sync
       const cached = noteCache.get(id)
       if (cached) {
-        noteCache.set(id, { ...cached, title: note.title, updatedAt: note.updatedAt })
+        noteCache.set(id, { ...cached, title: note.title, updatedAt: note.updatedAt, ...contentPatch })
       }
     } catch (err) {
       set({ error: 'Failed to update note' })
@@ -207,4 +209,11 @@ export const useNotesStore = create<NotesState>((set) => ({
   clearNoteSelection: () => set({ selectedNoteIds: [] }),
 
   selectNote: (id) => set({ selectedNoteIds: [id] }),
+
+  patchCache: (noteId: string, patch: Partial<NoteWithTags>) => {
+    const cached = noteCache.get(noteId)
+    if (cached) {
+      noteCache.set(noteId, { ...cached, ...patch })
+    }
+  },
 }))

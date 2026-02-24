@@ -26,6 +26,7 @@ import { ShareDialog, TagInput, NoteComments, ExportDialog } from '@/components/
 import { ThemeToggle } from '@/components/ui'
 import { notesApi, sharesApi, pagesApi } from '@/services/api'
 import { useTagsStore } from '@/stores/tags'
+import { useNotesStore } from '@/stores/notes'
 import { useFoldersStore } from '@/stores/folders'
 import { useThemeStore, EDITOR_FONT_SIZES, EDITOR_FONT_FAMILIES } from '@/stores/theme'
 import { useAuthStore } from '@/stores/auth'
@@ -126,7 +127,30 @@ export function NoteEditor({ note, onUpdate, onDelete }: NoteEditorProps) {
     pageId: null,
   })
   if (note.id !== syncedPageState.noteId) {
+    const pendingContent = pendingUpdatesRef.current.content
+    const pendingTitle = pendingUpdatesRef.current.title
+    const prevId = syncedPageState.noteId
+
+    if (pendingTitle !== undefined) {
+      notesApi.update(prevId, { title: pendingTitle }).catch(() => {})
+    }
+    if (pendingContent !== undefined) {
+      const prevPageId = lastActivePageIdRef.current
+      if (prevPageId) {
+        pagesApi.update(prevPageId, { content: pendingContent }).catch(() => {})
+        usePagesStore.getState().patchPageContent(prevPageId, pendingContent)
+      } else {
+        notesApi.update(prevId, { content: pendingContent }).catch(() => {})
+        useNotesStore.getState().patchCache(prevId, { content: pendingContent })
+      }
+    }
+    pendingUpdatesRef.current = {}
+
     setSyncedPageState({ noteId: note.id, pageId: null })
+    setLocalContent(note.content)
+    setLocalTitle(note.title)
+    localContentRef.current = note.content
+    localTitleRef.current = note.title
   } else if (activePage && activePage.id !== syncedPageState.pageId) {
     setSyncedPageState({ noteId: note.id, pageId: activePage.id })
     setLocalContent(activePage.content)
@@ -202,19 +226,14 @@ export function NoteEditor({ note, onUpdate, onDelete }: NoteEditorProps) {
   const typographyMenuRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    setLocalTitle(note.title)
-    setLocalContent(note.content)
-    localContentRef.current = note.content
-    localTitleRef.current = note.title
+    cancelAutoSave()
     setLocalTags(note.tags)
     setLastModifiedAt(new Date(note.updatedAt))
-    pendingUpdatesRef.current = {}
     isEditingRef.current = false
     lastActivePageIdRef.current = null
     savingContentRef.current = null
     lastSavedRef.current = { title: note.title, content: note.content }
     if (wordCountTimerRef.current) clearTimeout(wordCountTimerRef.current)
-    // On mobile, focus title input for new notes so user can start typing immediately
     if (breakpoint === 'mobile' && !note.title) {
       requestAnimationFrame(() => titleInputRef.current?.focus())
     }
@@ -379,7 +398,6 @@ export function NoteEditor({ note, onUpdate, onDelete }: NoteEditorProps) {
   }
 
   const handlePageCreate = async () => {
-    // Flush pending content before switching pages
     if (pendingUpdatesRef.current.content && activePage) {
       const contentToSave = pendingUpdatesRef.current.content
       savingContentRef.current = contentToSave
@@ -390,6 +408,10 @@ export function NoteEditor({ note, onUpdate, onDelete }: NoteEditorProps) {
           savingContentRef.current = null
         }
       })
+    }
+    if (wordCountTimerRef.current) {
+      clearTimeout(wordCountTimerRef.current)
+      wordCountTimerRef.current = null
     }
     cancelAutoSave()
     isEditingRef.current = false
@@ -423,7 +445,6 @@ export function NoteEditor({ note, onUpdate, onDelete }: NoteEditorProps) {
   }
 
   const handlePageChange = (pageId: string) => {
-    // Flush pending content before switching
     if (pendingUpdatesRef.current.content && activePage) {
       const contentToSave = pendingUpdatesRef.current.content
       savingContentRef.current = contentToSave
@@ -434,6 +455,10 @@ export function NoteEditor({ note, onUpdate, onDelete }: NoteEditorProps) {
           savingContentRef.current = null
         }
       })
+    }
+    if (wordCountTimerRef.current) {
+      clearTimeout(wordCountTimerRef.current)
+      wordCountTimerRef.current = null
     }
     cancelAutoSave()
     isEditingRef.current = false
