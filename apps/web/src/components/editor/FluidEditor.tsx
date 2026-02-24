@@ -192,6 +192,9 @@ export const FluidEditor = memo(function FluidEditor({ content, onChange, placeh
   const [isUploadingImage, setIsUploadingImage] = useState(false)
   const [selectedImageNode, setSelectedImageNode] = useState<ImageNodeState | null>(null)
   const [activeColumnsNode, setActiveColumnsNode] = useState<ColumnsNodeState | null>(null)
+  const [hoveredColumnsNode, setHoveredColumnsNode] = useState<ColumnsNodeState | null>(null)
+  const columnsHideTimer = useRef<ReturnType<typeof setTimeout>>(null)
+  const overColumnsToolbarRef = useRef(false)
   const [activeTableNode, setActiveTableNode] = useState<TableNodeState | null>(null)
 
   const editorRef = useRef<ReturnType<typeof useEditor>>(null)
@@ -679,6 +682,82 @@ export const FluidEditor = memo(function FluidEditor({ content, onChange, placeh
   // Keep ref in sync for deferred getHTML() inside debounce
   editorRef.current = editor
 
+  // Desktop: show columns toolbar on border hover
+  useEffect(() => {
+    const container = containerRef.current
+    if (!container || !editor || isMobile) return
+
+    const onMouseMove = (e: MouseEvent) => {
+      if (overColumnsToolbarRef.current) return
+
+      const target = e.target as HTMLElement
+      const columnsEl = target.closest('[data-type="columns"]') as HTMLElement | null
+
+      if (!columnsEl) {
+        if (columnsHideTimer.current) clearTimeout(columnsHideTimer.current)
+        columnsHideTimer.current = setTimeout(() => setHoveredColumnsNode(null), 200)
+        return
+      }
+
+      const columnEls = columnsEl.querySelectorAll<HTMLElement>(':scope > [data-type="column"]')
+      if (columnEls.length < 2) return
+
+      const leftColRight = columnEls[0].getBoundingClientRect().right
+      if (Math.abs(e.clientX - leftColRight) <= 24) {
+        if (columnsHideTimer.current) clearTimeout(columnsHideTimer.current)
+
+        const containerRect = container.getBoundingClientRect()
+        const domRect = columnsEl.getBoundingClientRect()
+        const layout = (columnsEl.getAttribute('data-layout') || '1-1') as ColumnsLayout
+
+        const domPos = editor.view.posAtDOM(columnsEl, 0)
+        const $pos = editor.state.doc.resolve(domPos)
+        let columnsPos = -1
+        for (let d = $pos.depth; d >= 0; d--) {
+          if ($pos.node(d).type.name === 'columns') {
+            columnsPos = $pos.before(d)
+            break
+          }
+        }
+        if (columnsPos === -1) return
+
+        setHoveredColumnsNode(prev => {
+          if (prev && prev.pos === columnsPos) return prev
+          return {
+            pos: columnsPos,
+            layout,
+            rect: {
+              top: domRect.top - containerRect.top,
+              left: domRect.left - containerRect.left,
+              width: domRect.width,
+              height: domRect.height,
+              borderLeft: leftColRight - containerRect.left,
+            },
+          }
+        })
+      } else {
+        if (columnsHideTimer.current) clearTimeout(columnsHideTimer.current)
+        columnsHideTimer.current = setTimeout(() => setHoveredColumnsNode(null), 200)
+      }
+    }
+
+    container.addEventListener('mousemove', onMouseMove)
+    return () => {
+      container.removeEventListener('mousemove', onMouseMove)
+      if (columnsHideTimer.current) clearTimeout(columnsHideTimer.current)
+    }
+  }, [editor, isMobile])
+
+  const handleColumnsToolbarEnter = useCallback(() => {
+    overColumnsToolbarRef.current = true
+    if (columnsHideTimer.current) clearTimeout(columnsHideTimer.current)
+  }, [])
+
+  const handleColumnsToolbarLeave = useCallback(() => {
+    overColumnsToolbarRef.current = false
+    columnsHideTimer.current = setTimeout(() => setHoveredColumnsNode(null), 200)
+  }, [])
+
   const executeSlashCommand = useCallback((item: SlashMenuItem) => {
     if (!editor) return
 
@@ -825,11 +904,20 @@ export const FluidEditor = memo(function FluidEditor({ content, onChange, placeh
         />
       )}
 
-      {activeColumnsNode && activeColumnsNode.rect && (
+      {isMobile && activeColumnsNode && activeColumnsNode.rect && editor.state.selection.empty && (
         <ColumnsToolbar
           editor={editor}
           columnsNode={activeColumnsNode}
           onColumnsNodeChange={setActiveColumnsNode}
+        />
+      )}
+      {!isMobile && hoveredColumnsNode && hoveredColumnsNode.rect && (
+        <ColumnsToolbar
+          editor={editor}
+          columnsNode={hoveredColumnsNode}
+          onColumnsNodeChange={setHoveredColumnsNode}
+          onMouseEnter={handleColumnsToolbarEnter}
+          onMouseLeave={handleColumnsToolbarLeave}
         />
       )}
 

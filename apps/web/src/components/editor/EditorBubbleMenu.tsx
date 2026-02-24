@@ -85,6 +85,20 @@ export function EditorBubbleMenu({ editor }: EditorBubbleMenuProps) {
 
         return true
       }}
+      getReferencedVirtualElement={() => {
+        const { selection } = editor.state
+        if (selection.to - selection.from < editor.state.doc.content.size * 0.9) return null
+
+        const surface = editor.view.dom.closest('.editor-writing-surface')
+        if (!surface) return null
+
+        return {
+          getBoundingClientRect: () => {
+            const r = surface.getBoundingClientRect()
+            return new DOMRect(r.left + 16, r.top + r.height / 2, r.width - 32, 1)
+          },
+        }
+      }}
       updateDelay={100}
       options={{
         placement: 'top',

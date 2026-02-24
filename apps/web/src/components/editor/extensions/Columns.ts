@@ -1,5 +1,6 @@
 import { Node, mergeAttributes } from '@tiptap/core'
 import type { Node as ProseMirrorNode } from '@tiptap/pm/model'
+import { Selection } from '@tiptap/pm/state'
 
 export type ColumnsLayout = '1-1' | '1-2' | '2-1'
 
@@ -84,31 +85,43 @@ export const Columns = Node.create({
     return {
       setColumns:
         (layout: ColumnsLayout = '1-1') =>
-        ({ commands, state }) => {
+        ({ chain, state }) => {
           const { selection } = state
           const { $from } = selection
 
-          // Check if already inside columns - don't nest
           for (let depth = $from.depth; depth > 0; depth--) {
             if ($from.node(depth).type.name === 'columns') {
               return false
             }
           }
 
-          return commands.insertContent({
-            type: 'columns',
-            attrs: { layout },
-            content: [
-              {
-                type: 'column',
-                content: [{ type: 'paragraph' }],
-              },
-              {
-                type: 'column',
-                content: [{ type: 'paragraph' }],
-              },
-            ],
-          })
+          return chain()
+            .insertContent({
+              type: 'columns',
+              attrs: { layout },
+              content: [
+                {
+                  type: 'column',
+                  content: [{ type: 'paragraph' }],
+                },
+                {
+                  type: 'column',
+                  content: [{ type: 'paragraph' }],
+                },
+              ],
+            })
+            .command(({ tr }) => {
+              const { $from: $pos } = tr.selection
+              for (let d = $pos.depth; d > 0; d--) {
+                if ($pos.node(d).type.name === 'columns') {
+                  const target = $pos.before(d) + 3
+                  tr.setSelection(Selection.near(tr.doc.resolve(target)))
+                  break
+                }
+              }
+              return true
+            })
+            .run()
         },
 
       setColumnsLayout:
@@ -219,52 +232,7 @@ export const Columns = Node.create({
       },
 
       // Enter on empty paragraph in last column - exit columns
-      Enter: ({ editor }) => {
-        const { state } = editor
-        const { selection } = state
-        const { $from, empty } = selection
-
-        if (!empty) return false
-
-        let columnDepth = -1
-        for (let depth = $from.depth; depth > 0; depth--) {
-          if ($from.node(depth).type.name === 'column') {
-            columnDepth = depth
-            break
-          }
-        }
-
-        if (columnDepth === -1) return false
-
-        const columnsDepth = columnDepth - 1
-        const columnsNode = $from.node(columnsDepth)
-        if (columnsNode.type.name !== 'columns') return false
-
-        const columnIndex = $from.index(columnsDepth)
-        if (columnIndex !== 1) return false
-
-        const parent = $from.parent
-        if (parent.type.name !== 'paragraph' || parent.content.size > 0) return false
-
-        const column = $from.node(columnDepth)
-        if (column.childCount <= 1) return false
-
-        const posInColumn = $from.pos - $from.start(columnDepth)
-        const isLastInColumn = posInColumn >= column.content.size - parent.nodeSize
-
-        if (!isLastInColumn) return false
-
-        const columnsPos = $from.before(columnsDepth)
-        const columnsEnd = columnsPos + columnsNode.nodeSize
-
-        editor
-          .chain()
-          .insertContentAt(columnsEnd, { type: 'paragraph' })
-          .setTextSelection(columnsEnd + 1)
-          .run()
-
-        return true
-      },
+      Enter: () => false,
 
       // Escape - exit columns
       Escape: ({ editor }) => {
