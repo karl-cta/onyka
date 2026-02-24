@@ -246,8 +246,9 @@ export const Columns = Node.create({
         const parent = $from.parent
         if (parent.type.name !== 'paragraph' || parent.content.size > 0) return false
 
-        // Only exit if on the last element in the column
         const column = $from.node(columnDepth)
+        if (column.childCount <= 1) return false
+
         const posInColumn = $from.pos - $from.start(columnDepth)
         const isLastInColumn = posInColumn >= column.content.size - parent.nodeSize
 

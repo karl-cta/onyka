@@ -443,12 +443,12 @@ export const FluidEditor = memo(function FluidEditor({ content, onChange, placeh
           }
           if (event.key === 'ArrowDown') {
             event.preventDefault()
-            setSelectedSlashIndex((i) => (i + 1) % filteredItems.length)
+            setSelectedSlashIndex((i) => Math.min(i + 1, filteredItems.length - 1))
             return true
           }
           if (event.key === 'ArrowUp') {
             event.preventDefault()
-            setSelectedSlashIndex((i) => (i - 1 + filteredItems.length) % filteredItems.length)
+            setSelectedSlashIndex((i) => Math.max(i - 1, 0))
             return true
           }
           if (event.key === 'Enter' && filteredItems.length > 0) {
@@ -459,10 +459,6 @@ export const FluidEditor = memo(function FluidEditor({ content, onChange, placeh
           if (event.key === 'Backspace' && slashFilter === '') {
             setShowSlashMenu(false)
             return false
-          }
-          if (event.key.length === 1 && !event.ctrlKey && !event.metaKey) {
-            setSlashFilter((f) => f + event.key)
-            setSelectedSlashIndex(0)
           }
           if (event.key === 'Backspace' && slashFilter.length > 0) {
             setSlashFilter((f) => f.slice(0, -1))
@@ -657,7 +653,7 @@ export const FluidEditor = memo(function FluidEditor({ content, onChange, placeh
         const columnsPos = $from.before(columnsDepth)
         const domNode = editor.view.nodeDOM(columnsPos)
 
-        let rect: { top: number; left: number; width: number } | null = null
+        let rect: { top: number; left: number; width: number; height: number } | null = null
         if (domNode instanceof HTMLElement && containerRef.current) {
           const domRect = domNode.getBoundingClientRect()
           const containerRect = containerRef.current.getBoundingClientRect()
@@ -665,6 +661,7 @@ export const FluidEditor = memo(function FluidEditor({ content, onChange, placeh
             top: domRect.top - containerRect.top,
             left: domRect.left - containerRect.left,
             width: domRect.width,
+            height: domRect.height,
           }
         }
 

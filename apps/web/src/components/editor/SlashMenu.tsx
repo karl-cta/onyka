@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react'
+import { useRef, useEffect, useLayoutEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { SlashMenuItem } from './editorConstants'
 
@@ -14,19 +14,40 @@ interface SlashMenuProps {
 export function SlashMenu({ items, selectedIndex, position, filter, onSelect, menuRef }: SlashMenuProps) {
   const { t } = useTranslation()
   const itemRefs = useRef<Map<string, HTMLButtonElement>>(new Map())
+  const prevSelectedRef = useRef(-1)
 
   useEffect(() => {
-    if (items[selectedIndex]) {
+    if (selectedIndex !== prevSelectedRef.current && items[selectedIndex]) {
       const el = itemRefs.current.get(items[selectedIndex].id)
       el?.scrollIntoView({ block: 'nearest', behavior: 'smooth' })
     }
+    prevSelectedRef.current = selectedIndex
   }, [selectedIndex, items])
+
+  useLayoutEffect(() => {
+    const el = menuRef.current
+    if (!el) return
+    el.style.transformOrigin = 'top left'
+    const rect = el.getBoundingClientRect()
+    const viewportHeight = window.visualViewport?.height || window.innerHeight
+    if (rect.bottom > viewportHeight - 8) {
+      const flippedTop = position.top - rect.height - 40
+      if (flippedTop > 0) {
+        el.style.top = `${flippedTop}px`
+        el.style.transformOrigin = 'bottom left'
+      }
+    }
+  }, [position.top, items.length, menuRef])
 
   return (
     <div
       ref={menuRef}
+      onMouseDown={(e) => e.preventDefault()}
       className="absolute z-50 w-72 max-w-[calc(100vw-1.5rem)] bg-[var(--color-bg-elevated)] border border-[var(--color-border)] rounded-xl shadow-xl overflow-hidden animate-scale-in"
-      style={{ top: position.top, left: Math.min(position.left, (typeof window !== 'undefined' ? window.innerWidth : 1024) - 304) }}
+      style={{
+        top: position.top,
+        left: Math.min(position.left, (typeof window !== 'undefined' ? window.innerWidth : 1024) - 304),
+      }}
     >
       <div className="px-3 py-2 border-b border-[var(--color-border)]">
         <p className="text-xs text-[var(--color-text-tertiary)] uppercase tracking-wider font-medium">

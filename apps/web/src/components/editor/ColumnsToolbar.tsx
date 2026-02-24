@@ -9,7 +9,7 @@ import { useIsMobile } from '../../hooks/useIsMobile'
 interface ColumnsNodeState {
   pos: number
   layout: ColumnsLayout
-  rect: { top: number; left: number; width: number } | null
+  rect: { top: number; left: number; width: number; height: number } | null
 }
 
 interface ColumnsToolbarProps {
@@ -24,7 +24,7 @@ export function ColumnsToolbar({ editor, columnsNode, onColumnsNodeChange }: Col
 
   if (!columnsNode.rect) return null
 
-  // Clamp to viewport on mobile
+  const toolbarHeight = 44
   const toolbarWidth = 180
   const rawLeft = columnsNode.rect.left + columnsNode.rect.width / 2
   const viewportWidth = typeof window !== 'undefined' ? window.innerWidth : 1024
@@ -33,25 +33,20 @@ export function ColumnsToolbar({ editor, columnsNode, onColumnsNodeChange }: Col
     viewportWidth - toolbarWidth / 2 - 4
   )
 
+  const hasSpaceAbove = columnsNode.rect.top >= toolbarHeight + 8
+  const top = hasSpaceAbove
+    ? columnsNode.rect.top - toolbarHeight
+    : columnsNode.rect.top + columnsNode.rect.height + 4
+
   return (
     <div
       className={`absolute z-50 flex items-center gap-1 px-2 py-1.5 bg-[var(--color-bg-elevated)] border border-[var(--color-border)] rounded-xl shadow-lg backdrop-blur-sm animate-scale-in${isMobile ? ' editor-toolbar-mobile' : ''}`}
       style={{
-        top: Math.max(4, columnsNode.rect.top - 44),
+        top,
         left: clampedLeft,
         transform: 'translateX(-50%)',
       }}
     >
-      <ToolbarButton
-        onClick={() => {
-          editor.commands.setColumnsLayout('1-1')
-          onColumnsNodeChange((prev) => prev ? { ...prev, layout: '1-1' } : null)
-        }}
-        active={columnsNode.layout === '1-1'}
-        title={t('editor.columns_equal', '50 / 50')}
-      >
-        <Layout11Icon />
-      </ToolbarButton>
       <ToolbarButton
         onClick={() => {
           editor.commands.setColumnsLayout('1-2')
@@ -61,6 +56,16 @@ export function ColumnsToolbar({ editor, columnsNode, onColumnsNodeChange }: Col
         title={t('editor.columns_narrow_wide', '33 / 66')}
       >
         <Layout12Icon />
+      </ToolbarButton>
+      <ToolbarButton
+        onClick={() => {
+          editor.commands.setColumnsLayout('1-1')
+          onColumnsNodeChange((prev) => prev ? { ...prev, layout: '1-1' } : null)
+        }}
+        active={columnsNode.layout === '1-1'}
+        title={t('editor.columns_equal', '50 / 50')}
+      >
+        <Layout11Icon />
       </ToolbarButton>
       <ToolbarButton
         onClick={() => {
