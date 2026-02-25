@@ -27,6 +27,10 @@ interface FieldError {
 function parseErrorToField(error: string, t: (key: string) => string): FieldError {
   const errorLower = error.toLowerCase()
 
+  if (error === 'RATE_LIMITED') {
+    return { field: 'global', message: t('auth.errors.rate_limit_locked') }
+  }
+
   // Check combined credentials errors before individual field errors
   if (
     (errorLower.includes('username') && errorLower.includes('password')) ||

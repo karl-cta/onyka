@@ -123,9 +123,20 @@ async function handleResponse<T>(response: Response): Promise<T> {
       error: { code: 'UNKNOWN_ERROR', message: 'An unknown error occurred' },
     }))
     const error = typeof data.error === 'object' ? data.error : { code: 'UNKNOWN_ERROR', message: String(data.error || 'An unknown error occurred') }
-    // Extract waitSeconds from rate-limited responses (2FA code cooldown)
-    const rateLimitInfo = error.rateLimitInfo ||
+    let rateLimitInfo = error.rateLimitInfo ||
       (data.waitSeconds ? { retryAfter: data.waitSeconds } : undefined)
+    if (!rateLimitInfo) {
+      const retryAfter = response.headers.get('Retry-After')
+      const remaining = response.headers.get('RateLimit-Remaining')
+      const limit = response.headers.get('RateLimit-Limit')
+      if (retryAfter || remaining) {
+        rateLimitInfo = {
+          retryAfter: retryAfter ? parseInt(retryAfter, 10) : 0,
+          ...(remaining != null && { remainingAttempts: parseInt(remaining, 10) }),
+          ...(limit != null && { maxAttempts: parseInt(limit, 10) }),
+        }
+      }
+    }
     throw new ApiException(
       error.code,
       error.message,
@@ -617,6 +628,7 @@ export interface AdminUser {
   twoFactorEnabled: boolean
   createdAt: string
   lastLoginAt?: string
+  lastActivityAt?: string
 }
 
 export interface AdminStats {

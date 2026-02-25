@@ -59,6 +59,7 @@ export class AdminService {
           twoFactorEnabled: user.twoFactorEnabled,
           createdAt: user.createdAt,
           lastLoginAt: user.lastLoginAt ?? undefined,
+          lastActivityAt: user.lastActivityAt ?? undefined,
         }
       })
     )

@@ -76,6 +76,9 @@ export async function authenticate(
 
     req.user = user
     req.userId = user.id
+
+    userRepository.touchLastActivity(user.id).catch(() => {})
+
     next()
   } catch (error) {
     next(error)

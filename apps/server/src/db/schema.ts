@@ -34,6 +34,7 @@ export const users = sqliteTable('users', {
   sharedSectionHeight: integer('shared_section_height').notNull().default(150),
   onboardingCompleted: integer('onboarding_completed', { mode: 'boolean' }).notNull().default(false),
   lastLoginAt: integer('last_login_at', { mode: 'timestamp' }),
+  lastActivityAt: integer('last_activity_at', { mode: 'timestamp' }),
   createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
   updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
 })

@@ -45,6 +45,7 @@ export interface User {
   sharedSectionHeight: number
   onboardingCompleted: boolean
   lastLoginAt?: Date
+  lastActivityAt?: Date
   createdAt: Date
   updatedAt: Date
 }

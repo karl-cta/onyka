@@ -367,6 +367,10 @@ export const FluidEditor = memo(function FluidEditor({ content, onChange, placeh
 
         // While slash menu is open, capture typed characters as filter
         if (showSlashMenu && text.length === 1 && text !== '/') {
+          if (text === ' ') {
+            setShowSlashMenu(false)
+            return false
+          }
           setSlashFilter((f) => f + text)
           setSelectedSlashIndex(0)
         }
@@ -434,6 +438,11 @@ export const FluidEditor = memo(function FluidEditor({ content, onChange, placeh
         }
 
         if (showSlashMenu) {
+          if (event.key === ' ') {
+            setShowSlashMenu(false)
+            return false
+          }
+
           const filteredItems = SLASH_MENU_ITEMS.filter(
             (item) =>
               t(item.labelKey).toLowerCase().includes(slashFilter.toLowerCase()) ||

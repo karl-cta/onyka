@@ -69,7 +69,7 @@ app.use(
 app.use(
   '/api/auth/register',
   rateLimit({
-    windowMs: 60 * 60 * 1000,
+    windowMs: 30 * 60 * 1000,
     max: 5,
     standardHeaders: true,
     legacyHeaders: false,

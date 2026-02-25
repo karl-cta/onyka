@@ -12,11 +12,22 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
+    height: 100%;
+    overflow: hidden;
+    overscroll-behavior: none;
   }
 
   body {
     @apply bg-[var(--color-bg-primary)] text-[var(--color-text-primary)];
     font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+    height: 100%;
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
+
+  #root {
+    height: 100%;
+    overflow: hidden;
   }
 
   ::-webkit-scrollbar {

@@ -141,47 +141,47 @@ export function WeeklyRecapModal({ isOpen, recap, onDismiss }: WeeklyRecapModalP
                 </div>
               </div>
 
-              <div
-                className={`p-4 rounded-xl border ${
-                  recap.currentStreak >= 7
-                    ? 'bg-[var(--color-accent)]/10 border-[var(--color-accent)]/30'
-                    : 'bg-[var(--color-bg-secondary)] border-[var(--color-border)]'
-                }`}
-              >
-                <div
-                  className={`flex items-center gap-2 mb-2 ${
-                    recap.currentStreak >= 7
-                      ? 'text-[var(--color-accent)]'
-                      : 'text-[var(--color-text-tertiary)]'
-                  }`}
-                >
-                  <IoFlameOutline className="w-4 h-4" />
-                  <span className="text-xs font-medium uppercase tracking-wide">
-                    {t('recap.streak')}
-                  </span>
-                </div>
-                <div className="text-2xl font-bold text-[var(--color-text-primary)]">
-                  {recap.currentStreak}
-                  <span className="text-sm font-normal text-[var(--color-text-tertiary)] ml-1">
-                    {t('stats.days')}
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            {recap.focusMinutes > 0 && (
-              <div className="flex items-center gap-3 p-4 rounded-xl bg-[var(--color-bg-secondary)] border border-[var(--color-border)] mb-6">
-                <div className="flex items-center gap-2 text-[var(--color-text-tertiary)]">
+              <div className="p-4 rounded-xl bg-[var(--color-bg-secondary)] border border-[var(--color-border)]">
+                <div className="flex items-center gap-2 mb-2 text-[var(--color-text-tertiary)]">
                   <IoTimeOutline className="w-4 h-4" />
                   <span className="text-xs font-medium uppercase tracking-wide">
                     {t('recap.focus_time')}
                   </span>
                 </div>
-                <div className="text-lg font-bold text-[var(--color-text-primary)] ml-auto">
+                <div className="text-2xl font-bold text-[var(--color-text-primary)]">
                   {formatFocusTime(recap.focusMinutes)}
                 </div>
               </div>
-            )}
+
+              <div
+                className={`col-span-2 p-4 rounded-xl border ${
+                  recap.currentStreak >= 7
+                    ? 'bg-[var(--color-accent)]/10 border-[var(--color-accent)]/30'
+                    : 'bg-[var(--color-bg-secondary)] border-[var(--color-border)]'
+                }`}
+              >
+                <div className="flex items-center justify-between">
+                  <div
+                    className={`flex items-center gap-2 ${
+                      recap.currentStreak >= 7
+                        ? 'text-[var(--color-accent)]'
+                        : 'text-[var(--color-text-tertiary)]'
+                    }`}
+                  >
+                    <IoFlameOutline className="w-4 h-4" />
+                    <span className="text-xs font-medium uppercase tracking-wide">
+                      {t('recap.streak')}
+                    </span>
+                  </div>
+                  <div className="text-2xl font-bold text-[var(--color-text-primary)]">
+                    {recap.currentStreak}
+                    <span className="text-sm font-normal text-[var(--color-text-tertiary)] ml-1">
+                      {t('stats.days')}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
 
             <div className="text-center p-4 rounded-xl bg-[var(--color-bg-secondary)] border border-[var(--color-border)]">
               <p className="text-sm text-[var(--color-text-secondary)]">

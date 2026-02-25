@@ -349,10 +349,13 @@ function UsersSection() {
                         </span>
                       )}
                     </div>
-                    <div className="hidden sm:flex items-center gap-3 mt-0.5 text-xs text-[var(--color-text-tertiary)]">
+                    <div className="hidden sm:flex items-center gap-2 mt-0.5 text-xs text-[var(--color-text-tertiary)]">
                       <span>{t('admin.users.created')} {formatAdminDate(user.createdAt)}</span>
-                      {user.lastLoginAt && (
-                        <span>· {t('admin.users.last_login')} {formatAdminDate(user.lastLoginAt)}</span>
+                      {(user.lastActivityAt || user.lastLoginAt) && (
+                        <>
+                          <span className="opacity-40">·</span>
+                          <span>{t(user.lastActivityAt ? 'admin.users.last_activity' : 'admin.users.last_login')} {formatAdminDate(user.lastActivityAt ?? user.lastLoginAt)}</span>
+                        </>
                       )}
                     </div>
                   </div>

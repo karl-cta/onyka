@@ -406,9 +406,9 @@ export function Sidebar({ onOpenSearch, onSelectNote, selectedNoteId }: SidebarP
         setNewFolderId(folder.id)
         setTimeout(() => setNewFolderId(null), 1000)
       }
-      setNewFolderName('')
-      setShowNewFolderInput(false)
     }
+    setNewFolderName('')
+    setShowNewFolderInput(false)
   }
 
   const handleShowNewNoteInput = () => {
@@ -772,7 +772,9 @@ export function Sidebar({ onOpenSearch, onSelectNote, selectedNoteId }: SidebarP
               }
             }}
             onBlur={() => {
-              if (!newFolderName.trim()) setShowNewFolderInput(false)
+              setTimeout(() => {
+                if (showNewFolderInput) handleCreateFolder()
+              }, 150)
             }}
             placeholder={t('folders.new_folder_placeholder')}
             className="w-full h-9 px-3 rounded-lg bg-[var(--color-bg-tertiary)] border border-[var(--color-accent)] text-sm text-[var(--color-text-primary)] placeholder:text-[var(--color-text-tertiary)] focus:outline-none"

@@ -92,24 +92,29 @@ export const useAuthStore = create<AuthState>((set) => ({
       if (err && typeof err === 'object' && 'requires2FA' in err) {
         throw err
       }
-      const message = err instanceof ApiException ? err.message : 'Login failed'
       const rateLimitInfo = err instanceof ApiException ? err.rateLimitInfo : null
+      const message = err instanceof ApiException
+        ? (err.code === 'RATE_LIMITED' ? 'RATE_LIMITED' : err.message)
+        : 'Login failed'
       set({ error: message, rateLimitInfo: rateLimitInfo ?? null })
       throw err
     }
   },
 
   register: async (username, password, email) => {
-    set({ error: null })
+    set({ error: null, rateLimitInfo: null })
     try {
       const { user } = await authApi.register({ username, password, email })
       await useThemeStore.getState().loadFromUser(user)
       setAuthenticatedState(true)
       set({ user, isAuthenticated: true })
     } catch (err) {
+      const rateLimitInfo = err instanceof ApiException ? err.rateLimitInfo : null
       let message = 'Registration failed'
       if (err instanceof ApiException) {
-        if (err.code === 'VALIDATION_ERROR' && err.details) {
+        if (err.code === 'RATE_LIMITED') {
+          message = 'RATE_LIMITED'
+        } else if (err.code === 'VALIDATION_ERROR' && err.details) {
           const fields = Object.keys(err.details)
           if (fields.length > 0) {
             const field = fields[0]
@@ -122,7 +127,7 @@ export const useAuthStore = create<AuthState>((set) => ({
           message = err.message
         }
       }
-      set({ error: message })
+      set({ error: message, rateLimitInfo: rateLimitInfo ?? null })
       throw err
     }
   },

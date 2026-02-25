@@ -16,6 +16,7 @@ export interface AdminUserInfo {
   twoFactorEnabled: boolean
   createdAt: Date
   lastLoginAt?: Date
+  lastActivityAt?: Date
 }
 
 export interface DisableUserInput {

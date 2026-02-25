@@ -119,7 +119,7 @@ export function HomePage() {
   }, [currentNote, deleteNote, fetchFolderTree])
 
   return (
-    <div className={`h-screen flex flex-col md:flex-row bg-[var(--color-bg-primary)] transition-all duration-300 ${focusMode ? 'p-0' : 'p-2 gap-2 md:p-3 md:gap-3'}`}>
+    <div className={`h-dvh flex flex-col md:flex-row bg-[var(--color-bg-primary)] overflow-hidden transition-all duration-300 ${focusMode ? 'p-0' : 'p-2 gap-2 md:p-3 md:gap-3'}`}>
       {!focusMode && (
         <MobileHeader
           onOpenSidebar={openMobileSidebar}
@@ -139,7 +139,7 @@ export function HomePage() {
         className={`flex-1 flex flex-col overflow-hidden relative transition-all duration-500 ease-out ${
           focusMode
             ? 'bg-[var(--color-bg-primary)] max-w-4xl w-full mx-auto px-4'
-            : 'bg-[var(--color-bg-secondary)] rounded-xl md:rounded-2xl border border-[var(--color-border-subtle)] shadow-lg mt-16 md:mt-0'
+            : 'bg-[var(--color-bg-secondary)] rounded-xl md:rounded-2xl border border-[var(--color-border-subtle)] shadow-lg mt-14 md:mt-0'
         }`}
         role="main"
         aria-label="Note content"

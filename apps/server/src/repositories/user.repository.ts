@@ -37,6 +37,7 @@ export interface UserWithPassword {
   sharedSectionHeight: number
   onboardingCompleted: boolean
   lastLoginAt: Date | null
+  lastActivityAt: Date | null
   createdAt: Date
   updatedAt: Date
 }
@@ -310,6 +311,22 @@ export class UserRepository {
     await db
       .update(users)
       .set({ lastLoginAt: now })
+      .where(eq(users.id, id))
+  }
+
+  private activityThrottle = new Map<string, number>()
+  private static ACTIVITY_THROTTLE_MS = 5 * 60 * 1000
+
+  async touchLastActivity(id: string): Promise<void> {
+    const now = Date.now()
+    const lastWrite = this.activityThrottle.get(id)
+    if (lastWrite && now - lastWrite < UserRepository.ACTIVITY_THROTTLE_MS) {
+      return
+    }
+    this.activityThrottle.set(id, now)
+    await db
+      .update(users)
+      .set({ lastActivityAt: new Date(now) })
       .where(eq(users.id, id))
   }
 
