@@ -21,6 +21,8 @@ if (env.TRUST_PROXY) {
 }
 
 app.use(helmet({
+  crossOriginEmbedderPolicy: false,
+  hsts: false,
   contentSecurityPolicy: {
     directives: {
       defaultSrc: ["'self'"],
@@ -33,18 +35,21 @@ app.use(helmet({
       frameAncestors: ["'none'"],
     },
   },
-  hsts: {
-    maxAge: 31536000,
-    includeSubDomains: true,
-    preload: true,
-  },
 }))
-app.use(
-  cors({
-    origin: env.CORS_ORIGIN,
-    credentials: true,
-  })
-)
+// Helmet v8 injects upgrade-insecure-requests by default — breaks HTTP-only deployments
+app.use((_req, res, next) => {
+  const csp = res.getHeader('content-security-policy')
+  if (csp) {
+    const cleaned = String(csp)
+      .split(';')
+      .filter(directive => !directive.includes('upgrade-insecure'))
+      .join(';')
+    res.setHeader('content-security-policy', cleaned)
+  }
+  next()
+})
+
+app.use('/api', cors({ origin: env.CORS_ORIGIN, credentials: true }))
 
 app.use(
   rateLimit({

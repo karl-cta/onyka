@@ -16,7 +16,7 @@ services:
     #   dockerfile: docker/Dockerfile
     container_name: onyka
     ports:
-      - "${HOST_PORT:-3000}:3000"
+      - "3000:3000"   # To change port: edit first number only (e.g. 3100:3000)
     volumes:
       - onyka-data:/app/data
     restart: unless-stopped
