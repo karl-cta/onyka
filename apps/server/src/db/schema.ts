@@ -32,6 +32,7 @@ export const users = sqliteTable('users', {
   tagsSectionHeight: integer('tags_section_height').notNull().default(120),
   sharedCollapsed: integer('shared_collapsed', { mode: 'boolean' }).notNull().default(false),
   sharedSectionHeight: integer('shared_section_height').notNull().default(150),
+  focusEditorWidth: integer('focus_editor_width').notNull().default(70),
   onboardingCompleted: integer('onboarding_completed', { mode: 'boolean' }).notNull().default(false),
   lastLoginAt: integer('last_login_at', { mode: 'timestamp' }),
   lastActivityAt: integer('last_activity_at', { mode: 'timestamp' }),

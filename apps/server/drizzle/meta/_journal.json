@@ -204,6 +204,13 @@
       "when": 1770096000000,
       "tag": "0028_last_activity_at",
       "breakpoints": true
+    },
+    {
+      "idx": 29,
+      "version": "6",
+      "when": 1770268800000,
+      "tag": "0029_focus_editor_width",
+      "breakpoints": true
     }
   ]
 }

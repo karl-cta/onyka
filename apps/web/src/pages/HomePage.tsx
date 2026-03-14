@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { OnykaLogo } from '@/components/ui/OnykaLogo'
 import { useTranslation } from 'react-i18next'
 import { Sidebar, SearchDialog, MobileHeader } from '@/components/layout'
@@ -27,7 +27,9 @@ export function HomePage() {
   const [selectedNoteId, setSelectedNoteId] = useState<string | null>(null)
   const { currentNote, fetchNote, updateNote, setCurrentNote, deleteNote } = useNotesStore()
   const { fetchFolderTree, triggerNewNoteInput } = useFoldersStore()
-  const { focusMode, toggleFocusMode, openMobileSidebar, closeMobileSidebar } = useThemeStore()
+  const { focusMode, focusEditorWidth, setFocusEditorWidth, toggleFocusMode, openMobileSidebar, closeMobileSidebar } = useThemeStore()
+  const [isResizingFocus, setIsResizingFocus] = useState(false)
+  const mainRef = useRef<HTMLElement>(null)
   const { pendingRecap, fetchPendingRecap, dismissRecap, isRecapModalOpen, openRecapModal } = useRecapsStore()
   const { trackingEnabled } = useStatsStore()
   const { openQuickAdd: openSparkQuickAdd } = useSparksStore()
@@ -66,14 +68,53 @@ export function HomePage() {
         e.preventDefault()
         setIsSearchOpen(true)
       }
-      if (e.key === 'f' && (e.metaKey || e.ctrlKey) && e.shiftKey) {
+      if (e.key.toLowerCase() === 'f' && (e.metaKey || e.ctrlKey) && e.shiftKey) {
         e.preventDefault()
         toggleFocusMode()
+      }
+      if (focusMode && (e.metaKey || e.ctrlKey) && e.shiftKey) {
+        if (e.key === '[') {
+          e.preventDefault()
+          setFocusEditorWidth(Math.max(40, focusEditorWidth - 10))
+        }
+        if (e.key === ']') {
+          e.preventDefault()
+          setFocusEditorWidth(Math.min(100, focusEditorWidth + 10))
+        }
       }
     }
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [toggleFocusMode])
+  }, [toggleFocusMode, focusMode, focusEditorWidth, setFocusEditorWidth])
+
+  useEffect(() => {
+    if (!isResizingFocus) return
+    let rafId = 0
+    const handleMouseMove = (e: MouseEvent) => {
+      cancelAnimationFrame(rafId)
+      rafId = requestAnimationFrame(() => {
+        const center = window.innerWidth / 2
+        const halfWidth = Math.abs(e.clientX - center)
+        const newPercent = Math.round((halfWidth * 2) / window.innerWidth * 100)
+        setFocusEditorWidth(Math.max(40, Math.min(100, newPercent)))
+      })
+    }
+    const handleMouseUp = () => {
+      cancelAnimationFrame(rafId)
+      setIsResizingFocus(false)
+    }
+    document.addEventListener('mousemove', handleMouseMove)
+    document.addEventListener('mouseup', handleMouseUp)
+    document.body.style.cursor = 'col-resize'
+    document.body.style.userSelect = 'none'
+    return () => {
+      cancelAnimationFrame(rafId)
+      document.removeEventListener('mousemove', handleMouseMove)
+      document.removeEventListener('mouseup', handleMouseUp)
+      document.body.style.cursor = ''
+      document.body.style.userSelect = ''
+    }
+  }, [isResizingFocus, setFocusEditorWidth])
 
   useEffect(() => {
     if (trackingEnabled) {
@@ -119,7 +160,7 @@ export function HomePage() {
   }, [currentNote, deleteNote, fetchFolderTree])
 
   return (
-    <div className={`h-dvh flex flex-col md:flex-row bg-[var(--color-bg-primary)] overflow-hidden transition-all duration-300 ${focusMode ? 'p-0' : 'p-2 gap-2 md:p-3 md:gap-3'}`}>
+    <div className={`h-dvh flex flex-col md:flex-row bg-[var(--color-bg-primary)] overflow-hidden transition-all duration-500 ${focusMode ? 'p-0' : 'p-2 gap-2 md:p-3 md:gap-3'}`}>
       {!focusMode && (
         <MobileHeader
           onOpenSidebar={openMobileSidebar}
@@ -127,28 +168,56 @@ export function HomePage() {
         />
       )}
 
-      {!focusMode && (
-        <Sidebar
-          onOpenSearch={() => setIsSearchOpen(true)}
-          onSelectNote={setSelectedNoteId}
-          selectedNoteId={selectedNoteId}
-        />
-      )}
+      <Sidebar
+        onOpenSearch={() => setIsSearchOpen(true)}
+        onSelectNote={setSelectedNoteId}
+        selectedNoteId={selectedNoteId}
+      />
 
       <main
-        className={`flex-1 flex flex-col overflow-hidden relative transition-all duration-500 ease-out ${
+        ref={mainRef}
+        className={`flex-1 flex flex-col overflow-hidden relative ${
+          isResizingFocus ? '' : 'transition-all duration-500 ease-out'
+        } ${
           focusMode
-            ? 'bg-[var(--color-bg-primary)] max-w-4xl w-full mx-auto px-4'
+            ? 'bg-[var(--color-bg-primary)] w-full mx-auto border border-transparent shadow-none'
             : 'bg-[var(--color-bg-secondary)] rounded-xl md:rounded-2xl border border-[var(--color-border-subtle)] shadow-lg mt-14 md:mt-0'
         }`}
+        style={focusMode ? { maxWidth: `${focusEditorWidth}%` } : undefined}
         role="main"
         aria-label="Note content"
       >
+        {focusMode && (
+          <>
+            {isResizingFocus && (
+              <div className="fixed inset-0 z-40 cursor-col-resize" />
+            )}
+            <div
+              onMouseDown={(e) => { e.preventDefault(); setIsResizingFocus(true) }}
+              className="absolute top-0 -left-2 w-4 h-full cursor-col-resize z-30 group flex items-center justify-center"
+            >
+              <div className={`w-0.5 h-10 rounded-full transition-all duration-200 ${
+                isResizingFocus
+                  ? 'bg-[var(--color-accent)] opacity-80 h-16'
+                  : 'bg-[var(--color-border)] opacity-0 group-hover:opacity-50'
+              }`} />
+            </div>
+            <div
+              onMouseDown={(e) => { e.preventDefault(); setIsResizingFocus(true) }}
+              className="absolute top-0 -right-2 w-4 h-full cursor-col-resize z-30 group flex items-center justify-center"
+            >
+              <div className={`w-0.5 h-10 rounded-full transition-all duration-200 ${
+                isResizingFocus
+                  ? 'bg-[var(--color-accent)] opacity-80 h-16'
+                  : 'bg-[var(--color-border)] opacity-0 group-hover:opacity-50'
+              }`} />
+            </div>
+          </>
+        )}
         {currentNote ? (
           <NoteEditor note={currentNote} onUpdate={handleUpdateNote} onDelete={handleDeleteNote} />
         ) : (
           <div className="flex-1 flex items-center justify-center p-4 md:p-8 relative">
-            {/* Decorative glow — hidden on mobile (blur-3xl expensive on WebKit) */}
             <div
               className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[200px] md:w-[600px] md:h-[400px] rounded-full opacity-20 hidden md:block md:blur-3xl pointer-events-none"
               style={{ background: 'radial-gradient(ellipse, var(--color-accent) 0%, transparent 60%)' }}
@@ -156,7 +225,6 @@ export function HomePage() {
 
             <div className="text-center relative z-10 animate-blur-in max-w-md px-4">
               <div className="relative w-24 h-24 md:w-36 md:h-36 mx-auto mb-6 md:mb-8">
-                {/* Glow logo — hidden on mobile (blur-2xl + infinite animation expensive on WebKit) */}
                 <OnykaLogo
                   className="absolute inset-0 w-full h-full hidden md:block md:blur-2xl opacity-80 animate-pulse-glow scale-150"
                 />
@@ -237,8 +305,6 @@ export function HomePage() {
           <SparkIcon className="w-5 h-5" animated />
         </button>
       )}
-
-      {/* Mobile FABs removed — sidebar already has Sparks + New Note buttons */}
     </div>
   )
 }

@@ -94,6 +94,7 @@
     "add_link": "Ajouter un lien",
     "focus_mode": "Mode concentration",
     "exit_focus": "Quitter le mode concentration",
+    "focus_width": "Largeur de l'éditeur",
     "words": "{{count}} mots",
     "characters": "{{count}} caractères",
     "timer_complete": "Session de concentration terminée !",
@@ -249,6 +250,7 @@
     "tabs": {
       "appearance": "Apparence",
       "editor": "Éditeur",
+      "shortcuts": "Raccourcis",
       "data": "Données",
       "security": "Sécurité",
       "about": "À propos"
@@ -312,6 +314,21 @@
       "empty_error": "Erreur lors du vidage",
       "days_remaining": "{{n}} jours restants"
     }
+  },
+  "shortcuts": {
+    "title": "Raccourcis clavier",
+    "search": "Rechercher",
+    "focus_mode": "Mode concentration",
+    "focus_narrower": "Rétrécir l'éditeur (focus)",
+    "focus_wider": "Élargir l'éditeur (focus)",
+    "bold": "Gras",
+    "italic": "Italique",
+    "underline": "Souligné",
+    "strikethrough": "Barré",
+    "highlight": "Surligner",
+    "code": "Code en ligne",
+    "undo": "Annuler",
+    "redo": "Rétablir"
   },
   "auth": {
     "login": "Connexion",

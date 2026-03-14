@@ -173,6 +173,7 @@ interface ThemeState {
   editorFontSize: EditorFontSize
   editorFontFamily: EditorFontFamily
   focusMode: boolean
+  focusEditorWidth: number
   sidebarCollapsed: boolean
   sidebarWidth: number
   tagsCollapsed: boolean
@@ -189,6 +190,7 @@ interface ThemeState {
   setEditorFontSize: (size: EditorFontSize) => void
   setEditorFontFamily: (family: EditorFontFamily) => void
   toggleFocusMode: () => void
+  setFocusEditorWidth: (width: number) => void
   toggleSidebar: () => void
   setSidebarCollapsed: (collapsed: boolean) => void
   setSidebarWidth: (width: number) => void
@@ -211,6 +213,7 @@ export const useThemeStore = create<ThemeState>()((set, get) => ({
   editorFontSize: 'S',
   editorFontFamily: 'plus-jakarta-sans',
   focusMode: false,
+  focusEditorWidth: 70,
   sidebarCollapsed: false,
   sidebarWidth: 288,
   tagsCollapsed: false,
@@ -237,6 +240,7 @@ export const useThemeStore = create<ThemeState>()((set, get) => ({
     const tagsSectionHeight = user.tagsSectionHeight ?? 120
     const sharedCollapsed = user.sharedCollapsed ?? false
     const sharedSectionHeight = user.sharedSectionHeight ?? 150
+    const focusEditorWidth = user.focusEditorWidth ?? 70
 
     // Load the user's preferred font BEFORE applying theme (prevents FOUT)
     await loadFont(editorFontFamily)
@@ -254,6 +258,7 @@ export const useThemeStore = create<ThemeState>()((set, get) => ({
       tagsSectionHeight,
       sharedCollapsed,
       sharedSectionHeight,
+      focusEditorWidth,
     })
 
     const themeBase = theme === 'dark' ? darkThemeBase : lightThemeBase
@@ -331,6 +336,19 @@ export const useThemeStore = create<ThemeState>()((set, get) => ({
   },
 
   toggleFocusMode: () => set((state) => ({ focusMode: !state.focusMode })),
+
+  setFocusEditorWidth: (width) => {
+    const clampedWidth = Math.min(Math.max(width, 40), 100)
+    set({ focusEditorWidth: clampedWidth })
+
+    if (sidebarWidthTimeout) {
+      clearTimeout(sidebarWidthTimeout)
+    }
+    sidebarWidthTimeout = setTimeout(() => {
+      safeUpdatePreferences({ focusEditorWidth: clampedWidth })
+      sidebarWidthTimeout = null
+    }, SIDEBAR_WIDTH_DEBOUNCE_MS)
+  },
 
   toggleSidebar: () => {
     const newCollapsed = !get().sidebarCollapsed

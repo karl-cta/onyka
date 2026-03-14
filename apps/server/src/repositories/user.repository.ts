@@ -35,6 +35,7 @@ export interface UserWithPassword {
   tagsSectionHeight: number
   sharedCollapsed: boolean
   sharedSectionHeight: number
+  focusEditorWidth: number
   onboardingCompleted: boolean
   lastLoginAt: Date | null
   lastActivityAt: Date | null
@@ -113,6 +114,7 @@ export class UserRepository {
       tagsSectionHeight: 120,
       sharedCollapsed: false,
       sharedSectionHeight: 150,
+      focusEditorWidth: 70,
       onboardingCompleted: false,
       createdAt: now,
       updatedAt: now,
@@ -477,6 +479,7 @@ export class UserRepository {
       tagsSectionHeight: row.tagsSectionHeight,
       sharedCollapsed: row.sharedCollapsed,
       sharedSectionHeight: row.sharedSectionHeight,
+      focusEditorWidth: row.focusEditorWidth,
       onboardingCompleted: row.onboardingCompleted,
       lastLoginAt: row.lastLoginAt ?? undefined,
       createdAt: row.createdAt,

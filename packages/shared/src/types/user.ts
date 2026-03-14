@@ -15,6 +15,7 @@ export interface UserPreferences {
   tagsSectionHeight: number
   sharedCollapsed: boolean
   sharedSectionHeight: number
+  focusEditorWidth: number
 }
 
 export interface User {
@@ -43,6 +44,7 @@ export interface User {
   tagsSectionHeight: number
   sharedCollapsed: boolean
   sharedSectionHeight: number
+  focusEditorWidth: number
   onboardingCompleted: boolean
   lastLoginAt?: Date
   lastActivityAt?: Date

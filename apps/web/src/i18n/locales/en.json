@@ -94,6 +94,7 @@
     "add_link": "Add link",
     "focus_mode": "Focus mode",
     "exit_focus": "Exit focus mode",
+    "focus_width": "Editor width",
     "words": "{{count}} words",
     "characters": "{{count}} characters",
     "timer_complete": "Focus session complete!",
@@ -249,6 +250,7 @@
     "tabs": {
       "appearance": "Appearance",
       "editor": "Editor",
+      "shortcuts": "Shortcuts",
       "data": "Data",
       "security": "Security",
       "about": "About"
@@ -312,6 +314,21 @@
       "empty_error": "Failed to empty trash",
       "days_remaining": "{{n}} days remaining"
     }
+  },
+  "shortcuts": {
+    "title": "Keyboard shortcuts",
+    "search": "Search",
+    "focus_mode": "Focus mode",
+    "focus_narrower": "Narrow editor (focus)",
+    "focus_wider": "Widen editor (focus)",
+    "bold": "Bold",
+    "italic": "Italic",
+    "underline": "Underline",
+    "strikethrough": "Strikethrough",
+    "highlight": "Highlight",
+    "code": "Inline code",
+    "undo": "Undo",
+    "redo": "Redo"
   },
   "auth": {
     "login": "Login",

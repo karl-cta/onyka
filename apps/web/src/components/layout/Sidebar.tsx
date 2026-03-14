@@ -185,7 +185,7 @@ export function Sidebar({ onOpenSearch, onSelectNote, selectedNoteId }: SidebarP
     toggleFolderSelection,
     clearFolderSelection,
   } = useFoldersStore()
-  const { sidebarCollapsed, toggleSidebar, sidebarWidth, setSidebarWidth, tagsCollapsed, toggleTagsCollapsed, tagsSectionHeight, setTagsSectionHeight, mobileSidebarOpen, closeMobileSidebar } = useThemeStore()
+  const { sidebarCollapsed, toggleSidebar, sidebarWidth, setSidebarWidth, tagsCollapsed, toggleTagsCollapsed, tagsSectionHeight, setTagsSectionHeight, mobileSidebarOpen, closeMobileSidebar, focusMode } = useThemeStore()
   const { openQuickAdd, fetchStats } = useSparksStore()
   const { fetchMyShares } = useSharesStore()
   const isMobile = useIsMobile()
@@ -1181,10 +1181,13 @@ export function Sidebar({ onOpenSearch, onSelectNote, selectedNoteId }: SidebarP
       <div
         className={`
           hidden md:block h-full relative z-20
-          ${isResizing ? '' : 'transition-[width] duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)]'}
-          ${sidebarCollapsed ? 'w-16' : ''}
+          ${focusMode
+            ? 'transition-all duration-500 ease-out !w-0 overflow-hidden opacity-0 pointer-events-none'
+            : isResizing ? '' : 'transition-[width] duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)]'
+          }
+          ${!focusMode && sidebarCollapsed ? 'w-16' : ''}
         `}
-        style={{ width: sidebarCollapsed ? undefined : `clamp(240px, ${sidebarWidth}px, 420px)` }}
+        style={{ width: focusMode ? 0 : sidebarCollapsed ? undefined : `clamp(240px, ${sidebarWidth}px, 420px)` }}
       >
         <div
           className={`

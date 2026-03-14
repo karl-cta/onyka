@@ -65,6 +65,7 @@ const updatePreferencesSchema = z.object({
   tagsSectionHeight: z.number().int().min(40).max(400).optional(),
   sharedCollapsed: z.boolean().optional(),
   sharedSectionHeight: z.number().int().min(40).max(400).optional(),
+  focusEditorWidth: z.number().int().min(40).max(100).optional(),
 })
 
 /**
