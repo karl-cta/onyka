@@ -222,6 +222,58 @@
   font-size: 0.875em;
 }
 
+/* Code block copy button (ProseMirror widget decoration) */
+.fluid-editor-content pre {
+  position: relative;
+}
+
+.code-block-copy-wrapper {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  z-index: 2;
+  user-select: none;
+  float: right;
+  height: 0;
+  overflow: visible;
+}
+
+.code-block-copy {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  color: var(--color-text-tertiary);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.15s ease, color 0.15s ease, background 0.15s ease;
+}
+
+.fluid-editor-content pre:hover .code-block-copy {
+  opacity: 1;
+}
+
+.code-block-copy:hover {
+  color: var(--color-text-primary);
+  background: var(--color-bg-tertiary);
+}
+
+.code-block-copy.copied {
+  color: var(--color-accent);
+  opacity: 1;
+}
+
+/* Mobile: always show copy button */
+@media (max-width: 767px) {
+  .code-block-copy {
+    opacity: 1;
+  }
+}
+
 .fluid-editor-content hr {
   border: none;
   height: 1px;

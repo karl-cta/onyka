@@ -98,7 +98,7 @@ export class SparksService {
     return updated
   }
 
-  async update(sparkId: string, userId: string, content: string): Promise<Spark> {
+  async update(sparkId: string, userId: string, input: { content?: string; expiration?: string }): Promise<Spark> {
     const spark = await sparkRepository.findById(sparkId)
 
     if (!spark) {
@@ -109,21 +109,35 @@ export class SparksService {
       throw new SparksServiceError('Access denied', 'ACCESS_DENIED', 403)
     }
 
-    // Validate content
-    if (!content || content.trim().length === 0) {
-      throw new SparksServiceError('Content is required', 'CONTENT_REQUIRED')
+    let result = spark
+
+    if (input.content !== undefined) {
+      if (!input.content || input.content.trim().length === 0) {
+        throw new SparksServiceError('Content is required', 'CONTENT_REQUIRED')
+      }
+      if (input.content.length > 2000) {
+        throw new SparksServiceError('Content must be less than 2000 characters', 'CONTENT_TOO_LONG')
+      }
+      const updated = await sparkRepository.updateContent(sparkId, input.content.trim())
+      if (!updated) {
+        throw new SparksServiceError('Failed to update spark', 'UPDATE_FAILED', 500)
+      }
+      result = updated
     }
 
-    if (content.length > 2000) {
-      throw new SparksServiceError('Content must be less than 2000 characters', 'CONTENT_TOO_LONG')
+    if (input.expiration !== undefined) {
+      const validExpirations = ['none', '1h', '24h', '7d', '30d']
+      if (!validExpirations.includes(input.expiration)) {
+        throw new SparksServiceError('Invalid expiration option', 'INVALID_EXPIRATION')
+      }
+      const updated = await sparkRepository.updateExpiration(sparkId, input.expiration as import('@onyka/shared').ExpirationOption)
+      if (!updated) {
+        throw new SparksServiceError('Failed to update spark', 'UPDATE_FAILED', 500)
+      }
+      result = updated
     }
 
-    const updated = await sparkRepository.updateContent(sparkId, content.trim())
-    if (!updated) {
-      throw new SparksServiceError('Failed to update spark', 'UPDATE_FAILED', 500)
-    }
-
-    return updated
+    return result
   }
 
   async delete(sparkId: string, userId: string): Promise<void> {

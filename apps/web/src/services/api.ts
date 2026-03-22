@@ -27,6 +27,7 @@ import type {
   SparkCreateInput,
   SparkStats,
   SparksList,
+  ExpirationOption,
 } from '@onyka/shared'
 
 const API_BASE = '/api'
@@ -591,10 +592,10 @@ export const sparksApi = {
       body: JSON.stringify(input),
     }),
 
-  update: (id: string, content: string) =>
+  update: (id: string, data: { content?: string; expiration?: ExpirationOption }) =>
     request<{ spark: Spark }>(`/sparks/${id}`, {
       method: 'PATCH',
-      body: JSON.stringify({ content }),
+      body: JSON.stringify(data),
     }),
 
   togglePin: (id: string) =>

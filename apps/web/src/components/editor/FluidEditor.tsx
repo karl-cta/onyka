@@ -18,6 +18,8 @@ import { useSmoothCaret, useIsMobile } from '../../hooks'
 import { marked } from 'marked'
 import { CustomImage } from './extensions/CustomImage'
 import { Columns, Column, type ColumnsLayout } from './extensions/Columns'
+import { MarkdownTableInput } from './extensions/MarkdownTableInput'
+import { CodeBlockCopy } from './extensions/CodeBlockCopy'
 import { uploadsApi } from '@/services/api'
 import { SLASH_MENU_ITEMS, type SlashMenuItem } from './editorConstants'
 
@@ -278,6 +280,7 @@ export const FluidEditor = memo(function FluidEditor({ content, onChange, placeh
           },
         },
       }),
+      CodeBlockCopy,
       Placeholder.configure({
         placeholder,
         emptyEditorClass: 'is-editor-empty',
@@ -327,6 +330,7 @@ export const FluidEditor = memo(function FluidEditor({ content, onChange, placeh
       TableCell,
       Columns,
       Column,
+      MarkdownTableInput,
     ],
     content: content || '',
     editorProps: {

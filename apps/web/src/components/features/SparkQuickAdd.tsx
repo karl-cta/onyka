@@ -1,10 +1,9 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
-import { IoListOutline, IoTimerOutline } from 'react-icons/io5'
+import { IoTimerOutline, IoCheckmarkOutline } from 'react-icons/io5'
 import { SparkIcon } from '@/components/ui'
 import { useSparksStore } from '@/stores/sparks'
-import { useIsMobile } from '@/hooks'
 import type { ExpirationOption } from '@onyka/shared'
 
 const EXPIRATION_OPTIONS: { value: ExpirationOption; labelKey: string }[] = [
@@ -15,9 +14,10 @@ const EXPIRATION_OPTIONS: { value: ExpirationOption; labelKey: string }[] = [
   { value: '30d', labelKey: 'sparks.expiration_options.30d' },
 ]
 
+type PanelState = 'idle' | 'submitting' | 'success' | 'success-closing' | 'closing'
+
 export function SparkQuickAdd() {
   const { t } = useTranslation()
-  const isMobile = useIsMobile()
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const panelRef = useRef<HTMLDivElement>(null)
   const expirationBtnRef = useRef<HTMLButtonElement>(null)
@@ -27,15 +27,22 @@ export function SparkQuickAdd() {
     isQuickAddOpen,
     closeQuickAdd,
     createSpark,
-    openDrawer,
   } = useSparksStore()
 
   const [content, setContent] = useState('')
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [showSuccess, setShowSuccess] = useState(false)
+  const [panelState, setPanelState] = useState<PanelState>('idle')
   const [expiration, setExpiration] = useState<ExpirationOption>('none')
   const [showExpirationMenu, setShowExpirationMenu] = useState(false)
   const [expirationMenuPos, setExpirationMenuPos] = useState({ bottom: 0, left: 0 })
+  // Keep panel mounted during exit animation
+  const [shouldRender, setShouldRender] = useState(false)
+
+  useEffect(() => {
+    if (isQuickAddOpen) {
+      setShouldRender(true)
+      setPanelState('idle')
+    }
+  }, [isQuickAddOpen])
 
   // Auto-focus textarea on open
   useEffect(() => {
@@ -63,19 +70,19 @@ export function SparkQuickAdd() {
         if (showExpirationMenu) {
           setShowExpirationMenu(false)
         } else {
-          closeQuickAdd()
+          gracefulClose()
         }
       }
     }
     document.addEventListener('keydown', handleEscape)
     return () => document.removeEventListener('keydown', handleEscape)
-  }, [isQuickAddOpen, closeQuickAdd, showExpirationMenu])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isQuickAddOpen, showExpirationMenu])
 
   // Reset on close
   useEffect(() => {
     if (!isQuickAddOpen) {
       setContent('')
-      setShowSuccess(false)
       setExpiration('none')
       setShowExpirationMenu(false)
     }
@@ -109,23 +116,38 @@ export function SparkQuickAdd() {
     }
   }, [showExpirationMenu])
 
-  const handleSubmit = useCallback(async () => {
-    if (!content.trim() || isSubmitting) return
+  const gracefulClose = useCallback(() => {
+    setPanelState('closing')
+    setTimeout(() => {
+      closeQuickAdd()
+      setShouldRender(false)
+      setPanelState('idle')
+    }, 200)
+  }, [closeQuickAdd])
 
-    setIsSubmitting(true)
+  const handleSubmit = useCallback(async () => {
+    if (!content.trim() || panelState !== 'idle') return
+
+    setPanelState('submitting')
     try {
       await createSpark(content.trim(), {
         expiration: expiration !== 'none' ? expiration : undefined,
       })
       setContent('')
-      setExpiration('none')
-      setShowSuccess(true)
-      setTimeout(() => setShowSuccess(false), 800)
-      textareaRef.current?.focus()
-    } finally {
-      setIsSubmitting(false)
+      setPanelState('success')
+      // Visible success → graceful exit
+      setTimeout(() => {
+        setPanelState('success-closing')
+        setTimeout(() => {
+          closeQuickAdd()
+          setShouldRender(false)
+          setPanelState('idle')
+        }, 250)
+      }, 800)
+    } catch {
+      setPanelState('idle')
     }
-  }, [content, isSubmitting, createSpark, expiration])
+  }, [content, panelState, createSpark, expiration, closeQuickAdd])
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
@@ -137,108 +159,105 @@ export function SparkQuickAdd() {
     [handleSubmit]
   )
 
-  const handleOpenFullDrawer = useCallback(() => {
-    closeQuickAdd()
-    openDrawer()
-  }, [closeQuickAdd, openDrawer])
-
-  if (!isQuickAddOpen) return null
+  if (!shouldRender) return null
 
   const activeExpiration = EXPIRATION_OPTIONS.find(o => o.value === expiration)
+  const isSuccess = panelState === 'success' || panelState === 'success-closing'
+  const isClosing = panelState === 'closing' || panelState === 'success-closing'
 
   return createPortal(
     <>
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 animate-fade-in"
-        onClick={closeQuickAdd}
+        className={`fixed inset-0 z-40 transition-opacity duration-200 ${
+          isClosing ? 'opacity-0' : 'opacity-100'
+        }`}
+        style={{ backgroundColor: 'rgba(0,0,0,0.35)', backdropFilter: 'blur(4px)' }}
+        onClick={() => panelState === 'idle' && gracefulClose()}
       />
 
       {/* Centering container */}
-      <div className="fixed inset-0 z-50 pointer-events-none flex justify-center pt-[22vh] p-4">
+      <div className="fixed inset-0 z-50 pointer-events-none flex justify-center pt-[20vh] p-4">
         {/* Panel */}
         <div
           ref={panelRef}
-          className="pointer-events-auto flex flex-col relative overflow-hidden w-full max-w-[440px] h-fit rounded-2xl spark-panel animate-quick-add-open"
+          className={`
+            pointer-events-auto flex flex-col relative overflow-hidden
+            w-full max-w-[460px] h-fit rounded-2xl spark-panel
+            transition-all
+            ${isClosing
+              ? 'spark-quick-add-exit'
+              : 'spark-quick-add-enter'
+            }
+            ${isSuccess ? 'spark-quick-add-success' : ''}
+          `}
         >
-          {/* Success feedback overlay */}
-          {showSuccess && (
-            <div className="absolute inset-0 pointer-events-none rounded-2xl overflow-hidden z-10">
-              <div className="absolute inset-0 bg-[var(--color-accent)]/5 animate-quick-add-flash" />
-              <div className="absolute top-0 left-0 right-0 h-0.5 bg-[var(--color-accent)] animate-accent-sweep" />
+          {isSuccess ? (
+            /* Success state — centered confirmation */
+            <div className="flex items-center justify-center gap-2.5 py-6 px-5 spark-success-content">
+              <IoCheckmarkOutline className="w-5 h-5 text-emerald-500" />
+              <span className="text-sm font-medium text-[var(--color-text-primary)]">
+                {t('sparks.captured')}
+              </span>
             </div>
-          )}
-
-          {/* Input area */}
-          <div className="p-4">
-            <div className="flex items-start gap-3">
-              <div className={`flex-shrink-0 mt-1.5 ${showSuccess ? 'animate-send-pulse' : ''}`}>
-                <SparkIcon className="w-5 h-5 text-[var(--color-accent)]" animated={showSuccess} />
-              </div>
-
-              <div className="flex-1 min-w-0">
+          ) : (
+            <>
+              {/* Input area */}
+              <div className="p-5 pb-4">
                 <textarea
                   ref={textareaRef}
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
                   onKeyDown={handleKeyDown}
                   placeholder={t('sparks.input_placeholder')}
-                  className="w-full bg-transparent text-[15px] text-[var(--color-text-primary)] placeholder:text-[var(--color-text-tertiary)] resize-none focus:outline-none min-h-[28px] max-h-[150px] leading-relaxed"
+                  disabled={isClosing}
+                  className="w-full bg-transparent text-[15px] leading-relaxed resize-none focus:outline-none min-h-[32px] max-h-[150px] text-[var(--color-text-primary)] placeholder:text-[var(--color-text-tertiary)]"
                   rows={1}
                   autoFocus
                   autoComplete="off"
                   enterKeyHint="send"
+                  maxLength={2000}
                 />
               </div>
-            </div>
-          </div>
 
-          {/* Footer */}
-          <div className="flex items-center justify-between px-4 py-2.5 border-t border-[var(--color-border)]">
-            <div className="flex items-center gap-1">
-              <button
-                onClick={handleOpenFullDrawer}
-                className="flex items-center gap-1.5 px-2 py-1.5 rounded-lg text-xs text-[var(--color-text-tertiary)] hover:text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-tertiary)] transition-colors"
-              >
-                <IoListOutline className="w-3.5 h-3.5" />
-                <span>{t('sparks.title')}</span>
-              </button>
+              {/* Footer */}
+              <div className="flex items-center justify-between px-5 py-3 border-t border-[var(--color-border)]">
+                <button
+                  ref={expirationBtnRef}
+                  onClick={() => setShowExpirationMenu(!showExpirationMenu)}
+                  className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs transition-colors ${
+                    expiration !== 'none'
+                      ? 'text-amber-600 dark:text-amber-400 bg-amber-500/10'
+                      : 'text-[var(--color-text-tertiary)] hover:text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-tertiary)]'
+                  }`}
+                  title={t('sparks.expiration')}
+                >
+                  <IoTimerOutline className="w-3.5 h-3.5" />
+                  {expiration !== 'none' && activeExpiration && (
+                    <span>{t(activeExpiration.labelKey)}</span>
+                  )}
+                </button>
 
-              <button
-                ref={expirationBtnRef}
-                onClick={() => setShowExpirationMenu(!showExpirationMenu)}
-                className={`flex items-center gap-1 px-2 py-1.5 rounded-lg text-xs transition-colors ${
-                  expiration !== 'none'
-                    ? 'text-amber-600 dark:text-amber-400 bg-amber-500/10'
-                    : 'text-[var(--color-text-tertiary)] hover:text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-tertiary)]'
-                }`}
-                title={t('sparks.expiration')}
-              >
-                <IoTimerOutline className="w-3.5 h-3.5" />
-                {expiration !== 'none' && activeExpiration && (
-                  <span>{t(activeExpiration.labelKey)}</span>
-                )}
-              </button>
-            </div>
-
-            <div className="flex items-center gap-3">
-              <span className="text-[11px] text-[var(--color-text-tertiary)] hidden sm:inline">
-                {t('sparks.enter_hint')}
-              </span>
-              <button
-                onClick={handleSubmit}
-                disabled={!content.trim() || isSubmitting}
-                className={`h-8 px-4 flex items-center gap-1.5 rounded-lg text-sm font-medium transition-all duration-200 ${
-                  content.trim()
-                    ? 'bg-[var(--color-accent)] hover:bg-[var(--color-accent-hover)] text-white shadow-sm'
-                    : 'bg-[var(--color-bg-tertiary)] text-[var(--color-text-tertiary)] cursor-not-allowed'
-                }`}
-              >
-                <SparkIcon className="w-3.5 h-3.5" />
-                <span>{t('sparks.send')}</span>
-              </button>
-            </div>
-          </div>
+                <div className="flex items-center gap-3">
+                  <span className="text-[11px] text-[var(--color-text-tertiary)] hidden sm:inline select-none">
+                    {t('sparks.enter_hint')}
+                  </span>
+                  <button
+                    onClick={handleSubmit}
+                    disabled={!content.trim() || panelState !== 'idle'}
+                    className={`h-8 px-4 flex items-center gap-1.5 rounded-lg text-sm font-medium transition-all duration-150 ${
+                      content.trim()
+                        ? 'bg-[var(--color-accent)] hover:bg-[var(--color-accent-hover)] text-white shadow-sm active:scale-95'
+                        : 'bg-[var(--color-bg-tertiary)] text-[var(--color-text-tertiary)] cursor-not-allowed'
+                    }`}
+                  >
+                    <SparkIcon className="w-3.5 h-3.5" />
+                    <span>{t('sparks.send')}</span>
+                  </button>
+                </div>
+              </div>
+            </>
+          )}
         </div>
       </div>
 
@@ -259,7 +278,7 @@ export function SparkQuickAdd() {
                 setExpiration(option.value)
                 setShowExpirationMenu(false)
               }}
-              className={`block w-full text-left px-3 py-2 text-sm hover:bg-[var(--color-bg-tertiary)] transition-colors ${
+              className={`block w-full text-left px-3.5 py-2 text-sm hover:bg-[var(--color-bg-tertiary)] transition-colors ${
                 expiration === option.value
                   ? 'text-[var(--color-accent)] font-medium'
                   : 'text-[var(--color-text-primary)]'

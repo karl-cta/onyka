@@ -112,6 +112,18 @@ export class SparkRepository {
     return this.findById(id)
   }
 
+  async updateExpiration(id: string, expiration: ExpirationOption): Promise<Spark | null> {
+    const expirationMs = EXPIRATION_MS[expiration]
+    const expiresAt = expirationMs ? new Date(Date.now() + expirationMs) : null
+
+    await db
+      .update(sparks)
+      .set({ expiresAt, isExpired: false })
+      .where(eq(sparks.id, id))
+
+    return this.findById(id)
+  }
+
   async delete(id: string): Promise<boolean> {
     const result = await db.delete(sparks).where(eq(sparks.id, id))
     return result.changes > 0

@@ -1,41 +1,99 @@
-@keyframes spark-drawer-open {
-  0% { opacity: 0; transform: scale(0.7) translateY(20px); filter: blur(10px); }
-  50% { opacity: 1; transform: scale(1.02) translateY(-5px); filter: blur(0); }
-  70% { transform: scale(0.98) translateY(2px); }
-  100% { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); }
+@keyframes spark-drawer-enter {
+  from {
+    opacity: 0;
+    transform: scale(0.97) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
 }
 
-.animate-spark-drawer-open {
-  animation: spark-drawer-open 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+.spark-drawer-enter {
+  animation: spark-drawer-enter 0.3s cubic-bezier(0.2, 0, 0, 1) both;
 }
 
-@keyframes quick-add-open {
-  from { opacity: 0; transform: scale(0.96) translateY(8px); }
-  to { opacity: 1; transform: scale(1) translateY(0); }
+/* QuickAdd panel animations */
+@keyframes quick-add-enter {
+  from {
+    opacity: 0;
+    transform: scale(0.97) translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
 }
 
-.animate-quick-add-open {
-  animation: quick-add-open 0.2s ease-out;
+.spark-quick-add-enter {
+  animation: quick-add-enter 0.25s cubic-bezier(0.2, 0, 0, 1) both;
 }
 
-@keyframes quick-add-flash {
-  0% { opacity: 0.8; }
-  100% { opacity: 0; }
+@keyframes quick-add-exit {
+  from {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.97) translateY(6px);
+  }
 }
 
-.animate-quick-add-flash {
-  animation: quick-add-flash 0.6s ease-out forwards;
+.spark-quick-add-exit {
+  animation: quick-add-exit 0.2s cubic-bezier(0.4, 0, 1, 1) both;
+  pointer-events: none;
 }
 
-@keyframes accent-sweep {
-  0% { transform: scaleX(0); opacity: 1; }
-  60% { transform: scaleX(1); opacity: 1; }
-  100% { transform: scaleX(1); opacity: 0; }
+.spark-quick-add-success {
+  box-shadow:
+    0 25px 60px -15px rgba(0, 0, 0, 0.25),
+    0 0 0 1px color-mix(in srgb, var(--color-accent) 40%, transparent),
+    0 0 20px -5px color-mix(in srgb, var(--color-accent) 30%, transparent) !important;
+  transition: box-shadow 0.3s ease;
 }
 
-.animate-accent-sweep {
-  transform-origin: left;
-  animation: accent-sweep 0.5s ease-out forwards;
+@keyframes success-badge-in {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Success content in QuickAdd */
+@keyframes success-content-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.spark-success-content {
+  animation: success-content-in 0.25s cubic-bezier(0.2, 0, 0, 1) both;
+}
+
+/* New spark card entrance in drawer */
+@keyframes spark-card-enter {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.spark-card-new {
+  animation: spark-card-enter 0.3s cubic-bezier(0.2, 0, 0, 1) both;
 }
 
 @keyframes spark-ignite {
@@ -143,13 +201,11 @@
 .spark-stagger-5 { animation-delay: 0.25s; }
 
 .spark-card-hover {
-  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease-out, border-color 0.2s ease-out;
+  transition: box-shadow 0.2s ease-out, border-color 0.2s ease-out;
 }
 
 .spark-card-hover:hover {
-  transform: translateY(-1px) scale(1.005);
-  box-shadow: 0 6px 16px -4px rgba(0, 0, 0, 0.08), 0 2px 6px -2px rgba(0, 0, 0, 0.03), 0 0 10px var(--color-accent-glow);
-  border-color: var(--color-accent);
+  box-shadow: 0 2px 8px -2px rgba(0, 0, 0, 0.06);
 }
 
 @keyframes danger-pulse {
@@ -306,11 +362,7 @@
 
 .spark-button:hover .spark-button-bg {
   background: var(--color-bg-elevated);
-  box-shadow: inset 0 1px 0 0 color-mix(in srgb, var(--color-accent) 15%, transparent), 0 4px 16px -4px color-mix(in srgb, var(--color-accent) 25%, transparent), 0 0 0 1px color-mix(in srgb, var(--color-accent) 20%, transparent);
-}
-
-.spark-button:hover .spark-button-bg::after {
-  animation: spark-shimmer 1.5s ease-in-out infinite;
+  box-shadow: 0 2px 8px -2px color-mix(in srgb, var(--color-accent) 20%, transparent);
 }
 
 .spark-button:active {
@@ -319,8 +371,8 @@
 
 .spark-button-inner {
   z-index: 2;
-  gap: 10px;
-  padding: 7px 13px;
+  gap: 8px;
+  padding: 8px 14px;
   position: relative;
   width: 100%;
   color: var(--color-text-primary);
@@ -333,34 +385,53 @@
   transition: color 0.2s ease-in-out;
 }
 
-.spark-button .spark-icon-wrapper {
-  position: relative;
+/* Split button layout — matches fold-button-inner geometry */
+.spark-button-split {
+  gap: 0;
+  padding: 0;
+}
+
+.spark-split-capture,
+.spark-split-library {
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
 }
 
-.spark-button .spark-icon-wrapper::before {
-  content: "";
-  position: absolute;
-  inset: -4px;
-  border-radius: 50%;
-  background: radial-gradient(circle, color-mix(in srgb, var(--color-accent) 40%, transparent) 0%, transparent 70%);
-  opacity: 0;
-  transition: opacity 0.3s ease, transform 0.3s ease;
-  transform: scale(0.5);
+.spark-split-capture {
+  padding: 8px 0 8px 14px;
 }
 
-.spark-button:hover .spark-icon-wrapper::before {
-  opacity: 1;
-  transform: scale(1.5);
+.spark-split-capture svg {
+  transition: transform 0.2s ease, filter 0.2s ease;
 }
 
-.spark-button .spark-icon-wrapper svg path { animation: none; }
-.spark-button:hover .spark-icon-wrapper svg path { animation: spark-pulse 1.5s ease-in-out infinite; }
-.spark-button .spark-icon-wrapper svg circle { animation: none; }
-.spark-button:hover .spark-icon-wrapper svg circle:first-of-type { animation: spark-twinkle 1.8s ease-in-out infinite; }
-.spark-button:hover .spark-icon-wrapper svg circle:last-of-type { animation: spark-twinkle-delayed 1.8s ease-in-out infinite 0.3s; }
+.spark-split-capture:hover svg {
+  transform: scale(1.15);
+  filter: drop-shadow(0 0 3px var(--color-accent));
+}
+
+.spark-split-capture:active svg {
+  transform: scale(0.9);
+}
+
+.spark-split-library {
+  flex: 1;
+  padding: 8px 14px 8px 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  transition: color 0.2s ease;
+}
+
+.spark-split-library:hover {
+  color: var(--color-accent);
+}
+
+.spark-split-library:active {
+  opacity: 0.7;
+}
 
 .spark-header-icon {
   position: relative;
@@ -410,49 +481,7 @@
 
 @media (max-width: 767px) {
   .animate-spark-float-idle,
-  .spark-btn-glow,
-  .animate-spark-pulse,
-  .animate-spark-twinkle,
-  .animate-spark-twinkle-delayed {
-    animation: none;
-  }
-
-  /* Disable blur-based animations on mobile */
-  .animate-spark-drawer-open {
-    animation: quick-add-open 0.2s ease-out;
-  }
-
-  .animate-spark-enter {
-    animation: animate-in 0.3s ease-out;
-  }
-
-  .animate-spark-exit {
-    animation: fade-in 0.2s ease-out reverse forwards;
-    pointer-events: none;
-  }
-
-  /* Disable filter-heavy animations */
-  .animate-pin-bounce,
-  .animate-send-pulse,
-  .animate-sparkle-convert {
-    animation: scale-in 0.3s ease-out;
-  }
-
-  .spark-button:hover .spark-icon-wrapper svg path,
-  .spark-button:hover .spark-icon-wrapper svg circle {
-    animation: none;
-  }
-
-  .spark-button:hover .spark-button-bg::after {
-    animation: none;
-  }
-
-  .spark-header-icon::before {
-    animation: none;
-    opacity: 0.5;
-  }
-
-  .delete-btn-hover:hover {
+  .spark-btn-glow {
     animation: none;
   }
 

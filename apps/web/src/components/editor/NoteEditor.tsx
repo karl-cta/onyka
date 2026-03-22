@@ -13,7 +13,6 @@ import {
   IoChatbubbleOutline,
   IoTextOutline,
   IoInformationCircleOutline,
-  IoCloseOutline,
   IoDownloadOutline,
 } from 'react-icons/io5'
 import type { NoteWithTags, Tag, NotePage } from '@onyka/shared'
@@ -93,7 +92,7 @@ export function NoteEditor({ note, onUpdate, onDelete }: NoteEditorProps) {
   const [showCommentsPanel, setShowCommentsPanel] = useState(false)
   const [showExportDialog, setShowExportDialog] = useState(false)
   const [showOptionsMenu, setShowOptionsMenu] = useState(false)
-  const [showNoteInfo, setShowNoteInfo] = useState(false)
+  const [noteInfoExpanded, setNoteInfoExpanded] = useState(false)
   const [collaboratorCount, setCollaboratorCount] = useState(0)
   const optionsMenuRef = useRef<HTMLDivElement>(null)
 
@@ -741,17 +740,6 @@ export function NoteEditor({ note, onUpdate, onDelete }: NoteEditorProps) {
                     <button
                       onClick={() => {
                         setShowOptionsMenu(false)
-                        setShowNoteInfo(!showNoteInfo)
-                      }}
-                      className="w-full flex items-center gap-2 px-3 h-8 text-sm text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-tertiary)] hover:text-[var(--color-text-primary)] transition-colors"
-                    >
-                      <IoInformationCircleOutline className="w-4 h-4" />
-                      <span>{t('editor.note_info')}</span>
-                    </button>
-
-                    <button
-                      onClick={() => {
-                        setShowOptionsMenu(false)
                         setShowExportDialog(true)
                       }}
                       className="w-full flex items-center gap-2 px-3 h-8 text-sm text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-tertiary)] hover:text-[var(--color-text-primary)] transition-colors"
@@ -813,28 +801,6 @@ export function NoteEditor({ note, onUpdate, onDelete }: NoteEditorProps) {
         />
       </div>
 
-      {showNoteInfo && (
-        <div className="flex justify-end px-6 mb-1">
-          <div className="inline-flex items-center gap-3 px-3 py-1.5 bg-[var(--color-bg-tertiary)] rounded-lg border border-[var(--color-border-subtle)] text-[11px] text-[var(--color-text-secondary)]">
-            <span>{t('editor.info_created')} <span className="text-[var(--color-text-primary)]">{formatNoteDate(note.createdAt, i18n.language)}</span></span>
-            <span className="opacity-30">·</span>
-            <span>{t('editor.info_modified')} <span className="text-[var(--color-text-primary)]">{formatNoteDate(lastModifiedAt.toISOString(), i18n.language)}</span></span>
-            <span className="opacity-30">·</span>
-            <span><span className="text-[var(--color-text-primary)]">{displayWordCount}</span> {t('editor.info_words').toLowerCase()}</span>
-            <span className="opacity-30">·</span>
-            <span><span className="text-[var(--color-text-primary)]">{pages.length}</span> {t('editor.info_pages').toLowerCase()}</span>
-            <span className="opacity-30">·</span>
-            <span><span className="text-[var(--color-text-primary)]">{localTags.length}</span> {t('editor.info_tags').toLowerCase()}</span>
-            <button
-              onClick={() => setShowNoteInfo(false)}
-              className="ml-1 p-0.5 hover:bg-[var(--color-bg-secondary)] rounded transition-colors"
-            >
-              <IoCloseOutline className="w-3.5 h-3.5" />
-            </button>
-          </div>
-        </div>
-      )}
-
       <div className="flex items-center gap-3 px-4 md:px-8 py-1.5">
         <div className="flex-1 min-w-0">
           <TagInput
@@ -845,8 +811,35 @@ export function NoteEditor({ note, onUpdate, onDelete }: NoteEditorProps) {
           />
         </div>
         {!focusMode && (
-          <div className="flex-shrink-0 text-[11px] text-[var(--color-text-tertiary)] pr-2">
+          <div className="flex-shrink-0 flex items-center gap-0 text-[11px] text-[var(--color-text-tertiary)] pr-2 overflow-hidden">
+            <div
+              className="flex items-center gap-2 transition-all duration-200 ease-out overflow-hidden"
+              style={{
+                maxWidth: noteInfoExpanded ? '600px' : '0px',
+                opacity: noteInfoExpanded ? 1 : 0,
+                marginRight: noteInfoExpanded ? '8px' : '0px',
+              }}
+            >
+              <span className="whitespace-nowrap">{t('editor.info_created')} <span className="text-[var(--color-text-primary)]">{formatNoteDate(note.createdAt, i18n.language)}</span></span>
+              <span className="opacity-30">·</span>
+              <span className="whitespace-nowrap"><span className="text-[var(--color-text-primary)]">{displayWordCount}</span> {t('editor.info_words').toLowerCase()}</span>
+              {pages.length > 1 && (
+                <>
+                  <span className="opacity-30">·</span>
+                  <span className="whitespace-nowrap"><span className="text-[var(--color-text-primary)]">{pages.length}</span> {t('editor.info_pages').toLowerCase()}</span>
+                </>
+              )}
+              <span className="opacity-30">·</span>
+              <span className="whitespace-nowrap"><span className="text-[var(--color-text-primary)]">{localTags.length}</span> {t('editor.info_tags').toLowerCase()}</span>
+            </div>
             <span className="whitespace-nowrap">{t('editor.modified_ago', { time: formatTimeAgo(lastModifiedAt, t) })}</span>
+            <button
+              onClick={() => setNoteInfoExpanded(!noteInfoExpanded)}
+              className="ml-1 p-0.5 rounded transition-all duration-150 hover:bg-[var(--color-bg-tertiary)] text-[var(--color-text-tertiary)] hover:text-[var(--color-text-secondary)]"
+              title={t('editor.note_info')}
+            >
+              <IoInformationCircleOutline className="w-3.5 h-3.5" />
+            </button>
           </div>
         )}
       </div>

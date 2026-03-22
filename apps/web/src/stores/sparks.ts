@@ -24,7 +24,7 @@ interface SparksState {
   fetchSparks: () => Promise<void>
   fetchStats: () => Promise<void>
   createSpark: (content: string, options?: { isPinned?: boolean; expiration?: ExpirationOption }) => Promise<Spark>
-  updateSpark: (id: string, content: string) => Promise<void>
+  updateSpark: (id: string, data: { content?: string; expiration?: ExpirationOption }) => Promise<void>
   togglePin: (id: string) => Promise<void>
   deleteSpark: (id: string) => Promise<void>
   convertToNote: (id: string, options: { title?: string; folderId?: string | null }) => Promise<string>
@@ -94,15 +94,27 @@ export const useSparksStore = create<SparksState>((set, get) => ({
     }
   },
 
-  updateSpark: async (id, content) => {
+  updateSpark: async (id, data) => {
     try {
-      const { spark } = await sparksApi.update(id, content)
+      const { spark } = await sparksApi.update(id, data)
 
-      set((state) => ({
-        pinned: state.pinned.map((s) => (s.id === id ? spark : s)),
-        temporary: state.temporary.map((s) => (s.id === id ? spark : s)),
-        permanent: state.permanent.map((s) => (s.id === id ? spark : s)),
-      }))
+      set((state) => {
+        // Remove from all categories first
+        const without = {
+          pinned: state.pinned.filter((s) => s.id !== id),
+          temporary: state.temporary.filter((s) => s.id !== id),
+          permanent: state.permanent.filter((s) => s.id !== id),
+        }
+
+        // Re-categorize based on updated spark
+        if (spark.isPinned) {
+          return { pinned: [spark, ...without.pinned], temporary: without.temporary, permanent: without.permanent }
+        } else if (spark.expiresAt) {
+          return { pinned: without.pinned, temporary: [spark, ...without.temporary], permanent: without.permanent }
+        } else {
+          return { pinned: without.pinned, temporary: without.temporary, permanent: [spark, ...without.permanent] }
+        }
+      })
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to update spark'
       set({ error: errorMessage })

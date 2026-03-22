@@ -25,7 +25,8 @@ const createSparkSchema = z.object({
 })
 
 const updateSparkSchema = z.object({
-  content: z.string().min(1, 'Content is required').max(2000, 'Content must be less than 2000 characters'),
+  content: z.string().min(1, 'Content is required').max(2000, 'Content must be less than 2000 characters').optional(),
+  expiration: z.enum(['none', '1h', '24h', '7d', '30d']).optional(),
 })
 
 const convertToNoteSchema = z.object({
@@ -69,7 +70,7 @@ router.post('/', createSparkRateLimit, async (req, res, next) => {
 router.patch('/:id', async (req, res, next) => {
   try {
     const input = updateSparkSchema.parse(req.body)
-    const spark = await sparksService.update(req.params.id, req.userId!, input.content)
+    const spark = await sparksService.update(req.params.id, req.userId!, input)
     res.json({ spark })
   } catch (error) {
     next(error)

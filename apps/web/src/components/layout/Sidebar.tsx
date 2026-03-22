@@ -14,6 +14,7 @@ import {
   IoAddOutline,
   IoPricetagOutline,
   IoShieldOutline,
+  IoDocumentTextOutline,
 } from 'react-icons/io5'
 import { Link } from 'react-router-dom'
 import { DndContext, DragOverlay, pointerWithin, useDroppable } from '@dnd-kit/core'
@@ -124,9 +125,9 @@ function RootDropZone({ isDragging, isActive }: { isDragging: boolean; isActive:
 }
 
 interface SidebarProps {
-  onOpenSearch: () => void
   onSelectNote: (noteId: string) => void
   selectedNoteId: string | null
+  searchInputRef?: React.RefObject<HTMLInputElement | null>
 }
 
 export function MobileHeader({ onOpenSidebar, onOpenSearch }: { onOpenSidebar: () => void; onOpenSearch: () => void }) {
@@ -157,7 +158,7 @@ export function MobileHeader({ onOpenSidebar, onOpenSearch }: { onOpenSidebar: (
   )
 }
 
-export function Sidebar({ onOpenSearch, onSelectNote, selectedNoteId }: SidebarProps) {
+export function Sidebar({ onSelectNote, selectedNoteId, searchInputRef }: SidebarProps) {
   const { t } = useTranslation()
   const { logout, user } = useAuthStore()
   const {
@@ -168,7 +169,16 @@ export function Sidebar({ onOpenSearch, onSelectNote, selectedNoteId }: SidebarP
     selectedNoteIds,
     toggleNoteSelection,
     clearNoteSelection,
+    searchResults,
+    isSearching,
+    search,
+    clearSearch,
   } = useNotesStore()
+
+  const [searchQuery, setSearchQuery] = useState('')
+  const localSearchRef = useRef<HTMLInputElement>(null)
+  const searchRef = searchInputRef || localSearchRef
+  const isSearchActive = searchQuery.length > 0
   const {
     folderTree,
     rootNotes,
@@ -186,7 +196,7 @@ export function Sidebar({ onOpenSearch, onSelectNote, selectedNoteId }: SidebarP
     clearFolderSelection,
   } = useFoldersStore()
   const { sidebarCollapsed, toggleSidebar, sidebarWidth, setSidebarWidth, tagsCollapsed, toggleTagsCollapsed, tagsSectionHeight, setTagsSectionHeight, mobileSidebarOpen, closeMobileSidebar, focusMode } = useThemeStore()
-  const { openQuickAdd, fetchStats } = useSparksStore()
+  const { openQuickAdd, openDrawer, fetchStats } = useSparksStore()
   const { fetchMyShares } = useSharesStore()
   const isMobile = useIsMobile()
 
@@ -248,6 +258,21 @@ export function Sidebar({ onOpenSearch, onSelectNote, selectedNoteId }: SidebarP
     const isInSelection = selectedNoteIds.includes(dragState.activeItem.id)
     return isInSelection ? selectedNoteIds.length - 1 : 0
   }
+
+  // Debounced search
+  useEffect(() => {
+    if (!searchQuery.trim()) {
+      clearSearch()
+      return
+    }
+    const timer = setTimeout(() => search(searchQuery), 200)
+    return () => clearTimeout(timer)
+  }, [searchQuery, search, clearSearch])
+
+  const clearSearchField = useCallback(() => {
+    setSearchQuery('')
+    clearSearch()
+  }, [clearSearch])
 
   useEffect(() => {
     fetchFolderTree()
@@ -690,14 +715,31 @@ export function Sidebar({ onOpenSearch, onSelectNote, selectedNoteId }: SidebarP
       </div>
 
       <div className="px-3 pb-3">
-        <button
-          onClick={onOpenSearch}
-          className="w-full h-9 flex items-center gap-2 px-3 rounded-lg bg-[var(--color-bg-tertiary)] hover:bg-[var(--color-bg-elevated)] text-[var(--color-text-tertiary)] transition-colors border border-[var(--color-border)]"
-          aria-label={t('sidebar.search_shortcut')}
-        >
-          <IoSearchOutline className="w-4 h-4" />
-          <span className="flex-1 text-left text-sm">{t('sidebar.search_placeholder')}</span>
-        </button>
+        <div className="relative flex items-center">
+          <IoSearchOutline className="absolute left-3 w-4 h-4 text-[var(--color-text-tertiary)] pointer-events-none" />
+          <input
+            ref={searchRef as React.RefObject<HTMLInputElement>}
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Escape') {
+                clearSearchField()
+                ;(e.target as HTMLInputElement).blur()
+              }
+            }}
+            placeholder={t('sidebar.search_placeholder')}
+            className="w-full h-9 pl-9 pr-8 rounded-lg bg-[var(--color-bg-tertiary)] hover:bg-[var(--color-bg-elevated)] focus:bg-[var(--color-bg-elevated)] text-sm text-[var(--color-text-primary)] placeholder:text-[var(--color-text-tertiary)] border border-[var(--color-border)] focus:border-[var(--color-accent)] focus:outline-none transition-colors"
+          />
+          {searchQuery && (
+            <button
+              onClick={clearSearchField}
+              className="absolute right-2 p-0.5 rounded hover:bg-[var(--color-bg-tertiary)] text-[var(--color-text-tertiary)] hover:text-[var(--color-text-primary)] transition-colors"
+            >
+              <IoCloseOutline className="w-4 h-4" />
+            </button>
+          )}
+        </div>
       </div>
 
       <div className="px-3 pb-3 space-y-2">
@@ -710,18 +752,23 @@ export function Sidebar({ onOpenSearch, onSelectNote, selectedNoteId }: SidebarP
             </span>
           </button>
 
-          <button
-            onClick={() => { openQuickAdd(); closeMobileSidebar() }}
-            className="spark-button group flex-1"
-          >
+          <div className="spark-button group flex-1">
             <span className="spark-button-bg" />
-            <span className="spark-button-inner">
-              <span className="spark-icon-wrapper">
-                <SparkIcon className="w-3.5 h-3.5 text-[var(--color-accent)]" />
-              </span>
-              <span>Sparks</span>
+            <span className="spark-button-inner spark-button-split">
+              <button
+                onClick={() => { openQuickAdd(); closeMobileSidebar() }}
+                className="spark-split-capture"
+              >
+                <SparkIcon className="w-[18px] h-[18px] text-[var(--color-accent)]" />
+              </button>
+              <button
+                onClick={() => { openDrawer(); closeMobileSidebar() }}
+                className="spark-split-library"
+              >
+                Sparks
+              </button>
             </span>
-          </button>
+          </div>
         </div>
 
         <button
@@ -733,7 +780,7 @@ export function Sidebar({ onOpenSearch, onSelectNote, selectedNoteId }: SidebarP
         </button>
       </div>
 
-      {showNewNoteInput && (
+      {showNewNoteInput && !isSearchActive && (
         <div className="px-3 pb-3">
           <input
             ref={newNoteInputRef}
@@ -758,7 +805,7 @@ export function Sidebar({ onOpenSearch, onSelectNote, selectedNoteId }: SidebarP
         </div>
       )}
 
-      {showNewFolderInput && (
+      {showNewFolderInput && !isSearchActive && (
         <div className="px-3 pb-3">
           <input
             type="text"
@@ -785,9 +832,48 @@ export function Sidebar({ onOpenSearch, onSelectNote, selectedNoteId }: SidebarP
 
       <nav
         className="flex-1 overflow-y-auto px-2 scrollbar-none min-h-0"
-        aria-label="File tree"
+        aria-label={isSearchActive ? t('search.results') : 'File tree'}
       >
-        {isFoldersLoading && folderTree.length === 0 && rootNotes.length === 0 ? (
+        {isSearchActive ? (
+          <div className="py-1">
+            {isSearching ? (
+              <div className="flex items-center justify-center py-8">
+                <div className="w-5 h-5 border-2 border-[var(--color-accent)] border-t-transparent rounded-full animate-spin" />
+              </div>
+            ) : searchResults.length > 0 ? (
+              searchResults.map((result) => (
+                <button
+                  key={result.id}
+                  onClick={() => {
+                    onSelectNote(result.id)
+                    clearSearchField()
+                    if (isMobile) closeMobileSidebar()
+                  }}
+                  className={`w-full flex items-start gap-2.5 px-2.5 py-2 rounded-lg transition-colors text-left ${
+                    selectedNoteId === result.id
+                      ? 'bg-[var(--color-accent)]/10 text-[var(--color-accent)]'
+                      : 'hover:bg-[var(--color-bg-tertiary)] text-[var(--color-text-primary)]'
+                  }`}
+                >
+                  <IoDocumentTextOutline className="w-4 h-4 text-[var(--color-text-tertiary)] mt-0.5 flex-shrink-0" />
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm font-medium truncate">
+                      {result.title || t('editor.untitled')}
+                    </div>
+                    <div
+                      className="text-xs text-[var(--color-text-tertiary)] line-clamp-2 [&_mark]:bg-amber-300/50 dark:[&_mark]:bg-amber-500/30 [&_mark]:text-inherit dark:[&_mark]:text-amber-200 [&_mark]:font-medium [&_mark]:rounded-sm [&_mark]:px-0.5"
+                      dangerouslySetInnerHTML={{ __html: result.preview.replace(/<(?!\/?mark>)[^>]+>/g, '') }}
+                    />
+                  </div>
+                </button>
+              ))
+            ) : searchQuery.trim() ? (
+              <div className="py-8 text-center text-sm text-[var(--color-text-tertiary)]">
+                {t('search.no_results')}
+              </div>
+            ) : null}
+          </div>
+        ) : isFoldersLoading && folderTree.length === 0 && rootNotes.length === 0 ? (
           <div className="space-y-1 px-1 py-1 animate-pulse">
             {/* Skeleton folder */}
             <div className="flex items-center gap-2 h-8 px-2 rounded-lg">
@@ -1257,7 +1343,7 @@ export function Sidebar({ onOpenSearch, onSelectNote, selectedNoteId }: SidebarP
               style={{ transitionDelay: sidebarCollapsed ? '250ms' : '0ms' }}
             >
               <button
-                onClick={() => { toggleSidebar(); setTimeout(onOpenSearch, 300) }}
+                onClick={() => { toggleSidebar(); setTimeout(() => searchRef.current?.focus(), 400) }}
                 className="collapsed-icon-btn p-2 rounded-xl text-[var(--color-text-tertiary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)] transition-all duration-200"
               >
                 <IoSearchOutline className="w-5 h-5" />
@@ -1295,7 +1381,7 @@ export function Sidebar({ onOpenSearch, onSelectNote, selectedNoteId }: SidebarP
               style={{ transitionDelay: sidebarCollapsed ? '350ms' : '0ms' }}
             >
               <button
-                onClick={openQuickAdd}
+                onClick={() => openDrawer()}
                 className="collapsed-icon-btn p-1.5 transition-colors duration-200"
               >
                 <span className="collapsed-spark-icon">

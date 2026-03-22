@@ -104,9 +104,9 @@ export function EditorBubbleMenu({ editor }: EditorBubbleMenuProps) {
         placement: 'top',
         flip: { fallbackPlacements: ['bottom'], padding: 8 },
         shift: { padding: 8 },
-        offset: 8,
+        offset: 12,
       }}
-      className={`flex items-center gap-0.5 px-2 py-1.5 bg-[var(--color-bg-elevated)] border border-[var(--color-border)] rounded-xl shadow-lg backdrop-blur-sm animate-scale-in z-50${isMobile ? ' bubble-menu-mobile' : ''}`}
+      className={`flex items-center gap-0.5 px-1.5 py-1 bg-[var(--color-bg-elevated)]/85 border border-[var(--color-border)]/60 rounded-2xl shadow-lg backdrop-blur-md animate-scale-in z-50${isMobile ? ' bubble-menu-mobile' : ''}`}
     >
       {showLinkInput ? (
         <div className="flex items-center gap-2">

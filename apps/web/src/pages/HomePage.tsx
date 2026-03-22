@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { OnykaLogo } from '@/components/ui/OnykaLogo'
 import { useTranslation } from 'react-i18next'
-import { Sidebar, SearchDialog, MobileHeader } from '@/components/layout'
+import { Sidebar, MobileHeader } from '@/components/layout'
 import { NoteEditor } from '@/components/editor'
 import { WeeklyRecapModal } from '@/components/features/WeeklyRecapModal'
 import { SparksDrawer } from '@/components/features/SparksDrawer'
@@ -23,8 +23,8 @@ import type { NoteUpdateInput } from '@onyka/shared'
 
 export function HomePage() {
   const { t } = useTranslation()
-  const [isSearchOpen, setIsSearchOpen] = useState(false)
   const [selectedNoteId, setSelectedNoteId] = useState<string | null>(null)
+  const searchInputRef = useRef<HTMLInputElement>(null)
   const { currentNote, fetchNote, updateNote, setCurrentNote, deleteNote } = useNotesStore()
   const { fetchFolderTree, triggerNewNoteInput } = useFoldersStore()
   const { focusMode, focusEditorWidth, setFocusEditorWidth, toggleFocusMode, openMobileSidebar, closeMobileSidebar } = useThemeStore()
@@ -66,7 +66,12 @@ export function HomePage() {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
         e.preventDefault()
-        setIsSearchOpen(true)
+        searchInputRef.current?.focus()
+      }
+      if (e.code === 'Space' && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault()
+        e.stopPropagation()
+        openSparkQuickAdd()
       }
       if (e.key.toLowerCase() === 'f' && (e.metaKey || e.ctrlKey) && e.shiftKey) {
         e.preventDefault()
@@ -85,7 +90,7 @@ export function HomePage() {
     }
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [toggleFocusMode, focusMode, focusEditorWidth, setFocusEditorWidth])
+  }, [toggleFocusMode, focusMode, focusEditorWidth, setFocusEditorWidth, openSparkQuickAdd])
 
   useEffect(() => {
     if (!isResizingFocus) return
@@ -164,14 +169,14 @@ export function HomePage() {
       {!focusMode && (
         <MobileHeader
           onOpenSidebar={openMobileSidebar}
-          onOpenSearch={() => setIsSearchOpen(true)}
+          onOpenSearch={() => { openMobileSidebar(); setTimeout(() => searchInputRef.current?.focus(), 300) }}
         />
       )}
 
       <Sidebar
-        onOpenSearch={() => setIsSearchOpen(true)}
         onSelectNote={setSelectedNoteId}
         selectedNoteId={selectedNoteId}
+        searchInputRef={searchInputRef}
       />
 
       <main
@@ -269,15 +274,6 @@ export function HomePage() {
           </div>
         )}
       </main>
-
-      <SearchDialog
-        isOpen={isSearchOpen}
-        onClose={() => setIsSearchOpen(false)}
-        onSelectNote={(id) => {
-          setSelectedNoteId(id)
-          setIsSearchOpen(false)
-        }}
-      />
 
       {pendingRecap && (
         <WeeklyRecapModal

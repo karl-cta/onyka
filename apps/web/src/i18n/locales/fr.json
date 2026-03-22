@@ -680,6 +680,8 @@
     "convert": "Créer la note",
     "max_pins_reached": "Max 5 sparks épinglés",
     "enter_hint": "Entrée ↵",
+    "quick_capture": "Capture rapide",
+    "captured": "Capturé",
     "expiration": "Expire dans",
     "expiration_options": {
       "none": "Jamais",
