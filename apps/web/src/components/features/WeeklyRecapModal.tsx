@@ -66,7 +66,7 @@ export function WeeklyRecapModal({ isOpen, recap, onDismiss }: WeeklyRecapModalP
   return (
     <>
       <div
-        className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 animate-fade-in"
+        className="fixed inset-0 bg-black/30 z-50 animate-fade-in"
       />
 
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none">
@@ -75,7 +75,7 @@ export function WeeklyRecapModal({ isOpen, recap, onDismiss }: WeeklyRecapModalP
           role="dialog"
           aria-modal="true"
           aria-label={t('recap.title')}
-          className="bg-[var(--color-bg-primary)] border border-[var(--color-border)] rounded-2xl shadow-2xl w-full max-w-md overflow-hidden pointer-events-auto animate-scale-in"
+          className="rounded-2xl border w-full max-w-md overflow-hidden pointer-events-auto animate-scale-in floating-panel"
           onClick={(e) => e.stopPropagation()}
         >
           <div className="relative px-6 pt-6 pb-8 bg-gradient-to-br from-[var(--color-accent)]/20 via-[var(--color-accent)]/10 to-transparent">

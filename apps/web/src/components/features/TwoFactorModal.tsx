@@ -222,7 +222,7 @@ export function TwoFactorModal({ isOpen, onClose, onVerify, onResendCode, isLoad
   return (
     <>
       <div
-        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 animate-fade-in"
+        className="fixed inset-0 bg-black/30 z-50 animate-fade-in"
       />
 
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none">
@@ -236,9 +236,8 @@ export function TwoFactorModal({ isOpen, onClose, onVerify, onResendCode, isLoad
           aria-modal="true"
           aria-label={t('auth.two_factor.title')}
           className={`
-            bg-[var(--color-bg-primary)] border border-[var(--color-border)]
-            rounded-2xl shadow-2xl w-full max-w-sm pointer-events-auto
-            animate-scale-in overflow-hidden
+            rounded-2xl border w-full max-w-sm pointer-events-auto
+            animate-scale-in overflow-hidden floating-panel
             ${shake ? 'animate-error-shake' : ''}
             ${isSuccess ? 'scale-95 opacity-0 transition-all duration-300' : ''}
           `}

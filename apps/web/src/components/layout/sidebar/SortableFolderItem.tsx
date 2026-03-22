@@ -388,7 +388,7 @@ export function SortableFolderItem({
           createPortal(
               <div
                 ref={menuRef}
-                className="fixed z-[9999] bg-[var(--color-bg-elevated)] border border-[var(--color-border)] rounded-xl shadow-lg py-1.5 min-w-[160px] animate-scale-in"
+                className="fixed z-[9999] border rounded-xl py-1.5 min-w-[160px] animate-scale-in floating-panel"
                 style={{ top: menuPosition.y, left: menuPosition.x }}
               >
                 <button

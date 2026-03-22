@@ -453,13 +453,11 @@
 }
 
 .spark-panel {
-  background:
-    linear-gradient(var(--color-bg-secondary), var(--color-bg-secondary)) padding-box,
-    linear-gradient(135deg, var(--color-border) 0%, color-mix(in srgb, var(--color-accent) 25%, var(--color-border)) 50%, var(--color-border) 100%) border-box;
-  border: 1px solid transparent;
-  box-shadow:
-    0 25px 60px -15px rgba(0, 0, 0, 0.25),
-    0 0 40px -10px color-mix(in srgb, var(--color-accent-glow) 50%, transparent);
+  background: var(--color-bg-floating);
+  border: 1px solid var(--color-border-floating);
+  box-shadow: var(--shadow-floating);
+  -webkit-backdrop-filter: blur(var(--blur-floating));
+  backdrop-filter: blur(var(--blur-floating));
 }
 
 .spark-panel::before {

@@ -1,0 +1,7 @@
+.floating-panel {
+  background: var(--color-bg-floating);
+  border-color: var(--color-border-floating);
+  box-shadow: var(--shadow-floating);
+  -webkit-backdrop-filter: blur(var(--blur-floating));
+  backdrop-filter: blur(var(--blur-floating));
+}

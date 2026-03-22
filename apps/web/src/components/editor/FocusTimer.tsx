@@ -189,7 +189,7 @@ export function FocusTimer({ className = '' }: FocusTimerProps) {
           {showPresets && (
             <>
               <div className="fixed inset-0 z-40" onClick={() => setShowPresets(false)} />
-              <div className="absolute top-full left-0 mt-2 bg-[var(--color-bg-elevated)] border border-[var(--color-border)] rounded-xl shadow-lg py-1 z-50 animate-scale-in min-w-[120px]">
+              <div className="absolute top-full left-0 mt-2 border rounded-xl py-1 z-50 animate-scale-in min-w-[120px] floating-panel">
                 {POMODORO_PRESETS.map((preset) => (
                   <button
                     key={preset.label}

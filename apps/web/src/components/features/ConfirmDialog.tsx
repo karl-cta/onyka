@@ -66,14 +66,14 @@ export function ConfirmDialog({
   return createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center animate-fade-in">
       <div
-        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+        className="absolute inset-0 bg-black/30"
         onClick={onClose}
       />
 
       <div
         role="dialog"
         aria-modal="true"
-        className="relative w-full max-w-sm bg-[var(--color-bg-secondary)] rounded-xl shadow-xl border border-[var(--color-border)] animate-scale-in"
+        className="relative w-full max-w-sm rounded-xl border animate-scale-in floating-panel"
       >
         <button
           onClick={onClose}

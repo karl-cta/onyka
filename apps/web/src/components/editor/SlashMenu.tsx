@@ -43,7 +43,7 @@ export function SlashMenu({ items, selectedIndex, position, filter, onSelect, me
     <div
       ref={menuRef}
       onMouseDown={(e) => e.preventDefault()}
-      className="absolute z-50 w-72 max-w-[calc(100vw-1.5rem)] bg-[var(--color-bg-elevated)] border border-[var(--color-border)] rounded-xl shadow-xl overflow-hidden animate-scale-in"
+      className="absolute z-50 w-72 max-w-[calc(100vw-1.5rem)] border rounded-xl overflow-hidden animate-scale-in floating-panel"
       style={{
         top: position.top,
         left: Math.min(position.left, (typeof window !== 'undefined' ? window.innerWidth : 1024) - 304),

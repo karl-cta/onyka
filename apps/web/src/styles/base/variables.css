@@ -7,6 +7,12 @@
   --color-bg-glass: rgba(255, 255, 255, 0.9);
   --color-bg-glass-subtle: rgba(248, 250, 252, 0.8);
 
+  /* Floating */
+  --color-bg-floating: rgba(255, 255, 255, 0.50);
+  --color-border-floating: rgba(226, 232, 240, 0.35);
+  --shadow-floating: 0 8px 32px rgba(15, 23, 42, 0.12), 0 2px 8px rgba(15, 23, 42, 0.06);
+  --blur-floating: 24px;
+
   /* Accent */
   --color-accent: #F59E0B;
   --color-accent-hover: #FBBF24;
@@ -52,6 +58,12 @@
   --color-bg-elevated: #1A1A24;
   --color-bg-glass: rgba(18, 18, 26, 0.9);
   --color-bg-glass-subtle: rgba(18, 18, 26, 0.7);
+
+  /* Floating */
+  --color-bg-floating: rgba(15, 15, 25, 0.50);
+  --color-border-floating: rgba(255, 255, 255, 0.06);
+  --shadow-floating: 0 8px 32px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0, 0, 0, 0.4);
+  --blur-floating: 28px;
 
   /* Accent */
   --color-accent: #D97706;

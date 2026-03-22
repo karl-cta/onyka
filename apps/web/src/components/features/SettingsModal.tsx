@@ -225,7 +225,7 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
   return createPortal(
     <>
       <div
-        className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 animate-fade-in"
+        className="fixed inset-0 bg-black/30 z-50 animate-fade-in"
         onClick={onClose}
       />
 
@@ -235,7 +235,7 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
           role="dialog"
           aria-modal="true"
           aria-label={t('settings.title')}
-          className="bg-[var(--color-bg-primary)] border border-[var(--color-border)] rounded-xl sm:rounded-2xl shadow-2xl w-full max-w-2xl max-h-[95vh] sm:max-h-[85vh] overflow-hidden pointer-events-auto animate-scale-in flex flex-col"
+          className="rounded-xl sm:rounded-2xl border w-full max-w-2xl max-h-[95vh] sm:max-h-[85vh] overflow-hidden pointer-events-auto animate-scale-in flex flex-col floating-panel"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}

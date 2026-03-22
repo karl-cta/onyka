@@ -406,8 +406,7 @@ function TourCard({ step, direction, totalSteps, onNext, onSkip }: TourCardProps
 
   return (
     <motion.div
-      className="w-full max-w-sm rounded-3xl shadow-2xl overflow-hidden border border-[var(--color-border-subtle)]"
-      style={{ background: 'var(--color-bg-elevated)' }}
+      className="w-full max-w-sm rounded-3xl overflow-hidden border floating-panel"
       initial={{ opacity: 0, scale: 0.88, y: 30 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.88, y: 30 }}

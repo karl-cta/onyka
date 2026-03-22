@@ -229,11 +229,11 @@ export function ShareDialog({
   return createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={(e) => e.stopPropagation()} onMouseDown={(e) => e.stopPropagation()}>
       <div
-        className="absolute inset-0 bg-black/50 backdrop-blur-sm animate-fade-in"
+        className="absolute inset-0 bg-black/30 animate-fade-in"
         onClick={onClose}
       />
 
-      <div ref={focusTrapRef} role="dialog" aria-modal="true" aria-label={t('share.title')} className="relative w-full max-w-lg bg-[var(--color-bg-primary)] rounded-2xl shadow-2xl border border-[var(--color-border)] animate-scale-in">
+      <div ref={focusTrapRef} role="dialog" aria-modal="true" aria-label={t('share.title')} className="relative w-full max-w-lg rounded-2xl border animate-scale-in floating-panel">
         <header className="flex items-center justify-between px-6 py-4 border-b border-[var(--color-border)]">
           <div className="flex items-center gap-3">
             <div className="p-2 rounded-xl bg-[var(--color-accent)]/10">
@@ -317,7 +317,7 @@ export function ShareDialog({
                   {showSuggestions && suggestions.length > 0 && (
                     <div
                       ref={suggestionsRef}
-                      className="absolute top-full left-0 right-0 mt-1 bg-[var(--color-bg-elevated)] border border-[var(--color-border)] rounded-xl shadow-lg z-50 overflow-hidden max-h-48 overflow-y-auto"
+                      className="absolute top-full left-0 right-0 mt-1 border rounded-xl z-50 overflow-hidden max-h-48 overflow-y-auto floating-panel"
                     >
                       {suggestions.map((user, index) => (
                         <button
@@ -366,7 +366,7 @@ export function ShareDialog({
               {showPermissionDropdown && (
                 <>
                   <div className="fixed inset-0 z-10" onClick={() => setShowPermissionDropdown(false)} />
-                  <div className="absolute top-full right-0 mt-1 w-48 bg-[var(--color-bg-elevated)] border border-[var(--color-border)] rounded-xl shadow-lg z-20 overflow-hidden animate-scale-in py-1">
+                  <div className="absolute top-full right-0 mt-1 w-48 border rounded-xl z-20 overflow-hidden animate-scale-in py-1 floating-panel">
                     {permissionOptions.map((opt) => (
                       <button
                         key={opt.value}

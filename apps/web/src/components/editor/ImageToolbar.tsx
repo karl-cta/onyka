@@ -106,7 +106,7 @@ export function ImageToolbar({ editor, imageNode, containerWidth, onImageNodeCha
 
   return (
     <div
-      className={`absolute z-50 flex items-center gap-1 px-2 py-1.5 bg-[var(--color-bg-elevated)] border border-[var(--color-border)] rounded-xl shadow-lg backdrop-blur-sm animate-scale-in${isMobile ? ' editor-toolbar-mobile' : ''}`}
+      className={`absolute z-50 flex items-center gap-1 px-2 py-1.5 border rounded-xl animate-scale-in floating-panel${isMobile ? ' editor-toolbar-mobile' : ''}`}
       style={{
         top: Math.max(8, imageNode.rect.top - 52),
         left: leftPos,
@@ -148,7 +148,7 @@ export function ImageToolbar({ editor, imageNode, containerWidth, onImageNodeCha
           </svg>
         </button>
         {showSizeMenu && (
-          <div className="absolute top-full left-0 mt-1 py-1 bg-[var(--color-bg-elevated)] border border-[var(--color-border)] rounded-lg shadow-xl z-50 min-w-20">
+          <div className="absolute top-full left-0 mt-1 py-1 border rounded-lg z-50 min-w-20 floating-panel">
             {IMAGE_SIZES.map((size) => (
               <button
                 key={size.value || 'auto'}
@@ -184,7 +184,7 @@ export function ImageToolbar({ editor, imageNode, containerWidth, onImageNodeCha
           </svg>
         </button>
         {showBorderMenu && (
-          <div className="absolute top-full left-0 mt-1 py-1 bg-[var(--color-bg-elevated)] border border-[var(--color-border)] rounded-lg shadow-xl z-50 min-w-28">
+          <div className="absolute top-full left-0 mt-1 py-1 border rounded-lg z-50 min-w-28 floating-panel">
             {IMAGE_BORDER_STYLES.map((style) => (
               <button
                 key={style.value}

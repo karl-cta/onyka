@@ -73,7 +73,7 @@ export function TableToolbar({ editor, tableNode }: TableToolbarProps) {
 
   return (
     <div
-      className={`absolute z-50 flex items-center gap-0.5 px-2 py-1.5 bg-[var(--color-bg-elevated)] border border-[var(--color-border)] rounded-xl shadow-lg backdrop-blur-sm animate-scale-in${isMobile ? ' editor-toolbar-mobile' : ''}`}
+      className={`absolute z-50 flex items-center gap-0.5 px-2 py-1.5 border rounded-xl animate-scale-in floating-panel${isMobile ? ' editor-toolbar-mobile' : ''}`}
       style={{
         top: Math.max(4, tableNode.rect.top - 44),
         left: clampedLeft,

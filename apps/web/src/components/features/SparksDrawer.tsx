@@ -222,7 +222,7 @@ function SparkCard({ spark, onTogglePin, onDelete, onConvert, onEdit, onChangeEx
             {showExpMenu && createPortal(
               <div
                 ref={expMenuRef}
-                className="fixed py-1.5 bg-[var(--color-bg-elevated)] border border-[var(--color-border)] rounded-xl shadow-2xl z-[200] min-w-[130px]"
+                className="fixed py-1.5 border rounded-xl z-[200] min-w-[130px] floating-panel"
                 style={{
                   top: expMenuPos.top,
                   left: expMenuPos.left + 8,
@@ -452,7 +452,7 @@ export function SparksDrawer() {
     <>
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 animate-fade-in"
+        className="fixed inset-0 bg-black/25 z-40 animate-fade-in"
         onClick={closeDrawer}
       />
 
@@ -461,7 +461,7 @@ export function SparksDrawer() {
         {/* Panel */}
         <div
           ref={panelRef}
-          className="pointer-events-auto flex flex-col overflow-hidden w-full max-w-[500px] max-h-[70vh] rounded-2xl spark-panel spark-drawer-enter"
+          className="pointer-events-auto flex flex-col overflow-hidden w-full max-w-[500px] max-h-[70vh] rounded-2xl spark-panel spark-drawer-enter floating-panel"
         >
           {/* Header */}
           <div className="flex items-center justify-between px-5 py-4">

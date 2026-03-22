@@ -527,7 +527,7 @@ export function NoteEditor({ note, onUpdate, onDelete }: NoteEditorProps) {
                 )}
 
                 {showTypographyMenu && (
-                  <div className="absolute right-0 top-full mt-1 bg-[var(--color-bg-elevated)] border border-[var(--color-border)] rounded-xl shadow-lg py-2 z-50 min-w-[200px]">
+                  <div className="absolute right-0 top-full mt-1 border rounded-xl py-2 z-50 min-w-[200px] floating-panel">
                     <div className="px-3 pb-1.5">
                       <span className="text-[10px] font-semibold uppercase tracking-wider text-[var(--color-text-tertiary)]">
                         {t('settings.font_family')}
@@ -672,7 +672,7 @@ export function NoteEditor({ note, onUpdate, onDelete }: NoteEditorProps) {
                 </button>
 
                 {showOptionsMenu && (
-                  <div className="absolute right-0 top-full mt-1 w-52 bg-[var(--color-bg-elevated)] border border-[var(--color-border)] rounded-lg shadow-lg py-1 z-50">
+                  <div className="absolute right-0 top-full mt-1 w-52 border rounded-lg py-1 z-50 floating-panel">
                     {isCompact && (
                       <>
                         <button

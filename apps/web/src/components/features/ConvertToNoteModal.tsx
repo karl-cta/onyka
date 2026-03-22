@@ -131,11 +131,11 @@ export function ConvertToNoteModal({ isOpen, spark, folders, onClose, onConvert 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div
-        className="absolute inset-0 bg-black/50 backdrop-blur-sm animate-fade-in"
+        className="absolute inset-0 bg-black/30 animate-fade-in"
         onClick={onClose}
       />
 
-      <div ref={focusTrapRef} role="dialog" aria-modal="true" aria-label={t('sparks.convert_modal_title')} className="relative w-full max-w-lg bg-[var(--color-bg-elevated)] rounded-2xl border border-[var(--color-border)] shadow-2xl animate-scale-in">
+      <div ref={focusTrapRef} role="dialog" aria-modal="true" aria-label={t('sparks.convert_modal_title')} className="relative w-full max-w-lg rounded-2xl border animate-scale-in floating-panel">
         <div className="flex items-center justify-between p-5 border-b border-[var(--color-border)]">
           <div className="flex items-center gap-3">
             <div className="p-2 rounded-lg bg-[var(--color-accent)]/10">
@@ -207,7 +207,7 @@ export function ConvertToNoteModal({ isOpen, spark, folders, onClose, onConvert 
       {showFolderDropdown && createPortal(
         <div
           ref={dropdownRef}
-          className="fixed max-h-48 overflow-y-auto bg-[var(--color-bg-elevated)] border border-[var(--color-border)] rounded-xl shadow-2xl z-[200]"
+          className="fixed max-h-48 overflow-y-auto border rounded-xl z-[200] floating-panel"
           style={{
             top: dropdownPosition.top,
             left: dropdownPosition.left,

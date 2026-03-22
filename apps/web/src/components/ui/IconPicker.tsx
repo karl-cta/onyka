@@ -152,7 +152,7 @@ export function IconPicker({ selectedIcon, onSelectIcon, onClose, triggerRef }: 
 
       <div
         ref={containerRef}
-        className="fixed z-[9999] bg-[var(--color-bg-elevated)] border border-[var(--color-border)] rounded-xl shadow-2xl w-[320px] animate-scale-in overflow-hidden"
+        className="fixed z-[9999] border rounded-xl w-[320px] animate-scale-in overflow-hidden floating-panel"
         style={{ top: position.top, left: position.left }}
         onMouseDown={(e) => e.stopPropagation()}
         onClick={(e) => e.stopPropagation()}

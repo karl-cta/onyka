@@ -191,7 +191,7 @@ export function TwoFactorSetupModal({ isOpen, onClose, onEnabled }: TwoFactorSet
   return createPortal(
     <>
       <div
-        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 animate-fade-in"
+        className="fixed inset-0 bg-black/30 z-50 animate-fade-in"
       />
 
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none">
@@ -200,7 +200,7 @@ export function TwoFactorSetupModal({ isOpen, onClose, onEnabled }: TwoFactorSet
           role="dialog"
           aria-modal="true"
           aria-label={t('profile.two_factor.setup_title')}
-          className="bg-[var(--color-bg-primary)] border border-[var(--color-border)] rounded-2xl shadow-2xl w-full max-w-md max-h-[85vh] overflow-hidden pointer-events-auto animate-scale-in flex flex-col"
+          className="rounded-2xl border w-full max-w-md max-h-[85vh] overflow-hidden pointer-events-auto animate-scale-in flex flex-col floating-panel"
           onClick={(e) => e.stopPropagation()}
         >
           <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--color-border)] flex-shrink-0">

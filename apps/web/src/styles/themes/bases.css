@@ -8,6 +8,10 @@
   --color-bg-elevated: #2d2f3d;
   --color-bg-glass: rgba(40, 42, 54, 0.92);
   --color-bg-glass-subtle: rgba(40, 42, 54, 0.75);
+  --color-bg-floating: rgba(40, 42, 54, 0.48);
+  --color-border-floating: rgba(98, 114, 164, 0.2);
+  --shadow-floating: 0 8px 32px rgba(0, 0, 0, 0.45), 0 2px 8px rgba(0, 0, 0, 0.35);
+  --blur-floating: 20px;
   --color-text-primary: #f8f8f2;
   --color-text-secondary: #9fa4b6;
   --color-text-tertiary: #6272a4;
@@ -30,6 +34,10 @@
   --color-bg-elevated: #353c4a;
   --color-bg-glass: rgba(46, 52, 64, 0.92);
   --color-bg-glass-subtle: rgba(46, 52, 64, 0.75);
+  --color-bg-floating: rgba(46, 52, 64, 0.48);
+  --color-border-floating: rgba(76, 86, 106, 0.25);
+  --shadow-floating: 0 8px 32px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(0, 0, 0, 0.3);
+  --blur-floating: 20px;
   --color-text-primary: #eceff4;
   --color-text-secondary: #9aa5b8;
   --color-text-tertiary: #5e6a82;
@@ -52,6 +60,10 @@
   --color-bg-elevated: #1e1f2e;
   --color-bg-glass: rgba(26, 27, 38, 0.92);
   --color-bg-glass-subtle: rgba(26, 27, 38, 0.75);
+  --color-bg-floating: rgba(26, 27, 38, 0.48);
+  --color-border-floating: rgba(84, 92, 126, 0.2);
+  --shadow-floating: 0 8px 32px rgba(0, 0, 0, 0.55), 0 2px 8px rgba(0, 0, 0, 0.4);
+  --blur-floating: 22px;
   --color-text-primary: #c0caf5;
   --color-text-secondary: #8b92b3;
   --color-text-tertiary: #545c7e;
@@ -74,6 +86,10 @@
   --color-bg-elevated: #2c313a;
   --color-bg-glass: rgba(40, 44, 52, 0.92);
   --color-bg-glass-subtle: rgba(40, 44, 52, 0.75);
+  --color-bg-floating: rgba(40, 44, 52, 0.48);
+  --color-border-floating: rgba(92, 99, 112, 0.2);
+  --shadow-floating: 0 8px 32px rgba(0, 0, 0, 0.45), 0 2px 8px rgba(0, 0, 0, 0.35);
+  --blur-floating: 20px;
   --color-text-primary: #abb2bf;
   --color-text-secondary: #8b919e;
   --color-text-tertiary: #5c6370;
@@ -98,6 +114,10 @@
   --color-bg-elevated: #ffffff;
   --color-bg-glass: rgba(255, 255, 255, 0.92);
   --color-bg-glass-subtle: rgba(246, 248, 250, 0.85);
+  --color-bg-floating: rgba(255, 255, 255, 0.50);
+  --color-border-floating: rgba(209, 217, 224, 0.35);
+  --shadow-floating: 0 8px 32px rgba(31, 35, 40, 0.12), 0 2px 8px rgba(31, 35, 40, 0.06);
+  --blur-floating: 24px;
   --color-text-primary: #1f2328;
   --color-text-secondary: #59636e;
   --color-text-tertiary: #8b949e;
@@ -120,6 +140,10 @@
   --color-bg-elevated: #eff1f5;
   --color-bg-glass: rgba(239, 241, 245, 0.92);
   --color-bg-glass-subtle: rgba(230, 233, 239, 0.85);
+  --color-bg-floating: rgba(239, 241, 245, 0.50);
+  --color-border-floating: rgba(204, 208, 218, 0.35);
+  --shadow-floating: 0 8px 32px rgba(76, 79, 105, 0.10), 0 2px 8px rgba(76, 79, 105, 0.05);
+  --blur-floating: 24px;
   --color-text-primary: #4c4f69;
   --color-text-secondary: #6c6f85;
   --color-text-tertiary: #9ca0b0;
@@ -142,6 +166,10 @@
   --color-bg-elevated: #fffaf3;
   --color-bg-glass: rgba(250, 244, 237, 0.92);
   --color-bg-glass-subtle: rgba(244, 237, 232, 0.85);
+  --color-bg-floating: rgba(255, 250, 243, 0.50);
+  --color-border-floating: rgba(223, 218, 217, 0.35);
+  --shadow-floating: 0 8px 32px rgba(87, 82, 121, 0.10), 0 2px 8px rgba(87, 82, 121, 0.05);
+  --blur-floating: 24px;
   --color-text-primary: #575279;
   --color-text-secondary: #797593;
   --color-text-tertiary: #9893a5;
@@ -164,6 +192,10 @@
   --color-bg-elevated: #fafaf5;
   --color-bg-glass: rgba(245, 245, 240, 0.92);
   --color-bg-glass-subtle: rgba(234, 234, 229, 0.85);
+  --color-bg-floating: rgba(250, 250, 245, 0.50);
+  --color-border-floating: rgba(212, 212, 207, 0.35);
+  --shadow-floating: 0 8px 32px rgba(44, 44, 44, 0.08), 0 2px 8px rgba(44, 44, 44, 0.04);
+  --blur-floating: 24px;
   --color-text-primary: #2c2c2c;
   --color-text-secondary: #525252;
   --color-text-tertiary: #8a8a8a;

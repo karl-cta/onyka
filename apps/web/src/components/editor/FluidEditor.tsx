@@ -902,7 +902,7 @@ export const FluidEditor = memo(function FluidEditor({ content, onChange, placeh
       />
 
       {isUploadingImage && (
-        <div className="absolute top-2 right-2 z-50 flex items-center gap-2 px-3 py-1.5 bg-[var(--color-bg-elevated)] border border-[var(--color-border)] rounded-lg shadow-lg">
+        <div className="absolute top-2 right-2 z-50 flex items-center gap-2 px-3 py-1.5 border rounded-lg floating-panel">
           <div className="w-4 h-4 border-2 border-[var(--color-accent)] border-t-transparent rounded-full animate-spin" />
           <span className="text-sm text-[var(--color-text-secondary)]">
             {t('editor.uploading_image', 'Uploading...')}

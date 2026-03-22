@@ -426,7 +426,7 @@ export function ProfileEditModal({ isOpen, onClose }: ProfileEditModalProps) {
   return createPortal(
     <>
       <div
-        className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 animate-fade-in"
+        className="fixed inset-0 bg-black/30 z-50 animate-fade-in"
         onClick={onClose}
         aria-hidden="true"
       />
@@ -437,7 +437,7 @@ export function ProfileEditModal({ isOpen, onClose }: ProfileEditModalProps) {
           role="dialog"
           aria-modal="true"
           aria-label={t('profile.title')}
-          className="bg-[var(--color-bg-primary)] border border-[var(--color-border)] rounded-2xl shadow-2xl w-full max-w-[460px] max-h-[85vh] overflow-hidden pointer-events-auto animate-scale-in flex flex-col"
+          className="rounded-2xl border w-full max-w-[460px] max-h-[85vh] overflow-hidden pointer-events-auto animate-scale-in flex flex-col floating-panel"
           onClick={(e) => e.stopPropagation()}
         >
           <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--color-border)] flex-shrink-0">

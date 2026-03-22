@@ -91,7 +91,7 @@ export function AccentColorPicker({ collapsed = false }: AccentColorPickerProps)
   ]
 
   const popoverContent = (
-    <div className="bg-[var(--color-bg-elevated)] border border-[var(--color-border)] rounded-2xl shadow-xl p-5 w-[232px]">
+    <div className="rounded-2xl border p-5 w-[232px] floating-panel">
       {/* Header */}
       <div className="flex items-center gap-2.5 mb-5 pb-3 border-b border-[var(--color-border-subtle)]">
         <div

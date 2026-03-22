@@ -183,7 +183,7 @@ export function SparkQuickAdd() {
           ref={panelRef}
           className={`
             pointer-events-auto flex flex-col relative overflow-hidden
-            w-full max-w-[460px] h-fit rounded-2xl spark-panel
+            w-full max-w-[460px] h-fit rounded-2xl spark-panel floating-panel
             transition-all
             ${isClosing
               ? 'spark-quick-add-exit'
@@ -265,7 +265,7 @@ export function SparkQuickAdd() {
       {showExpirationMenu && createPortal(
         <div
           ref={expirationMenuRef}
-          className="fixed py-1.5 bg-[var(--color-bg-elevated)] border border-[var(--color-border)] rounded-xl shadow-2xl z-[200] min-w-[140px]"
+          className="fixed py-1.5 border rounded-xl z-[200] min-w-[140px] floating-panel"
           style={{
             bottom: expirationMenuPos.bottom,
             left: expirationMenuPos.left,

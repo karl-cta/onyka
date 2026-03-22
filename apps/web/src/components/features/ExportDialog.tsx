@@ -84,9 +84,9 @@ export function ExportDialog(props: ExportDialogProps) {
 
   return createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center" onClick={e => e.stopPropagation()} onMouseDown={e => e.stopPropagation()}>
-      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
+      <div className="absolute inset-0 bg-black/30" onClick={onClose} />
 
-      <div ref={focusTrapRef} role="dialog" aria-modal="true" aria-label={t('export.title')} className="relative w-full max-w-md bg-[var(--color-bg-secondary)] rounded-xl shadow-2xl border border-[var(--color-border)]">
+      <div ref={focusTrapRef} role="dialog" aria-modal="true" aria-label={t('export.title')} className="relative w-full max-w-md rounded-xl border floating-panel">
         <header className="flex items-center justify-between px-6 py-4 border-b border-[var(--color-border)]">
           <div className="flex items-center gap-3">
             <IoDownloadOutline className="w-5 h-5 text-[var(--color-accent)]" />

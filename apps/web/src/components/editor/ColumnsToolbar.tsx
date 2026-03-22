@@ -72,7 +72,7 @@ export function ColumnsToolbar({ editor, columnsNode, onColumnsNodeChange, onMou
 
   return (
     <div
-      className={`absolute z-50 flex items-center gap-1 px-2 py-1.5 bg-[var(--color-bg-elevated)] border border-[var(--color-border)] rounded-xl shadow-lg backdrop-blur-sm${isMobile ? ' editor-toolbar-mobile' : ''}`}
+      className={`absolute z-50 flex items-center gap-1 px-2 py-1.5 border rounded-xl floating-panel${isMobile ? ' editor-toolbar-mobile' : ''}`}
       style={{
         top,
         left: clampedLeft,

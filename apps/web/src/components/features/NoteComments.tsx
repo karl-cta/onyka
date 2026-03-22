@@ -261,7 +261,7 @@ export function NoteComments({ noteId, isOwner = false, isOpen, onClose }: NoteC
       )}
 
       <div
-        className={`fixed top-0 right-0 h-full w-80 bg-[var(--color-bg-primary)] border-l border-[var(--color-border)] shadow-2xl z-50 flex flex-col transition-transform duration-300 ease-out ${
+        className={`fixed top-0 right-0 h-full w-80 border-l z-50 flex flex-col transition-transform duration-300 ease-out floating-panel ${
           isOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
       >

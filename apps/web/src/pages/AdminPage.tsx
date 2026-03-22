@@ -376,7 +376,7 @@ function UsersSection() {
                           className="fixed inset-0 z-40"
                           onClick={() => setOpenMenuId(null)}
                         />
-                        <div className="absolute right-0 sm:right-0 top-full mt-2 z-50 min-w-[200px] max-w-[calc(100vw-2rem)] bg-[var(--color-bg-elevated)] rounded-xl border border-[var(--color-border)] shadow-xl py-2 animate-fade-in">
+                        <div className="absolute right-0 sm:right-0 top-full mt-2 z-50 min-w-[200px] max-w-[calc(100vw-2rem)] rounded-xl border py-2 animate-fade-in floating-panel">
                           {user.isDisabled ? (
                             <MenuButton
                               onClick={() => {

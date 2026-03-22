@@ -232,12 +232,12 @@ export function SessionsManager({ onSessionRevoked }: SessionsManagerProps) {
       {showRevokeAllConfirm && (
         <>
           <div
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[60]"
+            className="fixed inset-0 bg-black/30 z-[60]"
             onClick={() => setShowRevokeAllConfirm(false)}
           />
           <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 pointer-events-none">
             <div
-              className="bg-[var(--color-bg-primary)] border border-[var(--color-border)] rounded-xl shadow-xl w-full max-w-sm p-6 pointer-events-auto animate-scale-in"
+              className="rounded-xl border w-full max-w-sm p-6 pointer-events-auto animate-scale-in floating-panel"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-start gap-3">

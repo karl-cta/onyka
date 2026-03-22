@@ -142,7 +142,7 @@ export function TagInput({ selectedTags, onAddTag, onRemoveTag, onCreateTag }: T
       </div>
 
       {isOpen && (
-        <div className="absolute bottom-full left-0 right-0 mb-1 bg-[var(--color-bg-elevated)] border border-[var(--color-border)] rounded-lg shadow-lg z-10 max-h-40 overflow-y-auto">
+        <div className="absolute bottom-full left-0 right-0 mb-1 border rounded-lg z-10 max-h-40 overflow-y-auto floating-panel">
           {availableTags.length > 0 ? (
             <div className="py-0.5">
               {availableTags.map((tag) => (

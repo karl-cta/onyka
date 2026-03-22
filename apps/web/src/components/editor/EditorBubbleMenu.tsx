@@ -106,7 +106,7 @@ export function EditorBubbleMenu({ editor }: EditorBubbleMenuProps) {
         shift: { padding: 8 },
         offset: 12,
       }}
-      className={`flex items-center gap-0.5 px-1.5 py-1 bg-[var(--color-bg-elevated)]/85 border border-[var(--color-border)]/60 rounded-2xl shadow-lg backdrop-blur-md animate-scale-in z-50${isMobile ? ' bubble-menu-mobile' : ''}`}
+      className={`flex items-center gap-0.5 px-1.5 py-1 border rounded-2xl animate-scale-in z-50 floating-panel${isMobile ? ' bubble-menu-mobile' : ''}`}
     >
       {showLinkInput ? (
         <div className="flex items-center gap-2">
@@ -186,7 +186,7 @@ export function EditorBubbleMenu({ editor }: EditorBubbleMenuProps) {
             {showHighlightPicker && (
               <>
                 <div className="fixed inset-0 z-40" onMouseDown={() => setShowHighlightPicker(false)} />
-                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 p-2 bg-[var(--color-bg-elevated)] border border-[var(--color-border)] rounded-xl shadow-xl flex gap-1.5 z-50 animate-fade-in">
+                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 p-2 border rounded-xl flex gap-1.5 z-50 animate-fade-in floating-panel">
                   {HIGHLIGHT_COLORS.map((color) => (
                     <button
                       key={color.name}
@@ -224,7 +224,7 @@ export function EditorBubbleMenu({ editor }: EditorBubbleMenuProps) {
             {showColorPicker && (
               <>
                 <div className="fixed inset-0 z-40" onMouseDown={() => setShowColorPicker(false)} />
-                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 p-2 bg-[var(--color-bg-elevated)] border border-[var(--color-border)] rounded-xl shadow-xl flex gap-1.5 z-50 animate-fade-in">
+                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 p-2 border rounded-xl flex gap-1.5 z-50 animate-fade-in floating-panel">
                   {COLORS.map((color) => (
                     <button
                       key={color.name}
