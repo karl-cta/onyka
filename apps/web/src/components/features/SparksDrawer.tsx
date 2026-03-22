@@ -96,9 +96,8 @@ function SparkCard({ spark, onTogglePin, onDelete, onConvert, onEdit, onChangeEx
     <div
       className={`
         group relative rounded-xl transition-all duration-200
-        bg-[var(--color-bg-elevated)] border border-[var(--color-border)]
-        hover:border-[var(--color-border-strong,var(--color-border))]
-        hover:shadow-[0_2px_8px_-2px_rgba(0,0,0,0.08)]
+        bg-[var(--color-bg-floating)] border border-[var(--color-border-floating)]
+        hover:border-[var(--color-border)]
         ${isRemoving ? 'animate-spark-exit' : ''}
         ${isNew ? 'spark-card-new' : ''}
       `}
@@ -487,7 +486,7 @@ export function SparksDrawer() {
 
           {/* Inline compose */}
           <div className="px-5 pb-4">
-            <div className="flex items-end gap-2">
+            <div className="flex items-start gap-2">
               <textarea
                 ref={composeRef}
                 value={composeContent}
@@ -498,7 +497,7 @@ export function SparksDrawer() {
                 }}
                 onKeyDown={handleComposeKeyDown}
                 placeholder={t('sparks.input_placeholder')}
-                className="flex-1 min-w-0 bg-[var(--color-bg-primary)] rounded-xl px-3.5 py-2.5 text-[13px] text-[var(--color-text-primary)] placeholder:text-[var(--color-text-tertiary)] resize-none focus:outline-none border border-[var(--color-border)] focus:border-[var(--color-accent)]/40 min-h-[38px] max-h-[80px] leading-relaxed transition-colors"
+                className="flex-1 min-w-0 bg-[var(--color-bg-primary)] rounded-xl px-3.5 py-2.5 text-[13px] text-[var(--color-text-primary)] placeholder:text-[var(--color-text-tertiary)] resize-none focus:outline-none border border-[var(--color-border)] focus:border-[var(--color-accent)]/40 min-h-[42px] max-h-[80px] leading-relaxed transition-colors"
                 rows={1}
                 maxLength={2000}
               />

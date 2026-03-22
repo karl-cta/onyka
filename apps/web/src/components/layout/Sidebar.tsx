@@ -729,7 +729,7 @@ export function Sidebar({ onSelectNote, selectedNoteId, searchInputRef }: Sideba
               }
             }}
             placeholder={t('sidebar.search_placeholder')}
-            className="w-full h-9 pl-9 pr-8 rounded-lg bg-[var(--color-bg-tertiary)] hover:bg-[var(--color-bg-elevated)] focus:bg-[var(--color-bg-elevated)] text-sm text-[var(--color-text-primary)] placeholder:text-[var(--color-text-tertiary)] border border-[var(--color-border)] focus:border-[var(--color-accent)] focus:outline-none transition-colors"
+            className="w-full h-9 pl-9 pr-8 rounded-lg text-sm text-[var(--color-text-primary)] placeholder:text-[var(--color-text-tertiary)] border focus:outline-none floating-panel-interactive"
           />
           {searchQuery && (
             <button
@@ -742,8 +742,16 @@ export function Sidebar({ onSelectNote, selectedNoteId, searchInputRef }: Sideba
         </div>
       </div>
 
-      <div className="px-3 pb-3 space-y-2">
+      <div className="px-3 pb-3">
         <div className="flex gap-2">
+          <button
+            onClick={() => setShowNewFolderInput(true)}
+            className="h-[36px] w-[36px] flex-shrink-0 flex items-center justify-center rounded-lg text-[var(--color-text-tertiary)] hover:text-[var(--color-text-primary)] border floating-panel-interactive"
+            title={t('sidebar.new_folder')}
+          >
+            <IoFolderOpenOutline className="w-4 h-4" />
+          </button>
+
           <button onClick={handleShowNewNoteInput} className="fold-button group flex-1">
             <span className="fold-corner" />
             <span className="fold-button-inner">
@@ -761,6 +769,7 @@ export function Sidebar({ onSelectNote, selectedNoteId, searchInputRef }: Sideba
               >
                 <SparkIcon className="w-[18px] h-[18px] text-[var(--color-accent)]" />
               </button>
+              <span className="w-px self-stretch my-[6px] bg-[var(--color-border)]" />
               <button
                 onClick={() => { openDrawer(); closeMobileSidebar() }}
                 className="spark-split-library"
@@ -770,14 +779,6 @@ export function Sidebar({ onSelectNote, selectedNoteId, searchInputRef }: Sideba
             </span>
           </div>
         </div>
-
-        <button
-          onClick={() => setShowNewFolderInput(true)}
-          className="w-full h-[32px] flex items-center justify-center gap-2 rounded-lg bg-[var(--color-bg-tertiary)] hover:bg-[var(--color-bg-elevated)] text-[var(--color-text-tertiary)] hover:text-[var(--color-text-primary)] transition-colors border border-[var(--color-border)] text-sm"
-        >
-          <IoFolderOpenOutline className="w-3.5 h-3.5" />
-          <span>{t('sidebar.new_folder')}</span>
-        </button>
       </div>
 
       {showNewNoteInput && !isSearchActive && (

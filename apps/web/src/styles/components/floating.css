@@ -5,3 +5,22 @@
   -webkit-backdrop-filter: blur(var(--blur-floating));
   backdrop-filter: blur(var(--blur-floating));
 }
+
+.floating-panel-interactive {
+  background: var(--color-bg-floating);
+  border-color: var(--color-border-floating);
+  -webkit-backdrop-filter: blur(var(--blur-floating));
+  backdrop-filter: blur(var(--blur-floating));
+  transition: background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.floating-panel-interactive:hover {
+  background: var(--color-bg-glass);
+  border-color: var(--color-border);
+}
+
+.floating-panel-interactive:focus-within {
+  background: var(--color-bg-glass);
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 1px var(--color-accent-muted);
+}

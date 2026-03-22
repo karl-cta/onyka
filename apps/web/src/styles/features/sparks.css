@@ -335,18 +335,20 @@
   align-items: center;
   justify-content: center;
   border-radius: var(--round);
-  border: none;
+  border: 1px solid var(--color-border);
   outline: none;
-  padding: 1px;
-  background: linear-gradient(135deg, var(--color-border) 0%, color-mix(in srgb, var(--color-accent) 30%, var(--color-border)) 50%, var(--color-border) 100%);
+  padding: 0;
+  background: transparent;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .spark-button-bg {
   position: absolute;
-  inset: 1px;
-  border-radius: calc(var(--round) - 1px);
-  background: var(--color-bg-tertiary);
+  inset: 0;
+  border-radius: var(--round);
+  background: var(--color-bg-floating);
+  -webkit-backdrop-filter: blur(var(--blur-floating));
+  backdrop-filter: blur(var(--blur-floating));
   transition: background 0.3s ease, box-shadow 0.3s ease;
   overflow: hidden;
 }
@@ -361,8 +363,12 @@
 }
 
 .spark-button:hover .spark-button-bg {
-  background: var(--color-bg-elevated);
-  box-shadow: 0 2px 8px -2px color-mix(in srgb, var(--color-accent) 20%, transparent);
+  background: var(--color-bg-glass);
+}
+
+.spark-button:hover .spark-button-inner,
+.spark-button:hover .spark-split-library {
+  color: var(--color-accent);
 }
 
 .spark-button:active {
@@ -400,7 +406,7 @@
 }
 
 .spark-split-capture {
-  padding: 8px 0 8px 14px;
+  padding: 8px 10px 8px 14px;
 }
 
 .spark-split-capture svg {
@@ -418,7 +424,7 @@
 
 .spark-split-library {
   flex: 1;
-  padding: 8px 14px 8px 8px;
+  padding: 8px 14px 8px 10px;
   font-size: 14px;
   font-weight: 500;
   color: var(--color-text-primary);
