@@ -61,6 +61,7 @@ router.post('/register', async (req, res, next) => {
       ipAddress: req.ip || req.socket.remoteAddress || 'unknown',
     }
     const result = await authService.register(input, metadata)
+    logger.info('User registered', { username: input.username, ip: metadata.ipAddress })
 
     res.cookie('access_token', result.tokens!.accessToken, {
       ...COOKIE_OPTIONS,
@@ -101,6 +102,7 @@ router.post('/login', async (req, res, next) => {
     const result = await authService.login(input, ipAddress, rememberMe, metadata)
 
     if (result.requires2FA) {
+      logger.info('Login requires 2FA', { username: input.username, ip: ipAddress })
       // Check if this device is trusted (skip 2FA)
       const trustedDeviceToken = req.cookies?.[TRUSTED_DEVICE_COOKIE]
       if (trustedDeviceToken && result.userId) {
@@ -155,6 +157,8 @@ router.post('/login', async (req, res, next) => {
       maxAge: refreshExpiryDays * 24 * 60 * 60 * 1000,
     })
 
+    logger.info('Login success', { username: input.username, ip: ipAddress })
+
     res.json({
       user: result.user,
       tokens: {
@@ -164,6 +168,8 @@ router.post('/login', async (req, res, next) => {
       },
     })
   } catch (error) {
+    const ip = req.ip || req.socket.remoteAddress || 'unknown'
+    logger.warn('Login failed', { username: req.body?.username, ip })
     next(error)
   }
 })
@@ -254,6 +260,9 @@ router.patch('/me', authenticate, async (req, res, next) => {
   try {
     const input = updateProfileSchema.parse(req.body)
     const result = await authService.updateProfile(req.userId!, input)
+    if (input.newPassword) {
+      logger.info('Password changed', { userId: req.userId!.substring(0, 8) })
+    }
     res.json({ user: result })
   } catch (error) {
     next(error)
@@ -484,6 +493,7 @@ router.post('/2fa/enable', authenticate, async (req, res, next) => {
     const { code } = twoFactorCodeSchema.parse(req.body)
 
     const result = await twoFactorService.enable(req.userId!, code)
+    logger.info('2FA enabled', { userId: req.userId!.substring(0, 8) })
 
     res.json({
       message: '2FA has been enabled',
@@ -573,6 +583,7 @@ router.post('/2fa/disable', authenticate, async (req, res, next) => {
     const { password, code } = twoFactorDisableSchema.parse(req.body)
 
     await twoFactorService.disable(req.userId!, password, code)
+    logger.info('2FA disabled', { userId: req.userId!.substring(0, 8) })
 
     // Revoke all trusted devices when disabling 2FA
     await twoFactorService.revokeAllTrustedDevices(req.userId!)

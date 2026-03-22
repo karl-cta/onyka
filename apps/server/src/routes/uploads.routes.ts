@@ -21,6 +21,7 @@ import {
   readDecryptedFile,
 } from '../services/uploads.service.js'
 import { shareRepository } from '../repositories/share.repository.js'
+import { logger } from '../utils/logger.js'
 
 const router: Router = Router()
 
@@ -120,7 +121,7 @@ router.post(
       const result = processUploadedFile(req.file)
       res.status(201).json({ upload: result })
     } catch (err) {
-      console.error('Upload error:', err)
+      logger.error('Upload failed', err instanceof Error ? err : undefined)
       res.status(500).json({
         error: { code: 'UPLOAD_FAILED', message: 'Failed to upload file' },
       })

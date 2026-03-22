@@ -3,6 +3,7 @@ import { userRepository, passwordResetRepository } from '../repositories/index.j
 import { passwordService } from './password.service.js'
 import { tokenService } from './token.service.js'
 import { emailService } from './email.service.js'
+import { logger } from '../utils/logger.js'
 import { env } from '../config/env.js'
 import { AppError } from '../middleware/error.js'
 
@@ -52,7 +53,7 @@ export class PasswordResetService {
         expiresInMinutes: 30,
       })
       .catch((err) => {
-        console.error('Failed to send password reset email:', err)
+        logger.error('Failed to send password reset email', err instanceof Error ? err : undefined)
       })
   }
 

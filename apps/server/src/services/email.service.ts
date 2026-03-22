@@ -1,6 +1,7 @@
 import nodemailer from 'nodemailer'
 import type { Transporter } from 'nodemailer'
 import { env } from '../config/env.js'
+import { logger } from '../utils/logger.js'
 
 interface EmailOptions {
   to: string
@@ -31,7 +32,7 @@ export class EmailService {
   private initialize(): void {
     // Only initialize if SMTP is configured
     if (!env.SMTP_HOST || !env.SMTP_USER || !env.SMTP_PASS) {
-      console.warn('Email service not configured - SMTP settings missing')
+      logger.warn('Email service not configured — SMTP settings missing')
       return
     }
 
@@ -45,7 +46,7 @@ export class EmailService {
       },
     })
 
-    console.log(`[Email] SMTP configured: ${env.SMTP_HOST}:${env.SMTP_PORT} (secure=${env.SMTP_SECURE})`)
+    logger.info('SMTP configured', { host: env.SMTP_HOST, port: env.SMTP_PORT, secure: env.SMTP_SECURE })
   }
 
   isConfigured(): boolean {
@@ -54,7 +55,7 @@ export class EmailService {
 
   async send(options: EmailOptions): Promise<boolean> {
     if (!this.transporter) {
-      console.warn('Email not sent - SMTP not configured:', options.subject)
+      logger.warn('Email not sent — SMTP not configured', { subject: options.subject })
       return false
     }
 
@@ -66,10 +67,10 @@ export class EmailService {
         html: options.html,
         text: options.text,
       })
-      console.log(`[Email] Sent "${options.subject}" to ${options.to}`)
+      logger.info('Email sent', { subject: options.subject, to: options.to })
       return true
     } catch (error) {
-      console.error(`[Email] Failed to send "${options.subject}" to ${options.to}:`, error)
+      logger.error('Email send failed', error instanceof Error ? error : undefined, { subject: options.subject, to: options.to })
       return false
     }
   }

@@ -1,6 +1,7 @@
 import type { Request } from 'express'
 import { auditLogRepository } from '../repositories/audit-log.repository.js'
 import type { AuditActionType } from '../db/schema.js'
+import { logger } from '../utils/logger.js'
 
 export async function createAuditLog(
   req: Request,
@@ -27,7 +28,7 @@ export async function createAuditLog(
     })
   } catch (error) {
     // Non-blocking: audit failure shouldn't fail the request
-    console.error('Failed to create audit log:', error)
+    logger.error('Failed to create audit log', error instanceof Error ? error : undefined)
   }
 }
 
