@@ -207,6 +207,7 @@ export interface AuthResponse {
 export interface Auth2FARequiredResponse {
   requires2FA: true
   userId: string
+  pendingToken: string
 }
 
 export type LoginResponse = AuthResponse | Auth2FARequiredResponse
@@ -751,10 +752,10 @@ export const twoFactorApi = {
       body: JSON.stringify({ purpose }),
     }),
 
-  sendLoginCode: (userId: string) =>
+  sendLoginCode: (pendingToken: string) =>
     request<{ sent: boolean; message: string }>('/auth/2fa/send-login-code', {
       method: 'POST',
-      body: JSON.stringify({ userId }),
+      body: JSON.stringify({ pendingToken }),
     }),
 
   enable: (code: string) =>
@@ -775,10 +776,10 @@ export const twoFactorApi = {
       body: JSON.stringify({ password }),
     }),
 
-  verify: (userId: string, code: string, isRecoveryCode = false, rememberMe = false, trustDevice = false) =>
+  verify: (pendingToken: string, code: string, isRecoveryCode = false, rememberMe = false, trustDevice = false) =>
     request<{ user: User; tokens: { accessToken: string; refreshToken: string; expiresIn: number } }>('/auth/2fa/verify', {
       method: 'POST',
-      body: JSON.stringify({ userId, code, isRecoveryCode, rememberMe, trustDevice }),
+      body: JSON.stringify({ pendingToken, code, isRecoveryCode, rememberMe, trustDevice }),
     }),
 
   listTrustedDevices: () =>

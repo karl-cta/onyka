@@ -77,7 +77,11 @@ export const useAuthStore = create<AuthState>((set) => ({
 
       if ('requires2FA' in response && response.requires2FA) {
         const twoFAResponse = response as Auth2FARequiredResponse
-        throw { requires2FA: true, userId: twoFAResponse.userId }
+        throw {
+          requires2FA: true,
+          userId: twoFAResponse.userId,
+          pendingToken: twoFAResponse.pendingToken,
+        }
       }
 
       const user = (response as { user: User }).user

@@ -78,22 +78,19 @@ export class SearchService {
   private extractTextContent(content: string): string {
     if (!content) return ''
 
-    // Remove HTML tags and extract text content
-    // 1. Replace block-level tags with spaces (to preserve word boundaries)
+    // Decode entities first, then strip tags: avoids double-encoded payloads
+    // (e.g. `&amp;lt;script&amp;gt;`) surviving as real tags in the FTS index.
     let text = content
-      .replace(/<br\s*\/?>/gi, ' ')
-      .replace(/<\/?(p|div|h[1-6]|li|tr|td|th|blockquote|pre|hr)[^>]*>/gi, ' ')
-      // 2. Remove all remaining HTML tags
-      .replace(/<[^>]+>/g, '')
-      // 3. Decode common HTML entities
       .replace(/&nbsp;/gi, ' ')
       .replace(/&amp;/gi, '&')
       .replace(/&lt;/gi, '<')
       .replace(/&gt;/gi, '>')
       .replace(/&quot;/gi, '"')
       .replace(/&#39;/gi, "'")
-      .replace(/&[a-z]+;/gi, ' ') // Remove other entities
-      // 4. Normalize whitespace
+      .replace(/&[a-z]+;/gi, ' ')
+      .replace(/<br\s*\/?>/gi, ' ')
+      .replace(/<\/?(p|div|h[1-6]|li|tr|td|th|blockquote|pre|hr)[^>]*>/gi, ' ')
+      .replace(/<[^>]+>/g, '')
       .replace(/\s+/g, ' ')
       .trim()
 

@@ -32,6 +32,7 @@ import { useSparksStore } from '@/stores/sparks'
 import { useSharesStore } from '@/stores/shares'
 import type { FolderTreeItem } from '@/services/api'
 import type { FolderNote } from '@onyka/shared'
+import { renderSearchPreview } from '@/utils/highlight'
 
 import {
   useSidebarDnd,
@@ -861,10 +862,9 @@ export function Sidebar({ onSelectNote, selectedNoteId, searchInputRef }: Sideba
                     <div className="text-sm font-medium truncate">
                       {result.title || t('editor.untitled')}
                     </div>
-                    <div
-                      className="text-xs text-[var(--color-text-tertiary)] line-clamp-2 [&_mark]:bg-amber-300/50 dark:[&_mark]:bg-amber-500/30 [&_mark]:text-inherit dark:[&_mark]:text-amber-200 [&_mark]:font-medium [&_mark]:rounded-sm [&_mark]:px-0.5"
-                      dangerouslySetInnerHTML={{ __html: result.preview.replace(/<(?!\/?mark>)[^>]+>/g, '') }}
-                    />
+                    <div className="text-xs text-[var(--color-text-tertiary)] line-clamp-2 [&_mark]:bg-amber-300/50 dark:[&_mark]:bg-amber-500/30 [&_mark]:text-inherit dark:[&_mark]:text-amber-200 [&_mark]:font-medium [&_mark]:rounded-sm [&_mark]:px-0.5">
+                      {renderSearchPreview(result.preview)}
+                    </div>
                   </div>
                 </button>
               ))

@@ -1,9 +1,9 @@
-import { eq, and } from 'drizzle-orm'
+import { eq, and, or } from 'drizzle-orm'
 import { nanoid } from 'nanoid'
 import { db, schema } from '../db/index.js'
 import type { Share, ShareWithUser, Permission, ResourceType, ShareCreateInput } from '@onyka/shared'
 
-const { shares, users } = schema
+const { shares, users, notes, noteUploads } = schema
 
 export class ShareRepository {
   async findById(id: string): Promise<Share | null> {
@@ -208,12 +208,29 @@ export class ShareRepository {
     )
   }
 
-  /** Used to authorize image access for shared notes. */
-  async hasAnyShareFromOwner(userId: string, ownerId: string): Promise<boolean> {
+  /**
+   * True if `userId` can read at least one note that references this upload.
+   * Ownership of the upload itself must be checked separately by the caller.
+   */
+  async hasAccessToUpload(userId: string, filename: string): Promise<boolean> {
     const result = await db
-      .select({ id: shares.id })
-      .from(shares)
-      .where(and(eq(shares.ownerId, ownerId), eq(shares.sharedWithId, userId)))
+      .select({ noteId: noteUploads.noteId })
+      .from(noteUploads)
+      .innerJoin(notes, eq(notes.id, noteUploads.noteId))
+      .leftJoin(
+        shares,
+        and(
+          eq(shares.resourceId, notes.id),
+          eq(shares.resourceType, 'note'),
+          eq(shares.sharedWithId, userId)
+        )
+      )
+      .where(
+        and(
+          eq(noteUploads.filename, filename),
+          or(eq(notes.ownerId, userId), eq(shares.sharedWithId, userId))
+        )
+      )
       .limit(1)
     return result.length > 0
   }

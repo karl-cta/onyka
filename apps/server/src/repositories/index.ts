@@ -14,3 +14,5 @@ export { passwordResetRepository, PasswordResetRepository, type PasswordResetTok
 export { emailVerificationRepository, EmailVerificationRepository, type EmailVerificationToken } from './email-verification.repository.js'
 export { twoFactorRepository, TwoFactorRepository, type EmailOtpCode, type OtpPurpose } from './two-factor.repository.js'
 export { trustedDeviceRepository, TrustedDeviceRepository, type TrustedDevice } from './trusted-device.repository.js'
+export { noteUploadRepository, NoteUploadRepository } from './note-upload.repository.js'
+export { revokedAccessTokenRepository, RevokedAccessTokenRepository } from './revoked-access-token.repository.js'

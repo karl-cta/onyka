@@ -1,6 +1,6 @@
 import { eq, and, ne, count, isNotNull, gte, sql } from 'drizzle-orm'
 import { nanoid } from 'nanoid'
-import { db, schema } from '../db/index.js'
+import { db, rawDb, schema } from '../db/index.js'
 import type { User, UserCreateInput, UserUpdateInput, Language, UserRole, UserPreferences } from '@onyka/shared'
 
 const { users, notes } = schema
@@ -450,6 +450,65 @@ export class UserRepository {
       .where(eq(users.role, 'admin'))
       .limit(1)
     return result.length > 0
+  }
+
+  /**
+   * Atomic create: picks `admin` role only if no admin exists yet.
+   * Uses a SQLite write transaction so concurrent registrations cannot both
+   * observe `hasAdmin = false` and both become admin.
+   */
+  createWithAutoAdminRole(input: Omit<UserCreateInput, 'password'> & { passwordHash: string }): User {
+    const id = nanoid()
+    const now = new Date()
+    const nowSec = Math.floor(now.getTime() / 1000)
+    const name = input.name || input.username
+    const email = input.email?.toLowerCase() ?? null
+
+    const role: UserRole = rawDb.transaction(() => {
+      const existing = rawDb
+        .prepare("SELECT 1 FROM users WHERE role = 'admin' LIMIT 1")
+        .get() as { 1: number } | undefined
+      const chosen: UserRole = existing ? 'user' : 'admin'
+
+      rawDb
+        .prepare(
+          `INSERT INTO users (id, username, password_hash, name, email, role, created_at, updated_at)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
+        )
+        .run(id, input.username, input.passwordHash, name, email, chosen, nowSec, nowSec)
+
+      return chosen
+    })()
+
+    return {
+      id,
+      username: input.username,
+      name,
+      email: email ?? undefined,
+      emailVerified: false,
+      avatarColor: 'blue',
+      role,
+      isDisabled: false,
+      twoFactorEnabled: false,
+      trackingEnabled: true,
+      language: 'en',
+      theme: 'dark',
+      darkThemeBase: 'default',
+      lightThemeBase: 'default',
+      accentColor: 'amber',
+      editorFontSize: 'S',
+      editorFontFamily: 'plus-jakarta-sans',
+      sidebarCollapsed: false,
+      sidebarWidth: 288,
+      tagsCollapsed: false,
+      tagsSectionHeight: 120,
+      sharedCollapsed: false,
+      sharedSectionHeight: 150,
+      focusEditorWidth: 70,
+      onboardingCompleted: false,
+      createdAt: now,
+      updatedAt: now,
+    }
   }
 
   private mapToUser(row: typeof users.$inferSelect): User {

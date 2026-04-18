@@ -2,6 +2,7 @@ import { pageRepository } from '../repositories/page.repository.js'
 import { noteRepository } from '../repositories/note.repository.js'
 import { shareRepository } from '../repositories/share.repository.js'
 import { userRepository } from '../repositories/user.repository.js'
+import { noteUploadRepository } from '../repositories/note-upload.repository.js'
 import { statsService } from './stats.service.js'
 import { logger } from '../utils/index.js'
 import type { NotePage, NotePageCreateInput, NotePageUpdateInput } from '@onyka/shared'
@@ -39,7 +40,11 @@ export class PagesService {
     const pageCount = await pageRepository.countByNote(noteId)
     const title = input.title ?? `Page ${pageCount + 1}`
 
-    return pageRepository.create(noteId, { ...input, title })
+    const page = await pageRepository.create(noteId, { ...input, title })
+    if (page.content) {
+      await noteUploadRepository.syncFromPage(noteId)
+    }
+    return page
   }
 
   async updatePage(pageId: string, userId: string, input: NotePageUpdateInput): Promise<NotePage> {
@@ -72,6 +77,10 @@ export class PagesService {
       throw new PagesServiceError('Failed to update page', 'UPDATE_FAILED', 500)
     }
 
+    if (input.content !== undefined) {
+      await noteUploadRepository.syncFromPage(updated.noteId)
+    }
+
     return updated
   }
 
@@ -83,13 +92,13 @@ export class PagesService {
 
     await this.verifyNoteAccess(page.noteId, userId, 'edit')
 
-    // Prevent deleting the last page
     const pageCount = await pageRepository.countByNote(page.noteId)
     if (pageCount <= 1) {
       throw new PagesServiceError('Cannot delete the last page', 'CANNOT_DELETE_LAST_PAGE', 400)
     }
 
     await pageRepository.softDelete(pageId)
+    await noteUploadRepository.syncFromPage(page.noteId)
   }
 
   async reorderPage(pageId: string, userId: string, newPosition: number): Promise<NotePage> {

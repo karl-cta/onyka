@@ -131,11 +131,8 @@ router.post(
 
 /**
  * GET /api/uploads/:filename
- * Serve an uploaded file
- * Requires authentication. Access granted if:
- *   1. User owns the image
- *   2. User is admin
- *   3. Image owner has shared any note with this user
+ * Access granted if the user owns the image, is admin, or can read a note
+ * that references this upload.
  */
 router.get('/:filename', authenticate, downloadRateLimit, async (req, res) => {
   const { filename } = req.params
@@ -149,11 +146,10 @@ router.get('/:filename', authenticate, downloadRateLimit, async (req, res) => {
     })
   }
 
-  // Check access: owner, admin, or shared relationship
   const ownerId = await getUploadOwner(filename)
   if (ownerId && ownerId !== userId && !isAdmin) {
-    const hasShare = await shareRepository.hasAnyShareFromOwner(userId, ownerId)
-    if (!hasShare) {
+    const hasAccess = await shareRepository.hasAccessToUpload(userId, filename)
+    if (!hasAccess) {
       return res.status(403).json({
         error: { code: 'FORBIDDEN', message: 'Access denied' },
       })

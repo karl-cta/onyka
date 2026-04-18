@@ -14,7 +14,8 @@ export interface AuthResult {
   user: User | null
   tokens: TokenPair | null
   requires2FA?: boolean
-  userId?: string // Only sent when 2FA is required
+  userId?: string
+  pendingToken?: string
 }
 
 interface RateLimitInfo {
@@ -63,15 +64,11 @@ export class AuthService {
 
     const passwordHash = await passwordService.hash(input.password)
 
-    const hasAdmin = await userRepository.hasAnyAdmin()
-    const role = hasAdmin ? 'user' : 'admin'
-
-    const user = await userRepository.create({
+    const user = userRepository.createWithAutoAdminRole({
       username: input.username,
       name: input.name || input.username,
       email: input.email,
       passwordHash,
-      role,
     })
 
     await userRepository.setLastLoginAt(user.id)
@@ -145,11 +142,13 @@ export class AuthService {
     await loginAttemptRepository.create(input.username, ipAddress, true)
 
     if (userWithPassword.twoFactorEnabled) {
+      const pendingToken = await tokenService.generatePendingAuthToken(userWithPassword.id)
       return {
         user: null,
         tokens: null,
         requires2FA: true,
         userId: userWithPassword.id,
+        pendingToken,
       }
     }
 
@@ -199,6 +198,10 @@ export class AuthService {
     const userWithPassword = await userRepository.findByIdWithPassword(userId)
     if (!userWithPassword) {
       throw new AuthError('User not found', 'USER_NOT_FOUND', 404)
+    }
+
+    if (!userWithPassword.twoFactorEnabled) {
+      throw new AuthError('Two-factor authentication is not enabled for this user', 'TWO_FACTOR_NOT_ENABLED', 400)
     }
 
     if (userWithPassword.isDisabled) {

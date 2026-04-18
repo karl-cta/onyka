@@ -1,4 +1,5 @@
 import crypto from 'crypto'
+import { env } from '../config/env.js'
 import { userRepository, twoFactorRepository, trustedDeviceRepository, type OtpPurpose } from '../repositories/index.js'
 import { recoveryCodeService } from './recovery-code.service.js'
 import { passwordService } from './password.service.js'
@@ -32,10 +33,18 @@ export class TwoFactorService {
   }
 
   /**
-   * Hash OTP code for secure storage
+   * HMAC over short numeric OTPs: blocks local precomputation if the DB leaks.
+   * Secret comes from JWT_SECRET so it is already required and stable.
    */
-  private hashCode(code: string): string {
-    return crypto.createHash('sha256').update(code).digest('hex')
+  private hashOtp(code: string): string {
+    return crypto.createHmac('sha256', env.JWT_SECRET!).update(code).digest('hex')
+  }
+
+  /**
+   * SHA-256 for high-entropy trusted-device tokens (32 random bytes).
+   */
+  private hashToken(token: string): string {
+    return crypto.createHash('sha256').update(token).digest('hex')
   }
 
   /**
@@ -51,9 +60,12 @@ export class TwoFactorService {
       throw new TwoFactorError('No email address configured', 'NO_EMAIL', 400)
     }
 
-    // Check if email is verified (required for 2FA)
     if (!user.emailVerified) {
       throw new TwoFactorError('Email not verified', 'EMAIL_NOT_VERIFIED', 400)
+    }
+
+    if (purpose === 'login' && !user.twoFactorEnabled) {
+      throw new TwoFactorError('Two-factor authentication is not enabled', 'TWO_FACTOR_NOT_ENABLED', 400)
     }
 
     // Check rate limit
@@ -62,9 +74,8 @@ export class TwoFactorService {
       return { sent: false, waitSeconds }
     }
 
-    // Generate code
     const code = this.generateOtpCode()
-    const codeHash = this.hashCode(code)
+    const codeHash = this.hashOtp(code)
     const expiresAt = new Date(Date.now() + OTP_EXPIRY_MS)
 
     // Store hashed code
@@ -170,7 +181,7 @@ If you didn't request this code, you can safely ignore this email.
       return false
     }
 
-    const codeHash = this.hashCode(code)
+    const codeHash = this.hashOtp(code)
     const isValid = storedCode.code === codeHash
 
     if (!isValid) {
@@ -317,7 +328,7 @@ If you didn't request this code, you can safely ignore this email.
     metadata?: { userAgent?: string; ipAddress?: string }
   ): Promise<{ token: string; expiresAt: Date }> {
     const token = crypto.randomBytes(32).toString('hex')
-    const tokenHash = this.hashCode(token)
+    const tokenHash = this.hashToken(token)
     const expiresAt = new Date(Date.now() + TRUSTED_DEVICE_DAYS * 24 * 60 * 60 * 1000)
     const label = metadata?.userAgent ? this.parseUserAgentLabel(metadata.userAgent) : null
 
@@ -334,7 +345,7 @@ If you didn't request this code, you can safely ignore this email.
    * Check if a trusted device token is valid for a given user.
    */
   async verifyTrustedDevice(token: string, userId: string): Promise<boolean> {
-    const tokenHash = this.hashCode(token)
+    const tokenHash = this.hashToken(token)
     const device = await trustedDeviceRepository.findValidByTokenHash(tokenHash)
     return device !== null && device.userId === userId
   }

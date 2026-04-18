@@ -100,7 +100,7 @@ export function LoginPage() {
   const [rememberMe, setRememberMe] = useState(false)
   const [isRedirecting, setIsRedirecting] = useState(false)
   const [show2FAModal, setShow2FAModal] = useState(false)
-  const [pending2FACredentials, setPending2FACredentials] = useState<{ userId: string; rememberMe: boolean } | null>(null)
+  const [pending2FACredentials, setPending2FACredentials] = useState<{ pendingToken: string; rememberMe: boolean } | null>(null)
   const [countdown, setCountdown] = useState<number>(0)
   const countdownRef = useRef<NodeJS.Timeout | null>(null)
   const firstInputRef = useRef<HTMLInputElement>(null)
@@ -201,11 +201,12 @@ export function LoginPage() {
       setLoginSuccess(true)
       setTimeout(() => navigate('/', { replace: true }), 600)
     } catch (err: unknown) {
-      const error2FA = err as { requires2FA?: boolean; userId?: string } | null
-      if (error2FA?.requires2FA && error2FA?.userId) {
+      const error2FA = err as { requires2FA?: boolean; pendingToken?: string } | null
+      if (error2FA?.requires2FA && error2FA?.pendingToken) {
         clearError()
-        setPending2FACredentials({ userId: error2FA.userId, rememberMe })
-        twoFactorApi.sendLoginCode(error2FA.userId).catch(() => {})
+        const pendingToken = error2FA.pendingToken
+        setPending2FACredentials({ pendingToken, rememberMe })
+        twoFactorApi.sendLoginCode(pendingToken).catch(() => {})
         setShow2FAModal(true)
         setIsRedirecting(false)
         return
@@ -220,7 +221,7 @@ export function LoginPage() {
     if (!pending2FACredentials) return false
 
     try {
-      const result = await twoFactorApi.verify(pending2FACredentials.userId, code, isRecoveryCode, pending2FACredentials.rememberMe, trustDevice)
+      const result = await twoFactorApi.verify(pending2FACredentials.pendingToken, code, isRecoveryCode, pending2FACredentials.rememberMe, trustDevice)
       if (result.user) {
         setUser(result.user)
         setIsRedirecting(true)
@@ -237,7 +238,7 @@ export function LoginPage() {
   const handle2FAResendCode = useCallback(async () => {
     if (!pending2FACredentials) return { success: false }
     try {
-      const result = await twoFactorApi.sendLoginCode(pending2FACredentials.userId)
+      const result = await twoFactorApi.sendLoginCode(pending2FACredentials.pendingToken)
       return { success: result.sent }
     } catch (err) {
       const apiErr = err as { rateLimitInfo?: { retryAfter?: number } } | null

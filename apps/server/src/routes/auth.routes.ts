@@ -16,6 +16,17 @@ import { logger } from '../utils/logger.js'
 
 const router: RouterType = Router()
 
+router.use((_req, res, next) => {
+  res.setHeader('Cache-Control', 'no-store')
+  next()
+})
+
+function extractAccessToken(req: { headers: Record<string, unknown>; cookies?: Record<string, string> }): string | null {
+  const auth = req.headers['authorization']
+  if (typeof auth === 'string' && auth.startsWith('Bearer ')) return auth.slice(7)
+  return req.cookies?.access_token ?? null
+}
+
 const registerSchema = z.object({
   username: z.string().min(3, 'Username must be at least 3 characters').max(30, 'Username too long').regex(/^[a-zA-Z0-9_]+$/, 'Username can only contain letters, numbers, and underscores'),
   password: z.string().min(12, 'Password must be at least 12 characters').max(128, 'Password too long'),
@@ -141,6 +152,7 @@ router.post('/login', async (req, res, next) => {
       res.json({
         requires2FA: true,
         userId: result.userId,
+        pendingToken: result.pendingToken,
         rememberMe,
       })
       return
@@ -177,9 +189,13 @@ router.post('/login', async (req, res, next) => {
 router.post('/logout', async (req, res, next) => {
   try {
     const refreshToken = req.body.refreshToken || req.cookies?.refresh_token
+    const accessToken = extractAccessToken(req)
 
     if (refreshToken) {
       await authService.logout(refreshToken)
+    }
+    if (accessToken) {
+      await tokenService.revokeAccessToken(accessToken)
     }
 
     res.clearCookie('access_token', COOKIE_OPTIONS)
@@ -355,7 +371,15 @@ const passwordResetConfirmSchema = z.object({
   newPassword: z.string().min(12, 'Password must be at least 12 characters').max(128, 'Password too long'),
 })
 
-router.post('/password-reset/request', async (req, res, next) => {
+const passwordResetIpLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 5,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: { code: 'RATE_LIMITED', message: 'Too many password reset requests, please try again later' } },
+})
+
+router.post('/password-reset/request', passwordResetIpLimiter, async (req, res, next) => {
   try {
     const { identifier } = passwordResetRequestSchema.parse(req.body)
     await passwordResetService.requestReset(identifier)
@@ -393,12 +417,24 @@ const twoFactorCodeSchema = z.object({
 })
 
 const twoFactorVerifyLoginSchema = z.object({
-  userId: z.string().min(1, 'User ID is required'),
+  pendingToken: z.string().min(1, 'Pending auth token is required'),
   code: z.string().min(1, 'Code is required'),
   isRecoveryCode: z.boolean().default(false),
   rememberMe: z.boolean().default(false),
   trustDevice: z.boolean().default(false),
 })
+
+const sendLoginCodeSchema = z.object({
+  pendingToken: z.string().min(1, 'Pending auth token is required'),
+})
+
+async function resolvePendingUserId(token: string): Promise<string> {
+  const payload = await tokenService.verifyPendingAuthToken(token)
+  if (!payload) {
+    throw new AuthError('Invalid or expired pending auth token', 'INVALID_PENDING_TOKEN', 401)
+  }
+  return payload.sub
+}
 
 const twoFactorDisableSchema = z.object({
   password: z.string().min(1, 'Password is required'),
@@ -440,23 +476,24 @@ const sendLoginCodeIpLimiter = rateLimit({
   message: { error: { code: 'RATE_LIMITED', message: 'Too many code requests, please try again later' } },
 })
 
-// Rate limit send-login-code by userId in body (max 3 per 15 min)
 const sendLoginCodeUserLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 3,
   standardHeaders: true,
   legacyHeaders: false,
-  keyGenerator: (req) => `2fa-login:${req.body?.userId || req.ip}`,
+  keyGenerator: (req) => `2fa-login:${req.body?.pendingToken || req.ip}`,
   message: { error: { code: 'RATE_LIMITED', message: 'Too many code requests for this user, please try again later' } },
 })
 
 /**
  * POST /api/auth/2fa/send-login-code
- * Send OTP code for login (no auth required, uses userId).
+ * Send OTP for login. Requires a pending-auth token issued after a successful
+ * password step.
  */
 router.post('/2fa/send-login-code', sendLoginCodeIpLimiter, sendLoginCodeUserLimiter, async (req, res, next) => {
   try {
-    const { userId } = z.object({ userId: z.string().min(1) }).parse(req.body)
+    const { pendingToken } = sendLoginCodeSchema.parse(req.body)
+    const userId = await resolvePendingUserId(pendingToken)
 
     logger.info('[2FA] send-login-code requested', { userId: userId.substring(0, 8) })
 
@@ -519,7 +556,8 @@ const verify2faRateLimit = rateLimit({
  */
 router.post('/2fa/verify', verify2faRateLimit, async (req, res, next) => {
   try {
-    const { userId, code, isRecoveryCode, rememberMe, trustDevice } = twoFactorVerifyLoginSchema.parse(req.body)
+    const { pendingToken, code, isRecoveryCode, rememberMe, trustDevice } = twoFactorVerifyLoginSchema.parse(req.body)
+    const userId = await resolvePendingUserId(pendingToken)
 
     let isValid: boolean
 

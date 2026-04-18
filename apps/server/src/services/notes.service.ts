@@ -2,6 +2,7 @@ import { noteRepository, type NoteFilters } from '../repositories/note.repositor
 import { shareRepository } from '../repositories/share.repository.js'
 import { tagRepository } from '../repositories/tag.repository.js'
 import { userRepository } from '../repositories/user.repository.js'
+import { noteUploadRepository } from '../repositories/note-upload.repository.js'
 import { searchService, type SearchResult } from './search.service.js'
 import { statsService } from './stats.service.js'
 import { logger } from '../utils/index.js'
@@ -21,6 +22,7 @@ export class NotesServiceError extends Error {
 export class NotesService {
   async create(ownerId: string, input: NoteCreateInput): Promise<Note> {
     const note = await noteRepository.create(ownerId, input)
+    await noteUploadRepository.syncFromNoteContent(note.id, note.content)
     searchService.indexNote(note)
 
     // Track note creation for stats if tracking is enabled (fire and forget)
@@ -88,6 +90,10 @@ export class NotesService {
     const updated = await noteRepository.update(noteId, input)
     if (!updated) {
       throw new NotesServiceError('Failed to update note', 'UPDATE_FAILED', 500)
+    }
+
+    if (input.content !== undefined) {
+      await noteUploadRepository.syncFromNoteContent(noteId, updated.content)
     }
 
     searchService.indexNote(updated)

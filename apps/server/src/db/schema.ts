@@ -421,6 +421,32 @@ export const uploads = sqliteTable(
   ]
 )
 
+export const noteUploads = sqliteTable(
+  'note_uploads',
+  {
+    noteId: text('note_id')
+      .notNull()
+      .references(() => notes.id, { onDelete: 'cascade' }),
+    filename: text('filename')
+      .notNull()
+      .references(() => uploads.filename, { onDelete: 'cascade' }),
+  },
+  (table) => [
+    uniqueIndex('note_uploads_pk').on(table.noteId, table.filename),
+    index('note_uploads_filename_idx').on(table.filename),
+  ]
+)
+
+export const revokedAccessTokens = sqliteTable(
+  'revoked_access_tokens',
+  {
+    jti: text('jti').primaryKey(),
+    expiresAt: integer('expires_at', { mode: 'timestamp' }).notNull(),
+    createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
+  },
+  (table) => [index('revoked_access_tokens_expires_idx').on(table.expiresAt)]
+)
+
 export const auditActionEnum = [
   'USER_LISTED',
   'USER_VIEWED',
