@@ -92,6 +92,7 @@
     "highlight": "Highlight",
     "text_color": "Text color",
     "add_link": "Add link",
+    "open_link": "Open link",
     "focus_mode": "Focus mode",
     "exit_focus": "Exit focus mode",
     "focus_width": "Editor width",
@@ -712,7 +713,10 @@
     "delete": "Delete page",
     "delete_confirm": "Are you sure you want to delete this page?",
     "cannot_delete_last": "Cannot delete the last page",
-    "untitled": "Untitled Page"
+    "untitled": "Untitled Page",
+    "lock": "Lock page",
+    "unlock": "Unlock page",
+    "locked_banner": "Page is read-only"
   },
   "onboarding": {
     "welcome": "Welcome to Onyka",

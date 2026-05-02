@@ -1,7 +1,25 @@
 import { useState, useCallback, useRef, useEffect } from 'react'
-import { motion, AnimatePresence, Reorder } from 'framer-motion'
-import { IoPencil, IoTrashOutline } from 'react-icons/io5'
+import { motion, AnimatePresence } from 'framer-motion'
+import { IoPencil, IoTrashOutline, IoLockClosed, IoLockOpen } from 'react-icons/io5'
 import { useTranslation } from 'react-i18next'
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  TouchSensor,
+  KeyboardSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core'
+import type { DragEndEvent } from '@dnd-kit/core'
+import {
+  SortableContext,
+  arrayMove,
+  horizontalListSortingStrategy,
+  sortableKeyboardCoordinates,
+  useSortable,
+} from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
 import type { NotePage } from '@onyka/shared'
 
 interface PageTabsProps {
@@ -12,6 +30,7 @@ interface PageTabsProps {
   onPageDelete: (pageId: string) => void
   onPageRename: (pageId: string, newTitle: string) => void
   onPageReorder: (reorderedPages: NotePage[]) => void
+  onPageLockToggle: (pageId: string, isLocked: boolean) => void
 }
 
 interface ContextMenuState {
@@ -21,13 +40,103 @@ interface ContextMenuState {
   y: number
 }
 
+interface SortablePageTabProps {
+  page: NotePage
+  isActive: boolean
+  isEditing: boolean
+  editValue: string
+  placeholder: string
+  onClick: () => void
+  onDoubleClick: () => void
+  onContextMenu: (e: React.MouseEvent) => void
+  onEditChange: (value: string) => void
+  onEditFinish: () => void
+  onEditKeyDown: (e: React.KeyboardEvent) => void
+}
+
+function SortablePageTab({
+  page,
+  isActive,
+  isEditing,
+  editValue,
+  placeholder,
+  onClick,
+  onDoubleClick,
+  onContextMenu,
+  onEditChange,
+  onEditFinish,
+  onEditKeyDown,
+}: SortablePageTabProps) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: page.id, disabled: isEditing })
+
+  const style: React.CSSProperties = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.6 : 1,
+    zIndex: isDragging ? 10 : undefined,
+  }
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      data-dragging={isDragging || undefined}
+      className={`page-tab ${isActive ? 'active' : ''}`}
+      onClick={() => {
+        if (!isEditing && !isDragging) onClick()
+      }}
+      onDoubleClick={onDoubleClick}
+      onContextMenu={onContextMenu}
+      {...(isEditing ? {} : { ...attributes, ...listeners })}
+    >
+      {isEditing ? (
+        <input
+          type="text"
+          className="page-tab-input"
+          value={editValue}
+          onChange={(e) => onEditChange(e.target.value)}
+          onBlur={onEditFinish}
+          onKeyDown={onEditKeyDown}
+          onClick={(e) => e.stopPropagation()}
+          onPointerDown={(e) => e.stopPropagation()}
+          onFocus={(e) => e.currentTarget.select()}
+          autoFocus
+          placeholder={placeholder}
+        />
+      ) : (
+        <>
+          {page.isLocked && <IoLockClosed className="page-tab-lock-icon" aria-hidden />}
+          <span className="page-tab-title">{page.title}</span>
+        </>
+      )}
+
+      {isActive && !isDragging && (
+        <motion.div
+          layoutId="activePageTab"
+          className="page-tab-indicator"
+          transition={{ type: 'spring', stiffness: 500, damping: 35 }}
+        />
+      )}
+    </div>
+  )
+}
+
 export function PageTabs({
+  noteId,
   pages,
   activePageId,
   onPageChange,
   onPageDelete,
   onPageRename,
   onPageReorder,
+  onPageLockToggle,
 }: PageTabsProps) {
   const { t } = useTranslation()
   const [editingId, setEditingId] = useState<string | null>(null)
@@ -39,6 +148,12 @@ export function PageTabs({
     y: 0,
   })
   const contextMenuRef = useRef<HTMLDivElement>(null)
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 4 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 180, tolerance: 8 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
+  )
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -108,63 +223,60 @@ export function PageTabs({
     [pages.length, onPageDelete]
   )
 
+  const handleLockToggle = useCallback(
+    (pageId: string) => {
+      const page = pages.find((p) => p.id === pageId)
+      if (!page) return
+      setContextMenu((prev) => ({ ...prev, isOpen: false }))
+      onPageLockToggle(pageId, !page.isLocked)
+    },
+    [pages, onPageLockToggle]
+  )
+
+  const handleDragEnd = useCallback(
+    (event: DragEndEvent) => {
+      const { active, over } = event
+      if (!over || active.id === over.id) return
+
+      const oldIndex = pages.findIndex((p) => p.id === active.id)
+      const newIndex = pages.findIndex((p) => p.id === over.id)
+      if (oldIndex < 0 || newIndex < 0) return
+
+      const reordered = arrayMove(pages, oldIndex, newIndex)
+      onPageReorder(reordered)
+    },
+    [pages, onPageReorder]
+  )
+
   return (
     <>
-      <div className="page-tabs-wrapper">
-        <Reorder.Group
-          axis="x"
-          values={pages}
-          onReorder={onPageReorder}
-          className="flex items-stretch gap-0.5"
+      <div className="page-tabs-wrapper" key={noteId}>
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
         >
-          <AnimatePresence mode="popLayout">
-            {pages.map((page, index) => (
-              <Reorder.Item
-                key={page.id}
-                value={page}
-                initial={{ opacity: 0, y: -4 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.15, delay: index * 0.02 }}
-                className={`page-tab ${activePageId === page.id ? 'active' : ''}`}
-                onClick={() => {
-                  if (editingId !== page.id) {
-                    onPageChange(page.id)
-                  }
-                }}
-                onContextMenu={(e) => handleContextMenu(e, page.id)}
-                onDoubleClick={() => handleStartEdit(page.id)}
-                whileDrag={{ scale: 1.02, boxShadow: 'var(--shadow-md)' }}
-              >
-                {editingId === page.id ? (
-                  <input
-                    type="text"
-                    className="page-tab-input"
-                    value={editValue}
-                    onChange={(e) => setEditValue(e.target.value)}
-                    onBlur={() => handleFinishEdit(page.id)}
-                    onKeyDown={(e) => handleKeyDown(e, page.id)}
-                    onClick={(e) => e.stopPropagation()}
-                    autoFocus
-                    placeholder={t('pages.untitled')}
-                  />
-                ) : (
-                  <span className="page-tab-title">{page.title}</span>
-                )}
-
-                {/* Accent indicator — animated between tabs */}
-                {activePageId === page.id && (
-                  <motion.div
-                    layoutId="activePageTab"
-                    className="page-tab-indicator"
-                    transition={{ type: 'spring', stiffness: 500, damping: 35 }}
-                  />
-                )}
-              </Reorder.Item>
-            ))}
-          </AnimatePresence>
-        </Reorder.Group>
-
+          <SortableContext items={pages.map((p) => p.id)} strategy={horizontalListSortingStrategy}>
+            <div className="flex items-stretch gap-0.5">
+              {pages.map((page) => (
+                <SortablePageTab
+                  key={page.id}
+                  page={page}
+                  isActive={activePageId === page.id}
+                  isEditing={editingId === page.id}
+                  editValue={editValue}
+                  placeholder={t('pages.untitled')}
+                  onClick={() => onPageChange(page.id)}
+                  onDoubleClick={() => handleStartEdit(page.id)}
+                  onContextMenu={(e) => handleContextMenu(e, page.id)}
+                  onEditChange={setEditValue}
+                  onEditFinish={() => handleFinishEdit(page.id)}
+                  onEditKeyDown={(e) => handleKeyDown(e, page.id)}
+                />
+              ))}
+            </div>
+          </SortableContext>
+        </DndContext>
       </div>
 
       <AnimatePresence>
@@ -183,26 +295,42 @@ export function PageTabs({
               zIndex: 1000,
             }}
           >
-            <button
-              className="page-context-menu-item"
-              onClick={() => handleStartEdit(contextMenu.pageId!)}
-            >
-              <IoPencil />
-              <span>{t('pages.rename')}</span>
-            </button>
-            {pages.length > 1 && (
-              <button
-                className="page-context-menu-item danger"
-                onClick={() => handleDelete(contextMenu.pageId!)}
-              >
-                <IoTrashOutline />
-                <span>{t('pages.delete')}</span>
-              </button>
-            )}
+            {(() => {
+              const targetPage = pages.find((p) => p.id === contextMenu.pageId)
+              const locked = targetPage?.isLocked ?? false
+              return (
+                <>
+                  <button
+                    className="page-context-menu-item"
+                    onClick={() => handleStartEdit(contextMenu.pageId!)}
+                    disabled={locked}
+                  >
+                    <IoPencil />
+                    <span>{t('pages.rename')}</span>
+                  </button>
+                  <button
+                    className="page-context-menu-item"
+                    onClick={() => handleLockToggle(contextMenu.pageId!)}
+                  >
+                    {locked ? <IoLockOpen /> : <IoLockClosed />}
+                    <span>{locked ? t('pages.unlock') : t('pages.lock')}</span>
+                  </button>
+                  {pages.length > 1 && (
+                    <button
+                      className="page-context-menu-item danger"
+                      onClick={() => handleDelete(contextMenu.pageId!)}
+                      disabled={locked}
+                    >
+                      <IoTrashOutline />
+                      <span>{t('pages.delete')}</span>
+                    </button>
+                  )}
+                </>
+              )
+            })()}
           </motion.div>
         )}
       </AnimatePresence>
     </>
   )
 }
-

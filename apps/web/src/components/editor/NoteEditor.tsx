@@ -14,6 +14,8 @@ import {
   IoTextOutline,
   IoInformationCircleOutline,
   IoDownloadOutline,
+  IoLockClosed,
+  IoLockOpen,
 } from 'react-icons/io5'
 import type { NoteWithTags, Tag, NotePage } from '@onyka/shared'
 import { useAutoSave } from '@/hooks'
@@ -108,6 +110,8 @@ export function NoteEditor({ note, onUpdate, onDelete }: NoteEditorProps) {
     pagesByNote,
     activePageByNote,
     fetchPages,
+    refetchPages,
+    applyPageOrder,
     createPage,
     updatePage,
     deletePage,
@@ -342,10 +346,10 @@ export function NoteEditor({ note, onUpdate, onDelete }: NoteEditorProps) {
       sendContentChange(content, localTitleRef.current)
       triggerSave()
 
-      // Debounced state update — avoids re-rendering NoteEditor on every keystroke
       if (wordCountTimerRef.current) clearTimeout(wordCountTimerRef.current)
       wordCountTimerRef.current = setTimeout(() => {
         setLocalContent(content)
+        setLastModifiedAt(new Date())
       }, 500)
     },
     [triggerSave, sendContentChange]
@@ -433,13 +437,22 @@ export function NoteEditor({ note, onUpdate, onDelete }: NoteEditorProps) {
     await updatePage(pageId, { title: newTitle })
   }
 
+  const handlePageLockToggle = async (pageId: string, isLocked: boolean) => {
+    await updatePage(pageId, { isLocked })
+  }
+
   const handlePageReorder = async (reorderedPages: NotePage[]) => {
-    for (let i = 0; i < reorderedPages.length; i++) {
-      if (reorderedPages[i].position !== i) {
-        await pagesApi.reorder(reorderedPages[i].id, i)
-        await fetchPages(note.id)
-        break
-      }
+    const movedIndex = reorderedPages.findIndex((p, i) => p.position !== i)
+    if (movedIndex < 0) return
+
+    const orderedIds = reorderedPages.map((p) => p.id)
+    applyPageOrder(note.id, orderedIds)
+
+    try {
+      await pagesApi.reorder(reorderedPages[movedIndex].id, movedIndex)
+      await refetchPages(note.id)
+    } catch {
+      await refetchPages(note.id)
     }
   }
 
@@ -618,14 +631,25 @@ export function NoteEditor({ note, onUpdate, onDelete }: NoteEditorProps) {
                     <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
                     <div className="flex -space-x-2">
                       {collaborators.slice(0, 3).map((collab, i) => (
-                        <div
-                          key={collab.socketId}
-                          className="w-6 h-6 rounded-full bg-gradient-to-br from-[var(--color-accent)] to-[var(--color-accent-hover)] flex items-center justify-center text-white text-[10px] font-medium border-2 border-[var(--color-bg-primary)]"
-                          title={collab.name}
-                          style={{ zIndex: 3 - i }}
-                        >
-                          {collab.name?.[0]?.toUpperCase() || '?'}
-                        </div>
+                        collab.avatarUrl ? (
+                          <img
+                            key={collab.socketId}
+                            src={collab.avatarUrl}
+                            alt={collab.name}
+                            title={collab.name}
+                            className="w-6 h-6 rounded-full object-cover border-2 border-[var(--color-bg-primary)]"
+                            style={{ zIndex: 3 - i }}
+                          />
+                        ) : (
+                          <div
+                            key={collab.socketId}
+                            className="w-6 h-6 rounded-full bg-gradient-to-br from-[var(--color-accent)] to-[var(--color-accent-hover)] flex items-center justify-center text-white text-[10px] font-medium border-2 border-[var(--color-bg-primary)]"
+                            title={collab.name}
+                            style={{ zIndex: 3 - i }}
+                          >
+                            {collab.name?.[0]?.toUpperCase() || '?'}
+                          </div>
+                        )
                       ))}
                     </div>
                     {collaborators.length > 3 && (
@@ -737,6 +761,18 @@ export function NoteEditor({ note, onUpdate, onDelete }: NoteEditorProps) {
                         <div className="my-1 border-t border-[var(--color-border)]" />
                       </>
                     )}
+                    {activePage && (
+                      <button
+                        onClick={() => {
+                          setShowOptionsMenu(false)
+                          handlePageLockToggle(activePage.id, !activePage.isLocked)
+                        }}
+                        className="w-full flex items-center gap-2 px-3 h-8 text-sm text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-tertiary)] hover:text-[var(--color-text-primary)] transition-colors"
+                      >
+                        {activePage.isLocked ? <IoLockOpen className="w-4 h-4" /> : <IoLockClosed className="w-4 h-4" />}
+                        <span>{activePage.isLocked ? t('pages.unlock') : t('pages.lock')}</span>
+                      </button>
+                    )}
                     <button
                       onClick={() => {
                         setShowOptionsMenu(false)
@@ -789,7 +825,15 @@ export function NoteEditor({ note, onUpdate, onDelete }: NoteEditorProps) {
           onPageDelete={handlePageDelete}
           onPageRename={handlePageRename}
           onPageReorder={handlePageReorder}
+          onPageLockToggle={handlePageLockToggle}
         />
+      )}
+
+      {activePage?.isLocked && (
+        <div className="mx-4 md:mx-8 mt-2 flex items-center gap-2 px-3 py-1.5 rounded-md bg-[var(--color-accent)]/8 border border-[var(--color-accent)]/20 text-[var(--color-accent)] text-[12px]">
+          <IoLockClosed className="w-3.5 h-3.5 flex-shrink-0" />
+          <span className="font-medium">{t('pages.locked_banner')}</span>
+        </div>
       )}
 
       <div className="editor-writing-surface flex-1 overflow-auto px-4 md:px-8 pt-3 pb-4">
@@ -798,6 +842,7 @@ export function NoteEditor({ note, onUpdate, onDelete }: NoteEditorProps) {
           content={localContent}
           onChange={handleContentChange}
           placeholder={t('editor.placeholder')}
+          readOnly={activePage?.isLocked ?? false}
         />
       </div>
 
@@ -813,7 +858,7 @@ export function NoteEditor({ note, onUpdate, onDelete }: NoteEditorProps) {
         {!focusMode && (
           <div className="flex-shrink-0 flex items-center gap-0 text-[11px] text-[var(--color-text-tertiary)] pr-2 overflow-hidden">
             <div
-              className="flex items-center gap-2 transition-all duration-200 ease-out overflow-hidden"
+              className="hidden sm:flex items-center gap-2 transition-all duration-200 ease-out overflow-hidden"
               style={{
                 maxWidth: noteInfoExpanded ? '600px' : '0px',
                 opacity: noteInfoExpanded ? 1 : 0,
@@ -832,10 +877,10 @@ export function NoteEditor({ note, onUpdate, onDelete }: NoteEditorProps) {
               <span className="opacity-30">·</span>
               <span className="whitespace-nowrap"><span className="text-[var(--color-text-primary)]">{localTags.length}</span> {t('editor.info_tags').toLowerCase()}</span>
             </div>
-            <span className="whitespace-nowrap">{t('editor.modified_ago', { time: formatTimeAgo(lastModifiedAt, t) })}</span>
+            <span className="whitespace-nowrap text-[10px] sm:text-[11px]">{t('editor.modified_ago', { time: formatTimeAgo(lastModifiedAt, t) })}</span>
             <button
               onClick={() => setNoteInfoExpanded(!noteInfoExpanded)}
-              className="ml-1 p-0.5 rounded transition-all duration-150 hover:bg-[var(--color-bg-tertiary)] text-[var(--color-text-tertiary)] hover:text-[var(--color-text-secondary)]"
+              className="hidden sm:inline-flex ml-1 p-0.5 rounded transition-all duration-150 hover:bg-[var(--color-bg-tertiary)] text-[var(--color-text-tertiary)] hover:text-[var(--color-text-secondary)]"
               title={t('editor.note_info')}
             >
               <IoInformationCircleOutline className="w-3.5 h-3.5" />

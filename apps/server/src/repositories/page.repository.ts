@@ -46,6 +46,7 @@ export class PageRepository {
       content: encrypt(plainContent),
       mode: 'text',
       position,
+      isLocked: false,
       isDeleted: false,
       createdAt: now,
       updatedAt: now,
@@ -57,6 +58,7 @@ export class PageRepository {
       title: plainTitle,
       content: plainContent,
       position,
+      isLocked: false,
       isDeleted: false,
       deletedAt: null,
       createdAt: now,
@@ -70,6 +72,7 @@ export class PageRepository {
 
     if (input.title !== undefined) updateData.title = encrypt(input.title)
     if (input.content !== undefined) updateData.content = encrypt(input.content)
+    if (input.isLocked !== undefined) updateData.isLocked = input.isLocked
 
     await db.update(notePages).set(updateData).where(eq(notePages.id, id))
     return this.findById(id)
@@ -156,6 +159,7 @@ export class PageRepository {
       title: decrypt(row.title),
       content: decrypt(row.content),
       position: row.position,
+      isLocked: row.isLocked,
       isDeleted: row.isDeleted,
       deletedAt: row.deletedAt,
       createdAt: row.createdAt,

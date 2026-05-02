@@ -13,6 +13,8 @@ interface PagesState {
   updatePage: (pageId: string, input: NotePageUpdateInput) => Promise<void>
   deletePage: (noteId: string, pageId: string) => Promise<void>
   reorderPage: (noteId: string, pageId: string, newPosition: number) => Promise<void>
+  refetchPages: (noteId: string) => Promise<void>
+  applyPageOrder: (noteId: string, orderedIds: string[]) => void
   setActivePage: (noteId: string, pageId: string) => void
   getActivePage: (noteId: string) => NotePage | null
   clearNotePages: (noteId: string) => void
@@ -122,10 +124,39 @@ export const usePagesStore = create<PagesState>((set, get) => ({
   reorderPage: async (noteId: string, pageId: string, newPosition: number) => {
     try {
       await pagesApi.reorder(pageId, newPosition)
-      await get().fetchPages(noteId)
+      await get().refetchPages(noteId)
     } catch {
       set({ error: 'Failed to reorder page' })
     }
+  },
+
+  refetchPages: async (noteId: string) => {
+    try {
+      const { pages } = await pagesApi.list(noteId)
+      set((state) => ({
+        pagesByNote: { ...state.pagesByNote, [noteId]: pages },
+      }))
+    } catch {
+      set({ error: 'Failed to refresh pages' })
+    }
+  },
+
+  applyPageOrder: (noteId: string, orderedIds: string[]) => {
+    set((state) => {
+      const current = state.pagesByNote[noteId]
+      if (!current) return state
+      const byId = new Map(current.map((p) => [p.id, p]))
+      const next = orderedIds
+        .map((id, position) => {
+          const page = byId.get(id)
+          return page ? { ...page, position } : null
+        })
+        .filter((p): p is NotePage => p !== null)
+      if (next.length !== current.length) return state
+      return {
+        pagesByNote: { ...state.pagesByNote, [noteId]: next },
+      }
+    })
   },
 
   setActivePage: (noteId: string, pageId: string) => {

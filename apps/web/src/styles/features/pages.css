@@ -18,9 +18,14 @@
   border: 1px solid transparent;
   border-bottom: none;
   margin-bottom: -1px;
+  touch-action: manipulation;
   transition:
     background-color var(--transition-fast) ease,
     border-color var(--transition-fast) ease;
+}
+
+.page-tab[data-dragging="true"] {
+  cursor: grabbing;
 }
 
 .page-tab:hover {
@@ -52,6 +57,23 @@
   text-overflow: ellipsis;
   color: var(--color-text-tertiary);
   transition: color var(--transition-fast) ease;
+}
+
+.page-tab-lock-icon {
+  width: 0.75rem;
+  height: 0.75rem;
+  margin-right: 0.375rem;
+  color: var(--color-text-tertiary);
+  flex-shrink: 0;
+}
+
+.page-tab.active .page-tab-lock-icon {
+  color: var(--color-accent);
+}
+
+.page-context-menu-item:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 
 .page-tab:hover .page-tab-title {

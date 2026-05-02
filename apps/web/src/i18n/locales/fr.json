@@ -92,6 +92,7 @@
     "highlight": "Surligner",
     "text_color": "Couleur du texte",
     "add_link": "Ajouter un lien",
+    "open_link": "Ouvrir le lien",
     "focus_mode": "Mode concentration",
     "exit_focus": "Quitter le mode concentration",
     "focus_width": "Largeur de l'éditeur",
@@ -712,7 +713,10 @@
     "delete": "Supprimer la page",
     "delete_confirm": "Êtes-vous sûr de vouloir supprimer cette page ?",
     "cannot_delete_last": "Impossible de supprimer la dernière page",
-    "untitled": "Page sans titre"
+    "untitled": "Page sans titre",
+    "lock": "Verrouiller la page",
+    "unlock": "Déverrouiller la page",
+    "locked_banner": "Page en lecture seule"
   },
   "onboarding": {
     "welcome": "Bienvenue sur Onyka",

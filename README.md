@@ -20,7 +20,7 @@
 
 <p align="center">
   <img src="https://img.shields.io/badge/license-AGPL--3.0-blue" alt="License" />
-  <img src="https://img.shields.io/badge/version-1.0.3-green" alt="Version" />
+  <img src="https://img.shields.io/badge/version-1.0.4-green" alt="Version" />
   <img src="https://img.shields.io/badge/docker-ready-2496ED" alt="Docker" />
   <img src="https://img.shields.io/badge/TypeScript-100%25-3178C6" alt="TypeScript" />
   <a href="https://deepwiki.com/karl-cta/onyka"><img src="https://deepwiki.com/badge.svg" alt="Ask DeepWiki" /></a>

@@ -630,7 +630,7 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                           {settings?.appName ?? 'Onyka'}
                         </h3>
                         <p className="text-xs font-medium text-[var(--color-text-tertiary)] tracking-wide">
-                          {t('settings.about.version', { version: '1.0.3' })}
+                          {t('settings.about.version', { version: '1.0.4' })}
                         </p>
                       </div>
 

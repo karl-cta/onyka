@@ -55,6 +55,11 @@ export class PagesService {
 
     const note = await this.verifyNoteAccess(page.noteId, userId, 'edit')
 
+    const writesContent = input.title !== undefined || input.content !== undefined
+    if (page.isLocked && writesContent) {
+      throw new PagesServiceError('Page is locked', 'PAGE_LOCKED', 423)
+    }
+
     // Track words written for stats if tracking is enabled (fire and forget)
     if (input.content !== undefined && input.content !== page.content && note) {
       const newContent = input.content

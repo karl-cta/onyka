@@ -225,6 +225,13 @@
       "when": 1776700800000,
       "tag": "0031_revoked_access_tokens",
       "breakpoints": true
+    },
+    {
+      "idx": 32,
+      "version": "6",
+      "when": 1778198400000,
+      "tag": "0032_page_lock",
+      "breakpoints": true
     }
   ]
 }

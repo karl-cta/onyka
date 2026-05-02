@@ -69,6 +69,9 @@ export function useCollaboration({
   }, [noteId, onContentUpdate, onUsersChange])
 
   useEffect(() => {
+    setUsers([])
+    onUsersChangeRef.current?.([])
+
     if (!enabled || !noteId || !user) return
 
     const socket = getSharedSocket()

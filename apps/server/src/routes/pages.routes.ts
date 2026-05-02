@@ -18,6 +18,7 @@ const createPageSchema = z.object({
 const updatePageSchema = z.object({
   title: z.string().max(500).optional(),
   content: z.string().max(MAX_CONTENT_LENGTH).optional(),
+  isLocked: z.boolean().optional(),
 })
 
 const reorderPageSchema = z.object({

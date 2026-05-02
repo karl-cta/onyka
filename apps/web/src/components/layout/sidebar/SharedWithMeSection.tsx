@@ -107,7 +107,7 @@ function SharedNoteItem({
             if (e.key === 'Enter') void handleConfirmRename()
             if (e.key === 'Escape') setIsRenaming(false)
           }}
-          className="flex-1 min-w-0 px-2 py-0.5 text-[12px] bg-[var(--color-bg-tertiary)] border border-[var(--color-accent)] rounded-md text-[var(--color-text-primary)] focus:outline-none"
+          className="flex-1 min-w-0 px-2 py-0.5 text-[13px] bg-[var(--color-bg-tertiary)] border border-[var(--color-accent)] rounded-md text-[var(--color-text-primary)] focus:outline-none"
           autoFocus
           onClick={(e) => e.stopPropagation()}
         />
@@ -136,11 +136,11 @@ function SharedNoteItem({
         <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[2px] h-4 rounded-full bg-[var(--color-accent)]" />
       )}
 
-      <span className={`truncate text-[12px] flex-1 ${isSelected ? 'font-medium' : ''}`}>
+      <span className={`truncate text-[13px] flex-1 ${isSelected ? 'font-medium' : ''}`}>
         {note.title || t('editor.untitled')}
       </span>
 
-      <span className={`text-[9px] px-1.5 py-px rounded font-medium leading-tight ${PERMISSION_COLORS[note.permission]}`}>
+      <span className={`text-[10px] px-1.5 py-px rounded font-medium leading-tight ${PERMISSION_COLORS[note.permission]}`}>
         {t(`share.permission_badge.${note.permission}`)}
       </span>
 
@@ -394,7 +394,7 @@ export function SharedWithMeSection({ selectedNoteId, onSelectNote }: SharedWith
                 <div key={owner.id}>
                   <button
                     onClick={() => toggleOwner(owner.id)}
-                    className="w-full flex items-center gap-2 px-1 py-1 text-[11px] text-[var(--color-text-tertiary)] hover:text-[var(--color-text-secondary)] transition-colors rounded-md hover:bg-[var(--color-bg-tertiary)]/50"
+                    className="w-full flex items-center gap-2 px-1 py-1 text-[12px] text-[var(--color-text-tertiary)] hover:text-[var(--color-text-secondary)] transition-colors rounded-md hover:bg-[var(--color-bg-tertiary)]/50"
                   >
                     <IoChevronDown className={`
                       w-2.5 h-2.5 transition-transform duration-200
@@ -404,17 +404,17 @@ export function SharedWithMeSection({ selectedNoteId, onSelectNote }: SharedWith
                       <img
                         src={owner.avatarUrl}
                         alt={owner.username}
-                        className={`w-4 h-4 rounded-full object-cover ring-1 ${getAvatarRingClass(owner.avatarColor)}`}
+                        className={`w-5 h-5 rounded-full object-cover ring-1 ${getAvatarRingClass(owner.avatarColor)}`}
                       />
                     ) : (
-                      <div className={`w-4 h-4 rounded-full bg-[var(--color-bg-tertiary)] flex items-center justify-center text-[var(--color-text-primary)] text-[9px] font-semibold ring-1 ${getAvatarRingClass(owner.avatarColor)}`}>
+                      <div className={`w-5 h-5 rounded-full bg-[var(--color-bg-tertiary)] flex items-center justify-center text-[var(--color-text-primary)] text-[10px] font-semibold ring-1 ${getAvatarRingClass(owner.avatarColor)}`}>
                         {owner.username?.[0]?.toUpperCase() || 'U'}
                       </div>
                     )}
                     <span className="flex-1 text-left truncate">
                       {owner.username}
                     </span>
-                    <span className="text-[10px] text-[var(--color-text-tertiary)]">
+                    <span className="text-[11px] text-[var(--color-text-tertiary)]">
                       {notes.length}
                     </span>
                   </button>

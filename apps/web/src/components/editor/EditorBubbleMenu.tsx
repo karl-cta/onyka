@@ -10,6 +10,7 @@ import {
   IoCodeOutline,
   IoChatbubbleOutline,
   IoCloseOutline,
+  IoOpenOutline,
 } from 'react-icons/io5'
 import { ToolbarButton, ToolbarDivider } from './ToolbarButton'
 import { COLORS, HIGHLIGHT_COLORS, AlignLeftIcon, AlignCenterIcon, AlignRightIcon } from './editorConstants'
@@ -50,6 +51,12 @@ export function EditorBubbleMenu({ editor }: EditorBubbleMenuProps) {
     setLinkUrl(previousUrl)
     setShowLinkInput(true)
   }, [editor])
+
+  const openCurrentLink = useCallback(() => {
+    if (!linkUrl) return
+    if (!/^(https?:|mailto:|tel:|\/)/i.test(linkUrl)) return
+    window.open(linkUrl, '_blank', 'noopener,noreferrer')
+  }, [linkUrl])
 
   useEffect(() => {
     const handleSelectionUpdate = () => {
@@ -119,6 +126,15 @@ export function EditorBubbleMenu({ editor }: EditorBubbleMenuProps) {
             className={`px-2 py-1 text-sm bg-[var(--color-bg-tertiary)] border border-[var(--color-border)] rounded-lg text-[var(--color-text-primary)] placeholder:text-[var(--color-text-tertiary)] focus:outline-none focus:border-[var(--color-accent)] ${isMobile ? 'w-36' : 'w-48'}`}
             autoFocus
           />
+          {linkUrl && /^(https?:|mailto:|tel:|\/)/i.test(linkUrl) && (
+            <button
+              onClick={openCurrentLink}
+              className="p-1 text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors"
+              title={t('editor.open_link')}
+            >
+              <IoOpenOutline className="w-4 h-4" />
+            </button>
+          )}
           <button
             onClick={setLink}
             className="px-2 py-1 text-sm font-medium bg-[var(--color-accent)] text-white rounded-lg hover:bg-[var(--color-accent-hover)] transition-colors"

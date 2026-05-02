@@ -101,6 +101,7 @@ export const notePages = sqliteTable(
       .notNull()
       .default('text'),
     position: integer('position').notNull().default(0),
+    isLocked: integer('is_locked', { mode: 'boolean' }).notNull().default(false),
     isDeleted: integer('is_deleted', { mode: 'boolean' }).notNull().default(false),
     deletedAt: integer('deleted_at', { mode: 'timestamp' }),
     createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),

@@ -4,6 +4,7 @@ export interface NotePage {
   title: string
   content: string
   position: number
+  isLocked: boolean
   isDeleted: boolean
   deletedAt: Date | null
   createdAt: Date
@@ -19,6 +20,7 @@ export interface NotePageCreateInput {
 export interface NotePageUpdateInput {
   title?: string
   content?: string
+  isLocked?: boolean
 }
 
 export interface NotePageReorderInput {

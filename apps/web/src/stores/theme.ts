@@ -66,12 +66,12 @@ export type EditorFontFamily =
   | 'eb-garamond'
 
 export const EDITOR_FONT_SIZES: { id: EditorFontSize; size: number }[] = [
-  { id: 'XS', size: 14 },
-  { id: 'S', size: 16 },
-  { id: 'M', size: 18 },
-  { id: 'L', size: 22 },
-  { id: 'XL', size: 28 },
-  { id: 'XXL', size: 36 },
+  { id: 'XS', size: 12 },
+  { id: 'S', size: 14 },
+  { id: 'M', size: 16 },
+  { id: 'L', size: 18 },
+  { id: 'XL', size: 22 },
+  { id: 'XXL', size: 28 },
 ]
 
 export const EDITOR_FONT_FAMILIES: { id: EditorFontFamily; name: string; family: string }[] = [

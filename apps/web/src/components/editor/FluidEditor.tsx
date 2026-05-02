@@ -180,9 +180,10 @@ interface FluidEditorProps {
   content: string
   onChange: (content: string) => void
   placeholder?: string
+  readOnly?: boolean
 }
 
-export const FluidEditor = memo(function FluidEditor({ content, onChange, placeholder = 'Start writing...' }: FluidEditorProps) {
+export const FluidEditor = memo(function FluidEditor({ content, onChange, placeholder = 'Start writing...', readOnly = false }: FluidEditorProps) {
   const { t } = useTranslation()
   const isMobile = useIsMobile()
   const [showSlashMenu, setShowSlashMenu] = useState(false)
@@ -269,6 +270,7 @@ export const FluidEditor = memo(function FluidEditor({ content, onChange, placeh
     immediatelyRender: true,
     shouldRerenderOnTransaction: false,
     autofocus: isMobile ? false : 'end',
+    editable: !readOnly,
     extensions: [
       StarterKit.configure({
         heading: { levels: [1, 2, 3] },
@@ -277,6 +279,8 @@ export const FluidEditor = memo(function FluidEditor({ content, onChange, placeh
           validate: (href) => /^https?:\/\//i.test(href) || href.startsWith('/') || href.startsWith('mailto:') || href.startsWith('tel:'),
           HTMLAttributes: {
             class: 'text-[var(--color-accent)] underline decoration-[var(--color-accent)]/30 hover:decoration-[var(--color-accent)] transition-colors cursor-pointer',
+            target: '_blank',
+            rel: 'noopener noreferrer nofollow',
           },
         },
       }),
@@ -343,6 +347,19 @@ export const FluidEditor = memo(function FluidEditor({ content, onChange, placeh
           texts.push(serializeNodeToText(node as Parameters<typeof serializeNodeToText>[0]))
         })
         return texts.join('').replace(/\n{3,}/g, '\n\n').trimEnd()
+      },
+      handleClick: (_view, _pos, event) => {
+        const target = event.target as HTMLElement | null
+        const linkEl = target?.closest('a') as HTMLAnchorElement | null
+        if (!linkEl) return false
+
+        const href = linkEl.getAttribute('href')
+        if (!href) return false
+        if (!/^(https?:|mailto:|tel:|\/)/i.test(href)) return false
+
+        event.preventDefault()
+        window.open(href, '_blank', 'noopener,noreferrer')
+        return true
       },
       // Mobile/tablet: virtual keyboards fire handleTextInput, not handleKeyDown for '/'
       handleTextInput: (view, from, _to, text) => {
@@ -694,6 +711,12 @@ export const FluidEditor = memo(function FluidEditor({ content, onChange, placeh
 
   // Keep ref in sync for deferred getHTML() inside debounce
   editorRef.current = editor
+
+  useEffect(() => {
+    if (!editor) return
+    if (editor.isEditable === !readOnly) return
+    editor.setEditable(!readOnly)
+  }, [editor, readOnly])
 
   // Desktop: show columns toolbar on border hover
   useEffect(() => {
