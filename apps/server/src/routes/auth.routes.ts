@@ -684,7 +684,7 @@ router.get('/trusted-devices', authenticate, async (req, res, next) => {
  * DELETE /api/auth/trusted-devices/:id
  * Revoke a specific trusted device.
  */
-router.delete('/trusted-devices/:id', authenticate, async (req, res, next) => {
+router.delete<{ id: string }>('/trusted-devices/:id', authenticate, async (req, res, next) => {
   try {
     const revoked = await twoFactorService.revokeTrustedDevice(req.params.id, req.userId!)
     if (!revoked) {
@@ -861,7 +861,7 @@ router.get('/sessions', authenticate, async (req, res, next) => {
  * DELETE /api/auth/sessions/:id
  * Revoke a specific session.
  */
-router.delete('/sessions/:id', authenticate, async (req, res, next) => {
+router.delete<{ id: string }>('/sessions/:id', authenticate, async (req, res, next) => {
   try {
     const sessionId = req.params.id
     const revoked = await tokenService.revokeSession(sessionId, req.userId!)

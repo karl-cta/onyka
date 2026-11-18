@@ -134,7 +134,7 @@ router.post(
  * Access granted if the user owns the image, is admin, or can read a note
  * that references this upload.
  */
-router.get('/:filename', authenticate, downloadRateLimit, async (req, res) => {
+router.get<{ filename: string }>('/:filename', authenticate, downloadRateLimit, async (req, res) => {
   const { filename } = req.params
   const userId = req.userId!
   const isAdmin = req.user?.role === 'admin'
@@ -185,7 +185,7 @@ router.get('/:filename', authenticate, downloadRateLimit, async (req, res) => {
  * Delete an uploaded file
  * Requires authentication + ownership (or admin)
  */
-router.delete('/:filename', authenticate, async (req, res) => {
+router.delete<{ filename: string }>('/:filename', authenticate, async (req, res) => {
   const { filename } = req.params
   const userId = req.userId!
   const isAdmin = req.user?.role === 'admin'
