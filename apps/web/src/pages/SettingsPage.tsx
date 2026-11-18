@@ -41,6 +41,7 @@ export function SettingsPage() {
       const { notes } = await notesApi.list({ deleted: true })
       setDeletedNotes(notes)
     } catch {
+      // A failed fetch leaves the trash list as it was.
     } finally {
       setIsLoadingTrash(false)
     }

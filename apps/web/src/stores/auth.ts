@@ -140,6 +140,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     try {
       await authApi.logout()
     } catch {
+      // The local session is cleared below even when the server call fails.
     } finally {
       setAuthenticatedState(false)
       clearAllUserStores()
@@ -176,6 +177,7 @@ export const useAuthStore = create<AuthState>((set) => ({
       const { user } = await authApi.me()
       set({ user })
     } catch {
+      // Best-effort refresh: the cached user stays when the request fails.
     }
   },
 }))
