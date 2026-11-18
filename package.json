@@ -58,6 +58,9 @@
     "ignoredBuiltDependencies": [
       "better-sqlite3"
     ],
+    "overrides": {
+      "rollup": "4.68.5"
+    },
     "onlyBuiltDependencies": [
       "argon2",
       "esbuild",
