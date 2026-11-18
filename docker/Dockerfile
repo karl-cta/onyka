@@ -6,12 +6,13 @@
 # -----------------------------------------------------------------------------
 # Stage 1: Builder
 # -----------------------------------------------------------------------------
-FROM node:20-alpine AS builder
+FROM node:26-alpine AS builder
 
-# Install build dependencies
+# Build toolchain: fallback when a native module ships no prebuilt binary
 RUN apk add --no-cache python3 make g++
 
-RUN corepack enable && corepack prepare pnpm@10.28.1 --activate
+# Node 25+ no longer bundles corepack, so pnpm comes from npm (same version as packageManager)
+RUN npm install -g pnpm@10.32.1
 
 WORKDIR /app
 
@@ -41,7 +42,7 @@ RUN npm pkg delete scripts.prepare && \
 # -----------------------------------------------------------------------------
 # Stage 2: Production
 # -----------------------------------------------------------------------------
-FROM node:20-alpine AS production
+FROM node:26-alpine AS production
 
 # Security: Don't run as root
 RUN addgroup -g 1001 -S onyka && \

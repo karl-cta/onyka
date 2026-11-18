@@ -91,7 +91,7 @@ describe('PasswordService', () => {
     it('should accept password with various special characters', () => {
       const specialChars = ['!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '-', '+', '=']
       for (const char of specialChars) {
-        const result = passwordService.validateStrength(`ValidPass1${char}`)
+        const result = passwordService.validateStrength(`ValidPassw0rd${char}`)
         expect(result.valid).toBe(true)
       }
     })

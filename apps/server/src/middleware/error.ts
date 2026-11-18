@@ -144,10 +144,10 @@ export function errorHandler(err: Error, req: Request, res: Response, _next: Nex
 
   if (err instanceof ZodError) {
     const details: Record<string, string[]> = {}
-    err.errors.forEach((e) => {
-      const path = e.path.join('.')
+    err.issues.forEach((issue) => {
+      const path = issue.path.map(String).join('.')
       if (!details[path]) details[path] = []
-      details[path].push(e.message)
+      details[path].push(issue.message)
     })
 
     return res.status(400).json({
