@@ -67,7 +67,7 @@ No `.env` file, no secrets to generate, no configuration. Everything is auto-gen
 
 ### Node.js
 
-Requires Node.js 20+ and pnpm 10+.
+Requires Node.js 24+ and pnpm 10+.
 
 ```bash
 git clone https://github.com/karl-cta/onyka.git && cd onyka
