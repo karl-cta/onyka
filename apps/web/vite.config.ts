@@ -29,7 +29,9 @@ export default defineConfig({
       output: {
         manualChunks(id) {
           if (id.includes('node_modules')) {
-            if (id.includes('react-dom') || id.includes('react-router-dom')) {
+            // React itself must live with react-dom: left unassigned, it can land in a chunk
+            // that loads after the ones importing it, and the app never mounts.
+            if (/[\\/]node_modules[\\/](react|react-dom|scheduler|react-router|react-router-dom)[\\/]/.test(id)) {
               return 'vendor'
             }
             if (id.includes('@tiptap/') || id.includes('prosemirror')) {
