@@ -1,50 +1,42 @@
-<p align="center">
-  <img src="apps/web/public/logo-128.png" alt="Onyka" width="80" height="80" />
-</p>
+<div align="center">
 
-<h1 align="center">Onyka</h1>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset=".github/assets/banner-dark.png">
+  <img src=".github/assets/banner.png" alt="Onyka, the note app you host yourself. Write it down. Own it forever." width="100%">
+</picture>
 
-<p align="center">
-  <strong>Write it down. Own it forever.</strong>
-  <br />
-  An open-source, self-hosted note app. SQLite, AES-256-GCM encryption at rest, real-time collab. Docker or Node.js.
-</p>
+[Website](https://onyka.app) · [Install](#install) · [Configuration](#configuration) · [Backup](#backup-and-restore) · [Reverse proxy](#reverse-proxy)
 
-<p align="center">
-  <a href="#install">Install</a> ·
-  <a href="#features">Features</a> ·
-  <a href="#configuration">Configuration</a> ·
-  <a href="#backup--restore">Backup</a> ·
-  <a href="#reverse-proxy">Reverse Proxy</a>
-</p>
+</div>
 
-<p align="center">
-  <img src="https://img.shields.io/badge/license-AGPL--3.0-blue" alt="License" />
-  <img src="https://img.shields.io/badge/version-1.0.4-green" alt="Version" />
-  <img src="https://img.shields.io/badge/docker-ready-2496ED" alt="Docker" />
-  <img src="https://img.shields.io/badge/TypeScript-100%25-3178C6" alt="TypeScript" />
-  <a href="https://deepwiki.com/karl-cta/onyka"><img src="https://deepwiki.com/badge.svg" alt="Ask DeepWiki" /></a>
-</p>
+> [!NOTE]
+> Running Onyka without Docker now requires Node.js 24 or newer. Docker users have nothing to change.
 
----
+## What is Onyka?
 
-<p align="center">
-  <img src=".github/screenshot-homepage.png" alt="Onyka" width="800" />
-</p>
+Note apps keep growing sideways, with databases, kanban boards, plugins and AI assistants. Onyka grows inward.
 
----
-
-## Why Onyka?
-
-Note apps keep growing sideways — databases, kanban boards, plugins, AI assistants. Onyka grows inward.
-
-It's a self-hosted, open-source note app built entirely in TypeScript. Deploy with Docker or install with Node.js. One SQLite database, no external services. Your content is encrypted at rest with AES-256-GCM. There is no telemetry.
-
-Sparks lets you capture thoughts in one keystroke with configurable expiration — what doesn't get promoted to a note simply disappears. Real-time collaboration, focus mode with Pomodoro timer, 135+ theme combinations, and a full admin console are built into the core, not bolted on.
+It is a self-hosted, open-source note app built entirely in TypeScript. You deploy it with Docker or install it with Node.js. Everything lives in one SQLite database, with no external service. Your content is encrypted at rest with AES-256-GCM, and there is no telemetry.
 
 Fewer things. Done well.
 
----
+## Features
+
+- **Sparks.** A thought goes in with one keystroke, with no title and no folder. Each spark fades after 1 hour, 24 hours, 7 days or 30 days, or stays for good. You can pin up to five and turn the ones that matter into notes.
+- **A rich editor.** It handles code blocks, tables, columns, images and a slash menu, with auto-save and Markdown paste. A note can hold several pages, and each page can be locked as read-only.
+- **Real-time collaboration.** Several people edit the same note and see who is there. Notes carry threaded comments, and each share gives read, edit or admin rights.
+- **Focus mode.** The sidebar hides and a timer runs from 1 to 180 minutes. A word count, daily streaks and a weekly recap follow your writing.
+- **Organization.** Notes sit in folders you arrange by drag and drop. A tag filter can require tags or exclude them, and full-text search finds the rest. The trash keeps deleted notes for 30 days.
+- **Your look.** Onyka comes with 10 themes, five dark and five light, plus 15 accent colors and 12 editor fonts. The app speaks English and French.
+- **Security.** Onyka uses AES-256-GCM encryption at rest, Argon2id passwords, short-lived tokens with an HttpOnly refresh cookie, two-factor sign-in by email and rate limiting.
+- **Admin console.** Admins manage users and see instance statistics and an audit log.
+- **Installable.** Onyka installs from the browser on a phone or a computer, with no app store.
+
+## Screenshot
+
+<p align="center">
+  <img src=".github/screenshot-homepage.png" alt="The Onyka home screen in the default dark theme: the sidebar with its folders on the left, and the writing space with buttons for a new note and Sparks" width="100%">
+</p>
 
 ## Install
 
@@ -61,9 +53,9 @@ curl -O https://raw.githubusercontent.com/karl-cta/onyka/main/docker/docker-comp
 docker compose up -d
 ```
 
-Open **http://localhost:3000** — that's it.
+Open [http://localhost:3000](http://localhost:3000). That's it.
 
-No `.env` file, no secrets to generate, no configuration. Everything is auto-generated on first launch. The first user to register becomes admin.
+There is no `.env` file to write and no secret to generate. Everything is created on first launch, and the first user to register becomes admin.
 
 ### Node.js
 
@@ -73,97 +65,50 @@ Requires Node.js 24+ and pnpm 10+.
 git clone https://github.com/karl-cta/onyka.git && cd onyka
 pnpm install
 pnpm build
-pnpm start:prod  # → http://localhost:3001
+pnpm start:prod  # http://localhost:3001
 ```
 
-Secrets are auto-generated on first start. No `.env` required.
-
-To customize (SMTP, CORS, etc.):
+Secrets are generated on first start, so no `.env` is required. To change a setting such as SMTP or CORS, copy the example file and edit it:
 
 ```bash
 cp apps/server/.env.example apps/server/.env
-# Edit apps/server/.env with your settings
 ```
 
-### What happens on first start?
+### Where your data lives
 
-All your data lives in one folder (`data/`):
+Everything is in one folder, `data/`:
 
 ```
 data/
 ├── onyka.db          ← database (notes, users, settings)
-├── uploads/          ← images (encrypted at rest, same as notes)
-├── .encryption-key   ← AES-256-GCM key (auto-generated)
-├── .jwt-secret       ← JWT signing key (auto-generated)
+├── uploads/          ← images, encrypted at rest like notes
+├── .encryption-key   ← AES-256-GCM key, generated on first start
+├── .jwt-secret       ← JWT signing key, generated on first start
 └── backups/          ← backup archives
 ```
 
-Secrets are auto-generated and persisted. Back up this folder and you're safe. **Without `.encryption-key`, encrypted data (notes + images) is permanently lost.**
-
----
-
-## Features
-
-### Sparks
-
-Type → Enter → Captured. No title, no folder. Expiration: 1h–30d or permanent. Pin up to 5. Convert when it matters, the rest disappears.
-
-### Rich Editor
-
-TipTap 3.19. Code blocks, tables, columns, images, slash menu. Auto-save. Markdown paste. Note pages (tabs inside a single note).
-
-### Real-Time Collab
-
-WebSocket co-editing. Live presence. Threaded comments. 3 permission levels.
-
-### Focus Mode
-
-Pomodoro (1–180 min). Word counter. Streaks. Weekly recap. Sidebar hidden, zero distractions.
-
-### Themes
-
-9 bases (Dracula, Nord, Tokyo Night, One Dark, GitHub, Catppuccin Latte, Rosé Pine Dawn, Paper, Default) × 15 accents × 12 editor fonts. Dark/light mode. Bilingual (EN/FR, 750+ keys).
-
-### Organization
-
-Folders with drag & drop, tags (AND/OR/NOT filtering), full-text search, 30-day trash with restore.
-
-### Security
-
-AES-256-GCM at rest. Argon2id. JWT + HttpOnly refresh. Email 2FA. Rate limiting. Zero telemetry.
-
-### PWA
-
-Install from your browser on any device. No app store required.
-
----
+Back up this folder and you're safe. **Without `.encryption-key`, encrypted notes and images are lost for good.**
 
 ## Configuration
 
-No configuration is required. All secrets are auto-generated on first launch.
-
-Optional environment variables (set in Docker Compose or `.env`):
+Onyka needs no configuration. These variables are optional, set in Docker Compose or in `.env`:
 
 | Variable | Description | Default |
 |----------|-------------|---------|
-| `CORS_ORIGIN` | Allowed CORS origins | `http://localhost:5173` |
-| `FRONTEND_URL` | Public URL (used in emails) | `http://localhost:5173` |
-| `TRUST_PROXY` | Set to `1` behind a reverse proxy | — |
-| `SMTP_HOST` | SMTP server for emails (2FA, password reset) | — |
+| `CORS_ORIGIN` | Allowed CORS origins, separated by commas | `http://localhost:5173` |
+| `FRONTEND_URL` | Public URL, used in emails | `http://localhost:5173` |
+| `TRUST_PROXY` | Set to `1` behind a reverse proxy | not set |
+| `SMTP_HOST` | SMTP server for emails (2FA, password reset) | not set |
 | `SMTP_PORT` | SMTP port | `587` |
-| `SMTP_USER` | SMTP username | — |
-| `SMTP_PASS` | SMTP password | — |
+| `SMTP_USER` | SMTP username | not set |
+| `SMTP_PASS` | SMTP password | not set |
 | `SMTP_FROM` | Email sender | `Onyka <noreply@onyka.app>` |
 
-Without SMTP, email features (2FA, password reset, email verification) are disabled automatically.
+Without SMTP, the email features (2FA, password reset, email verification) turn themselves off.
 
-To override auto-generated secrets, pass `JWT_SECRET` or `ENCRYPTION_KEY` as environment variables — they take priority over the persisted files.
+`JWT_SECRET` and `ENCRYPTION_KEY`, when set, take priority over the generated files. See [`apps/server/.env.example`](apps/server/.env.example) for the other settings.
 
-See [`apps/server/.env.example`](apps/server/.env.example) for the full list.
-
----
-
-## Backup & Restore
+## Backup and restore
 
 ### Backup
 
@@ -177,16 +122,16 @@ docker exec onyka node scripts/backup.js
 docker cp onyka:/app/data/backups/ .
 ```
 
-The `.tar.gz` archive contains everything: database + uploads + encryption keys. One file to save.
+The `.tar.gz` archive holds everything: database, uploads and encryption keys. One file to save.
 
 ### Restore
 
 ```bash
 tar -xzf onyka-backup.tar.gz -C /path/to/data/
-# Restart Onyka
+# Then restart Onyka
 ```
 
-### Migrate to another server
+### Move to another server
 
 ```bash
 # Old server
@@ -198,13 +143,11 @@ docker compose up -d
 
 One folder. That's it.
 
----
+## Reverse proxy
 
-## Reverse Proxy
+Onyka listens on HTTP. In production, put it behind a reverse proxy for HTTPS, and set `TRUST_PROXY=1` so rate limiting sees the real client IP.
 
-Onyka listens on HTTP. For production, place it behind a reverse proxy for HTTPS. Set `TRUST_PROXY=1` so rate limiting uses the real client IP.
-
-### Caddy (simplest — automatic HTTPS)
+### Caddy (automatic HTTPS)
 
 ```
 notes.example.com {
@@ -222,7 +165,7 @@ server {
     ssl_certificate /etc/letsencrypt/live/notes.example.com/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/notes.example.com/privkey.pem;
 
-    # Compression — strongly recommended, reduces bundle size by ~70%
+    # Compression: strongly recommended, cuts the bundle size by about 70%
     gzip on;
     gzip_vary on;
     gzip_proxied any;
@@ -232,7 +175,7 @@ server {
                text/xml application/xml application/xml+rss text/javascript
                image/svg+xml;
 
-    # Cache static assets (JS/CSS have hashed filenames, safe to cache long)
+    # Static assets have hashed filenames, so they are safe to cache for long
     location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$ {
         proxy_pass http://localhost:3000;
         proxy_set_header Host $host;
@@ -240,7 +183,7 @@ server {
         add_header Cache-Control "public, immutable";
     }
 
-    # API, pages & WebSocket
+    # API, pages and WebSocket
     location / {
         proxy_pass http://localhost:3000;
         proxy_http_version 1.1;
@@ -254,7 +197,8 @@ server {
 }
 ```
 
-> **Important:** The `gzip` and caching directives make a significant difference — without them, the full uncompressed JS bundle is re-downloaded on every page load. The `Upgrade` and `Connection` headers are required for WebSocket (real-time collaboration).
+> [!IMPORTANT]
+> Without the `gzip` and caching directives, the browser downloads the full uncompressed bundle on every page load. The `Upgrade` and `Connection` headers are required for WebSocket, which real-time collaboration uses.
 
 ### Cloudflare Tunnel
 
@@ -262,32 +206,22 @@ server {
 cloudflared tunnel --url http://localhost:3000
 ```
 
----
-
 ## Development
 
 ```bash
-pnpm dev          # Frontend (localhost:5173) + backend (localhost:3001)
+pnpm dev          # Frontend (localhost:5173) and backend (localhost:3001)
 pnpm build        # Build all packages
 pnpm lint         # ESLint
 pnpm typecheck    # TypeScript checks
-pnpm test         # Run tests
+pnpm test         # Run the tests
 ```
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for the full development workflow.
+[CONTRIBUTING.md](CONTRIBUTING.md) describes the full workflow.
 
----
+## Stack
 
-## Tech Stack
-
-| Layer | Technologies |
-|-------|-------------|
-| **Frontend** | React 19, Vite 6, TypeScript, Zustand, TipTap 3, Tailwind CSS, Framer Motion, Socket.io |
-| **Backend** | Express 4, Drizzle ORM, better-sqlite3, Socket.io, Argon2, jose (JWT), Zod, Helmet |
-| **Infrastructure** | Docker (multi-stage, Alpine, non-root), pnpm monorepo |
-
----
+The frontend uses React 19, Vite, TipTap, Zustand, Tailwind CSS and Socket.io. The backend uses Express, Drizzle ORM, better-sqlite3, Argon2, jose and Zod. Both live in a pnpm monorepo and ship as a multi-stage Alpine Docker image that runs as a non-root user.
 
 ## License
 
-[AGPL-3.0](LICENSE) — Self-hosted is free forever with all features.
+Onyka is licensed under the [GNU Affero General Public License v3.0](LICENSE). Self-hosting is free forever, with every feature.
